@@ -28,7 +28,7 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
     : post.content;
 
   return (
-    <Card className="p-4 space-y-3 hover-elevate scale-on-hover" data-testid={`post-${post.id}`}>
+    <Card className="p-4 space-y-3 hover-elevate" data-testid={`post-${post.id}`}>
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

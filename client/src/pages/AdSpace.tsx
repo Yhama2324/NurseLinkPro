@@ -129,7 +129,7 @@ export default function AdSpace() {
             {displayAds.map((ad, index) => (
                 <Card
                   key={ad.id}
-                  className={`overflow-hidden hover-elevate scale-on-hover card-reveal stagger-${Math.min(index + 1, 5)}`}
+                  className={`overflow-hidden hover-elevate  card-reveal stagger-${Math.min(index + 1, 5)}`}
                   data-testid={`ad-${ad.id}`}
                 >
                   {ad.imageUrl && (
@@ -171,7 +171,7 @@ export default function AdSpace() {
               .map((ad, index) => (
                 <Card
                   key={ad.id}
-                  className={`overflow-hidden hover-elevate scale-on-hover card-reveal stagger-${Math.min(index + 1, 5)}`}
+                  className={`overflow-hidden hover-elevate  card-reveal stagger-${Math.min(index + 1, 5)}`}
                   data-testid={`ad-${ad.id}`}
                 >
                   {ad.imageUrl && (
@@ -218,7 +218,7 @@ export default function AdSpace() {
               .map((ad, index) => (
                 <Card
                   key={ad.id}
-                  className={`overflow-hidden hover-elevate scale-on-hover card-reveal stagger-${Math.min(index + 1, 5)}`}
+                  className={`overflow-hidden hover-elevate  card-reveal stagger-${Math.min(index + 1, 5)}`}
                   data-testid={`ad-${ad.id}`}
                 >
                   {ad.imageUrl && (

@@ -13,7 +13,7 @@ interface ClanCardProps {
 
 export default function ClanCard({ clan, isMember, onJoin, onView }: ClanCardProps) {
   return (
-    <Card className="p-4 space-y-4 hover-elevate scale-on-hover" data-testid={`clan-${clan.id}`}>
+    <Card className="p-4 space-y-4 hover-elevate" data-testid={`clan-${clan.id}`}>
       <div className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">

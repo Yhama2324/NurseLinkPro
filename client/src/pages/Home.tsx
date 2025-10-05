@@ -13,7 +13,7 @@ const SAMPLE_POSTS: (Post & { user?: User })[] = [
   {
     id: 1,
     userId: "user-1",
-    content: "Just finished my first week of clinical rotations! 🏥 Feeling overwhelmed but excited. Any tips for managing stress during clinicals?",
+    content: "Just finished my first week of clinical rotations! Feeling overwhelmed but excited. Any tips for managing stress during clinicals?",
     hashtags: ["ClinicalLife", "NursingStudent", "StudyRN"],
     likesCount: 42,
     commentsCount: 8,
@@ -40,7 +40,7 @@ const SAMPLE_POSTS: (Post & { user?: User })[] = [
   {
     id: 2,
     userId: "user-2",
-    content: "Study tip: Use the ADPIE method to remember the nursing process! Assessment → Diagnosis → Planning → Implementation → Evaluation. This helped me ace my fundamentals exam! 📚✨",
+    content: "Study tip: Use the ADPIE method to remember the nursing process! Assessment → Diagnosis → Planning → Implementation → Evaluation. This helped me ace my fundamentals exam!",
     hashtags: ["StudyTips", "NCLEX2024", "NurseGoals"],
     likesCount: 128,
     commentsCount: 15,
@@ -67,7 +67,7 @@ const SAMPLE_POSTS: (Post & { user?: User })[] = [
   {
     id: 3,
     userId: "user-3",
-    content: "Reminder: You chose nursing because you want to make a difference! 💙 Don't let one bad day or failed quiz define your journey. We've all been there. Keep pushing forward!",
+    content: "Reminder: You chose nursing because you want to make a difference! Don't let one bad day or failed quiz define your journey. We've all been there. Keep pushing forward!",
     hashtags: ["Motivation", "BoardJourney", "NursingStudent"],
     likesCount: 89,
     commentsCount: 12,
@@ -94,7 +94,7 @@ const SAMPLE_POSTS: (Post & { user?: User })[] = [
   {
     id: 4,
     userId: "user-4",
-    content: "Question: What's your go-to method for memorizing drug classifications? I'm struggling with pharmacology right now 😓",
+    content: "Question: What's your go-to method for memorizing drug classifications? I'm struggling with pharmacology right now.",
     hashtags: ["Pharmacology", "StudyHelp", "MedSurg"],
     likesCount: 34,
     commentsCount: 19,
@@ -121,7 +121,7 @@ const SAMPLE_POSTS: (Post & { user?: User })[] = [
   {
     id: 5,
     userId: "user-5",
-    content: "Celebrating small wins today! ✨ Completed 50 practice questions and got 90% correct. Consistency is key! Who else is grinding for their NCLEX/PNLE?",
+    content: "Celebrating small wins today! Completed 50 practice questions and got 90% correct. Consistency is key! Who else is grinding for their NCLEX/PNLE?",
     hashtags: ["NCLEX2024", "BoardJourney", "StudyWins"],
     likesCount: 156,
     commentsCount: 28,
@@ -148,7 +148,7 @@ const SAMPLE_POSTS: (Post & { user?: User })[] = [
   {
     id: 6,
     userId: "user-6",
-    content: "Looking for study buddies! Planning to review Maternal & Child Health this weekend. Anyone interested in forming a study party? 📖👥",
+    content: "Looking for study buddies! Planning to review Maternal & Child Health this weekend. Anyone interested in forming a study party?",
     hashtags: ["StudyGroup", "MaternalHealth", "NursingStudent"],
     likesCount: 67,
     commentsCount: 22,

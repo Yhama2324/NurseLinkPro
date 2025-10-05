@@ -203,7 +203,7 @@ export default function Clans() {
             </Button>
 
             {displayParties.map((party, index) => (
-              <Card key={party.id} className={`p-4 hover-elevate scale-on-hover card-reveal stagger-${Math.min(index + 1, 5)}`} data-testid={`party-${party.id}`}>
+              <Card key={party.id} className={`p-4 hover-elevate card-reveal stagger-${Math.min(index + 1, 5)}`} data-testid={`party-${party.id}`}>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold">{party.name}</h3>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">

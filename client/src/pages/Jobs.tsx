@@ -90,7 +90,7 @@ export default function Jobs() {
 
         <div className="space-y-4">
           {displayJobs.map((job, index) => (
-            <Card key={job.id} className={`p-6 space-y-4 hover-elevate scale-on-hover card-reveal stagger-${Math.min(index + 1, 5)}`} data-testid={`job-${job.id}`}>
+            <Card key={job.id} className={`p-6 space-y-4 hover-elevate card-reveal stagger-${Math.min(index + 1, 5)}`} data-testid={`job-${job.id}`}>
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">

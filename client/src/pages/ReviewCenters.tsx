@@ -86,7 +86,7 @@ export default function ReviewCenters() {
 
         <div className="space-y-4">
           {displayCenters.map((center, index) => (
-            <Card key={center.id} className={`p-6 space-y-4 hover-elevate scale-on-hover card-reveal stagger-${Math.min(index + 1, 5)}`} data-testid={`center-${center.id}`}>
+            <Card key={center.id} className={`p-6 space-y-4 hover-elevate card-reveal stagger-${Math.min(index + 1, 5)}`} data-testid={`center-${center.id}`}>
                 <div className="space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <h3 className="font-bold text-lg">{center.name}</h3>
@@ -95,21 +95,21 @@ export default function ReviewCenters() {
                   <p className="text-sm text-muted-foreground">{center.description}</p>
                 </div>
 
-                {center.topnotchers && Array.isArray(center.topnotchers) && center.topnotchers.length > 0 && (
+                {center.topnotchers && Array.isArray(center.topnotchers) && center.topnotchers.length > 0 ? (
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm font-semibold">
                       <Award className="w-4 h-4 text-chart-4" />
                       <span>Top Achievers</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      {center.topnotchers.slice(0, 3).map((name: any, index: number) => (
+                      {(center.topnotchers as string[]).slice(0, 3).map((name, index: number) => (
                         <Badge key={index} variant="secondary" className="text-xs">
-                          {typeof name === 'string' ? name : name.name}
+                          {name}
                         </Badge>
                       ))}
                     </div>
                   </div>
-                )}
+                ) : null}
 
                 <div className="space-y-2 text-sm">
                   {center.contactInfo && (

@@ -337,14 +337,6 @@
     }
   }
 
-  .scale-on-hover {
-    transition: transform 200ms ease-out;
-  }
-
-  .scale-on-hover:hover {
-    transform: scale(1.02);
-  }
-
   .shimmer {
     position: relative;
     overflow: hidden;

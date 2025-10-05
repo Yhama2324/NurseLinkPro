@@ -142,7 +142,7 @@ export default function Quizzes() {
         </Card>
 
         {/* AI Quiz Generator */}
-        <Card className="p-6 bg-gradient-to-br from-accent/10 to-secondary/20 card-reveal stagger-1 scale-on-hover">
+        <Card className="p-6 bg-gradient-to-br from-accent/10 to-secondary/20 card-reveal stagger-1">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-accent-foreground" />

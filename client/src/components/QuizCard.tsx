@@ -17,7 +17,7 @@ export default function QuizCard({ quiz, onStart }: QuizCardProps) {
   };
 
   return (
-    <Card className="p-4 space-y-4 hover-elevate scale-on-hover" data-testid={`quiz-${quiz.id}`}>
+    <Card className="p-4 space-y-4 hover-elevate" data-testid={`quiz-${quiz.id}`}>
       <div className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
