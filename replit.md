@@ -75,6 +75,7 @@ Preferred communication style: Simple, everyday language.
 **AI Integration**:
 - OpenAI API for NurseMind chatbot and content generation
 - AI-powered quiz generation based on nursing curriculum topics
+- AI quiz items pool system for generating and storing reusable questions
 - Personalized study plan creation
 - Multi-turn conversation support with history
 
@@ -95,6 +96,7 @@ Preferred communication style: Simple, everyday language.
 - `/api/auth/*` - Authentication endpoints (login, logout, user profile)
 - `/api/posts/*` - Social feed CRUD operations
 - `/api/quizzes/*` - Quiz generation, retrieval, and attempt tracking
+- `/api/ai-quiz/*` - AI quiz items pool (generate, pull random questions, submit answers)
 - `/api/ai/*` - NurseMind conversations and study plans
 - `/api/curriculum/*` - BSN curriculum data access (subjects, topics, subtopics, question tags)
 - `/api/clans/*` and `/api/parties/*` - Community features
@@ -108,6 +110,7 @@ Preferred communication style: Simple, everyday language.
 - `posts` - CareSpace social feed content with hashtags
 - `likes`, `comments` - Social engagement tracking
 - `quizzes`, `questions`, `quiz_attempts` - Learning content and progress
+- `quiz_items` - AI-generated question pool for subject-based quizzing
 - `clans`, `parties`, `clan_members`, `party_members` - Community structures
 - `badges` - Achievement system
 - `review_centers`, `jobs`, `advertisements` - Marketplace entities
@@ -160,3 +163,44 @@ Preferred communication style: Simple, everyday language.
 - `ISSUER_URL` - OIDC issuer endpoint (defaults to Replit)
 - `REPL_ID` - Replit deployment identifier
 - `PUBLIC_OBJECT_SEARCH_PATHS` - Paths for public file access
+
+## Recent Changes
+
+### AI Quiz Items Pool (October 2025)
+
+Added a new AI quiz items pool system for generating and storing reusable quiz questions:
+
+**New Files**:
+- `server/aiQuizGenerator.ts` - OpenAI-powered quiz question generator
+- `server/routes/aiQuizItems.ts` - API routes for quiz items pool
+
+**New Database Table**: `quiz_items`
+- Stores AI-generated questions independently of specific quizzes
+- Indexed by subject_code and tags for efficient retrieval
+- Supports random question pulling for dynamic quiz creation
+
+**API Endpoints**:
+- `POST /api/ai-quiz/generate` - Generate AI questions for a subject
+- `GET /api/ai-quiz/pull` - Pull random questions from the pool
+- `POST /api/ai-quiz/submit` - Submit answers and get results with rationales
+
+**Database Setup Note**: Due to database authentication issues, the `quiz_items` table may need to be created manually. Run this SQL in your database console:
+
+```sql
+CREATE TABLE IF NOT EXISTS quiz_items (
+  id SERIAL PRIMARY KEY,
+  subject_code TEXT NOT NULL,
+  topic_name TEXT,
+  question TEXT NOT NULL,
+  choices JSONB NOT NULL,
+  correct_index INTEGER NOT NULL,
+  difficulty TEXT DEFAULT 'medium' NOT NULL,
+  tags TEXT[] DEFAULT '{}',
+  rationale TEXT,
+  source_note TEXT,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS quiz_items_subject_code_idx ON quiz_items(subject_code);
+CREATE INDEX IF NOT EXISTS quiz_items_tags_gin ON quiz_items USING GIN(tags);
+```
