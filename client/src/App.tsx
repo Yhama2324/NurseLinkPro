@@ -17,10 +17,12 @@ import AdSpace from "@/pages/AdSpace";
 import Subscriptions from "@/pages/Subscriptions";
 import TakeQuiz from "@/pages/TakeQuiz";
 import NurseMind from "@/pages/NurseMind";
+import Onboarding from "@/pages/Onboarding";
+import MySemester from "@/pages/MySemester";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
@@ -39,9 +41,12 @@ function Router() {
     <Switch>
       {isLoading || !isAuthenticated ? (
         <Route path="/" component={Landing} />
+      ) : !user?.onboardingCompleted ? (
+        <Route component={Onboarding} />
       ) : (
         <>
           <Route path="/" component={Home} />
+          <Route path="/my-semester" component={MySemester} />
           <Route path="/quizzes" component={Quizzes} />
           <Route path="/quiz/:id" component={TakeQuiz} />
           <Route path="/clans" component={Clans} />
