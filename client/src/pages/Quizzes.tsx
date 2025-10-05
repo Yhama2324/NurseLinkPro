@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Sparkles, Calendar, Trophy } from "lucide-react";
+import { Sparkles, Calendar, Trophy, Clock, Zap } from "lucide-react";
+import { Link } from "wouter";
 import TopHeader from "@/components/TopHeader";
 import BottomNav from "@/components/BottomNav";
 import QuizCard from "@/components/QuizCard";
@@ -104,6 +105,18 @@ const SAMPLE_DAILY_CHALLENGE: Quiz = {
   createdAt: new Date(),
 };
 
+interface QuizGenerationStatus {
+  canGenerate: boolean;
+  remainingHours: number;
+  nextAvailableTime: string | null;
+  tier: string;
+  limits: {
+    questionCount: number;
+    cooldownHours: number;
+    earnXP: boolean;
+  };
+}
+
 export default function Quizzes() {
   const [selectedTab, setSelectedTab] = useState("all");
   
@@ -113,6 +126,10 @@ export default function Quizzes() {
 
   const { data: dailyChallenge } = useQuery<Quiz>({
     queryKey: ["/api/daily-challenge"],
+  });
+
+  const { data: quizStatus } = useQuery<QuizGenerationStatus>({
+    queryKey: ["/api/quiz-generation-status"],
   });
 
   const displayQuizzes = quizzes && quizzes.length > 0 ? quizzes : SAMPLE_QUIZZES;
@@ -147,14 +164,55 @@ export default function Quizzes() {
             <div className="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-accent-foreground" />
             </div>
-            <div>
+            <div className="flex-1">
               <h3 className="font-bold">Generate Custom Quiz</h3>
               <p className="text-sm text-muted-foreground">AI-powered questions</p>
             </div>
+            {quizStatus?.limits.earnXP && (
+              <Badge variant="secondary" className="gap-1">
+                <Zap className="w-3 h-3" />
+                +XP
+              </Badge>
+            )}
           </div>
-          <Button variant="secondary" className="w-full" data-testid="button-generate-quiz">
-            Create Quiz with AI
+
+          {/* Tier Limits Info */}
+          <div className="mb-4 p-3 bg-background/50 rounded-md space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Questions per quiz</span>
+              <span className="font-semibold">{quizStatus?.limits.questionCount || 3}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Generation cooldown</span>
+              <span className="font-semibold">{quizStatus?.limits.cooldownHours || 24}h</span>
+            </div>
+            {!quizStatus?.canGenerate && quizStatus?.remainingHours && (
+              <div className="flex items-center gap-2 text-sm text-primary">
+                <Clock className="w-4 h-4" />
+                <span>Next quiz in {quizStatus.remainingHours}h</span>
+              </div>
+            )}
+          </div>
+
+          <Button 
+            variant="secondary" 
+            className="w-full" 
+            data-testid="button-generate-quiz"
+            disabled={!quizStatus?.canGenerate}
+          >
+            {quizStatus?.canGenerate ? "Create Quiz with AI" : `Available in ${quizStatus?.remainingHours || 0}h`}
           </Button>
+
+          {/* Upgrade prompt for free users */}
+          {quizStatus?.tier === "free" && (
+            <div className="mt-3 text-center">
+              <Link href="/subscriptions">
+                <Button variant="link" size="sm" className="text-xs text-primary" data-testid="link-upgrade">
+                  Upgrade for more questions and faster generation →
+                </Button>
+              </Link>
+            </div>
+          )}
         </Card>
 
         {/* Quiz Tabs */}

@@ -193,6 +193,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/quiz-generation-status', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUserById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const tierLimits = {
+        free: { questionCount: 3, cooldownHours: 24, earnXP: false },
+        basic: { questionCount: 30, cooldownHours: 4, earnXP: true },
+        premium: { questionCount: 50, cooldownHours: user.customQuizIntervalHours || 1, earnXP: true }
+      };
+
+      const tier = user.subscriptionTier as 'free' | 'basic' | 'premium';
+      const limits = tierLimits[tier] || tierLimits.free;
+      
+      let canGenerate = true;
+      let nextAvailableTime = null;
+      let remainingHours = 0;
+
+      if (user.lastQuizGenerationTime) {
+        const timeSinceLastGeneration = Date.now() - new Date(user.lastQuizGenerationTime).getTime();
+        const cooldownMs = limits.cooldownHours * 60 * 60 * 1000;
+        
+        if (timeSinceLastGeneration < cooldownMs) {
+          canGenerate = false;
+          remainingHours = Math.ceil((cooldownMs - timeSinceLastGeneration) / (60 * 60 * 1000));
+          nextAvailableTime = new Date(new Date(user.lastQuizGenerationTime).getTime() + cooldownMs).toISOString();
+        }
+      }
+
+      res.json({
+        canGenerate,
+        remainingHours,
+        nextAvailableTime,
+        tier: user.subscriptionTier,
+        limits: {
+          questionCount: limits.questionCount,
+          cooldownHours: limits.cooldownHours,
+          earnXP: limits.earnXP
+        }
+      });
+    } catch (error) {
+      console.error("Error checking quiz generation status:", error);
+      res.status(500).json({ message: "Failed to check status" });
+    }
+  });
+
   app.get('/api/quizzes/:id/questions', async (req, res) => {
     try {
       const quizId = parseInt(req.params.id);
