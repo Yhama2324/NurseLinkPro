@@ -26,7 +26,9 @@ router.post("/generate", async (req, res) => {
       return res.status(404).json({ error: "No topics/tags found for subject_code" });
     }
 
-    const tagPool = [...new Set(topics.flatMap(t => t.tags || []))].slice(0, 30);
+    const allTags = topics.flatMap(t => t.tags || []);
+    const uniqueTags = Array.from(new Set(allTags));
+    const tagPool = uniqueTags.slice(0, 30);
 
     const aiItems = await generateQuizItems({
       subjectCode: subject_code,

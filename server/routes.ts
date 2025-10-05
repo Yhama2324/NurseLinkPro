@@ -33,6 +33,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const enrolleeModeRouter = (await import('./routes/enrolleeMode')).default;
   app.use('/api/enrollee', enrolleeModeRouter);
 
+  // AI Quiz Items routes
+  const aiQuizItemsRouter = (await import('./routes/aiQuizItems')).default;
+  app.use('/api/ai-quiz', aiQuizItemsRouter);
+
   // Object storage routes - Referenced from blueprint:javascript_object_storage
   app.get("/objects/:objectPath(*)", isAuthenticated, async (req: any, res) => {
     const userId = req.user?.claims?.sub;
