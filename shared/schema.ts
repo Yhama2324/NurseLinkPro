@@ -118,6 +118,35 @@ export const clanMembers = pgTable("clan_members", {
   joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
+// AI Copilot chat conversations
+export const aiChatConversations = pgTable("ai_chat_conversations", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// AI Copilot chat messages
+export const aiChatMessages = pgTable("ai_chat_messages", {
+  id: serial("id").primaryKey(),
+  conversationId: integer("conversation_id").notNull().references(() => aiChatConversations.id, { onDelete: 'cascade' }),
+  role: text("role").notNull(), // 'user' or 'assistant'
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// AI Study plans
+export const aiStudyPlans = pgTable("ai_study_plans", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  title: text("title").notNull(),
+  description: text("description"),
+  topics: jsonb("topics").notNull(), // Array of topics with details
+  duration: integer("duration").notNull(), // Duration in days
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Party members table
 export const partyMembers = pgTable("party_members", {
   id: serial("id").primaryKey(),
@@ -353,6 +382,22 @@ export const insertAdSchema = createInsertSchema(advertisements).omit({
   createdAt: true,
 });
 
+export const insertAiConversationSchema = createInsertSchema(aiChatConversations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAiMessageSchema = createInsertSchema(aiChatMessages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAiStudyPlanSchema = createInsertSchema(aiStudyPlans).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
@@ -378,3 +423,9 @@ export type InsertJob = z.infer<typeof insertJobSchema>;
 export type Advertisement = typeof advertisements.$inferSelect;
 export type InsertAd = z.infer<typeof insertAdSchema>;
 export type Leaderboard = typeof leaderboards.$inferSelect;
+export type AiChatConversation = typeof aiChatConversations.$inferSelect;
+export type InsertAiConversation = z.infer<typeof insertAiConversationSchema>;
+export type AiChatMessage = typeof aiChatMessages.$inferSelect;
+export type InsertAiMessage = z.infer<typeof insertAiMessageSchema>;
+export type AiStudyPlan = typeof aiStudyPlans.$inferSelect;
+export type InsertAiStudyPlan = z.infer<typeof insertAiStudyPlanSchema>;

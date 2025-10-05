@@ -16,6 +16,9 @@ import {
   advertisements,
   dailyChallenges,
   leaderboards,
+  aiChatConversations,
+  aiChatMessages,
+  aiStudyPlans,
   type User,
   type UpsertUser,
   type Post,
@@ -39,6 +42,12 @@ import {
   type Advertisement,
   type InsertAd,
   type Leaderboard,
+  type AiChatConversation,
+  type InsertAiConversation,
+  type AiChatMessage,
+  type InsertAiMessage,
+  type AiStudyPlan,
+  type InsertAiStudyPlan,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -93,6 +102,14 @@ export interface IStorage {
   getLeaderboard(quizId?: number): Promise<Leaderboard[]>;
   getUserBadges(userId: string): Promise<Badge[]>;
   getDailyChallenge(): Promise<Quiz | undefined>;
+
+  // AI Copilot operations
+  createAiConversation(conversation: InsertAiConversation): Promise<AiChatConversation>;
+  getAiConversations(userId: string): Promise<AiChatConversation[]>;
+  getAiConversationMessages(conversationId: number): Promise<AiChatMessage[]>;
+  createAiMessage(message: InsertAiMessage): Promise<AiChatMessage>;
+  createStudyPlan(plan: InsertAiStudyPlan): Promise<AiStudyPlan>;
+  getUserStudyPlans(userId: string): Promise<AiStudyPlan[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -342,6 +359,53 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
     
     return challenge?.quizzes;
+  }
+
+  // AI Copilot operations
+  async createAiConversation(conversation: InsertAiConversation): Promise<AiChatConversation> {
+    const [newConversation] = await db.insert(aiChatConversations).values(conversation).returning();
+    return newConversation;
+  }
+
+  async getAiConversations(userId: string): Promise<AiChatConversation[]> {
+    return await db
+      .select()
+      .from(aiChatConversations)
+      .where(eq(aiChatConversations.userId, userId))
+      .orderBy(desc(aiChatConversations.updatedAt));
+  }
+
+  async getAiConversationMessages(conversationId: number): Promise<AiChatMessage[]> {
+    return await db
+      .select()
+      .from(aiChatMessages)
+      .where(eq(aiChatMessages.conversationId, conversationId))
+      .orderBy(aiChatMessages.createdAt);
+  }
+
+  async createAiMessage(message: InsertAiMessage): Promise<AiChatMessage> {
+    const [newMessage] = await db.insert(aiChatMessages).values(message).returning();
+    
+    // Update conversation's updatedAt timestamp
+    await db
+      .update(aiChatConversations)
+      .set({ updatedAt: new Date() })
+      .where(eq(aiChatConversations.id, message.conversationId));
+    
+    return newMessage;
+  }
+
+  async createStudyPlan(plan: InsertAiStudyPlan): Promise<AiStudyPlan> {
+    const [newPlan] = await db.insert(aiStudyPlans).values(plan).returning();
+    return newPlan;
+  }
+
+  async getUserStudyPlans(userId: string): Promise<AiStudyPlan[]> {
+    return await db
+      .select()
+      .from(aiStudyPlans)
+      .where(eq(aiStudyPlans.userId, userId))
+      .orderBy(desc(aiStudyPlans.createdAt));
   }
 }
 

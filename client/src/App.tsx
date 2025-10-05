@@ -16,6 +16,7 @@ import Jobs from "@/pages/Jobs";
 import AdSpace from "@/pages/AdSpace";
 import Subscriptions from "@/pages/Subscriptions";
 import TakeQuiz from "@/pages/TakeQuiz";
+import NurseMind from "@/pages/NurseMind";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -45,6 +46,7 @@ function Router() {
           <Route path="/quiz/:id" component={TakeQuiz} />
           <Route path="/clans" component={Clans} />
           <Route path="/profile" component={Profile} />
+          <Route path="/nursemind" component={NurseMind} />
           <Route path="/review-centers" component={ReviewCenters} />
           <Route path="/jobs" component={Jobs} />
           <Route path="/adspace" component={AdSpace} />

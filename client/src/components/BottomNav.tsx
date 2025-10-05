@@ -1,10 +1,11 @@
 import { Link, useLocation } from "wouter";
-import { Home, BookOpen, Users, User } from "lucide-react";
+import { Home, BookOpen, Users, User, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { path: "/", icon: Home, label: "CareSpace", testId: "nav-carespace" },
   { path: "/quizzes", icon: BookOpen, label: "Quizzes", testId: "nav-quizzes" },
+  { path: "/nursemind", icon: Bot, label: "NurseMind", testId: "nav-nursemind" },
   { path: "/clans", icon: Users, label: "Clans", testId: "nav-clans" },
   { path: "/profile", icon: User, label: "Profile", testId: "nav-profile" },
 ];

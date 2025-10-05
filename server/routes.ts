@@ -104,6 +104,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/trending-hashtags', async (req, res) => {
+    try {
+      // Get all posts and extract hashtags
+      const posts = await storage.getAllPosts();
+      const hashtagCounts: Record<string, number> = {};
+      
+      posts.forEach(post => {
+        if (post.hashtags) {
+          post.hashtags.forEach(tag => {
+            hashtagCounts[tag] = (hashtagCounts[tag] || 0) + 1;
+          });
+        }
+      });
+      
+      // Sort by count and return top 5
+      const trending = Object.entries(hashtagCounts)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 5)
+        .map(([tag]) => tag);
+      
+      res.json(trending.length > 0 ? trending : ["StudyRN", "BoardJourney", "NurseGoals", "MedSurg", "NCLEX2024"]);
+    } catch (error) {
+      console.error("Error fetching trending hashtags:", error);
+      res.json(["StudyRN", "BoardJourney", "NurseGoals", "MedSurg", "NCLEX2024"]);
+    }
+  });
+
   app.get('/api/posts/user/:userId', isAuthenticated, async (req, res) => {
     try {
       const posts = await storage.getPostsByUser(req.params.userId);
@@ -413,6 +440,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error creating advertisement:", error);
       res.status(400).json({ message: error.message || "Failed to create advertisement" });
+    }
+  });
+
+  // AI Copilot routes
+  app.get('/api/ai/conversations', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const conversations = await storage.getAiConversations(userId);
+      res.json(conversations);
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+      res.status(500).json({ message: "Failed to fetch conversations" });
+    }
+  });
+
+  app.post('/api/ai/conversations', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const conversation = await storage.createAiConversation({
+        userId,
+        title: req.body.title || "New Conversation",
+      });
+      res.json(conversation);
+    } catch (error) {
+      console.error("Error creating conversation:", error);
+      res.status(500).json({ message: "Failed to create conversation" });
+    }
+  });
+
+  app.get('/api/ai/conversations/:id/messages', isAuthenticated, async (req, res) => {
+    try {
+      const conversationId = parseInt(req.params.id);
+      const messages = await storage.getAiConversationMessages(conversationId);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  app.post('/api/ai/chat', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { conversationId, message } = req.body;
+
+      // Save user message
+      await storage.createAiMessage({
+        conversationId,
+        role: 'user',
+        content: message,
+      });
+
+      // Get conversation history
+      const messages = await storage.getAiConversationMessages(conversationId);
+      
+      // Call OpenAI
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "You are NurseMind, an AI study assistant for Filipino nursing students. Provide clear explanations, personalized study advice, and help with NCLEX/PNLE preparation. Be encouraging and supportive."
+          },
+          ...messages.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }))
+        ],
+      });
+
+      const aiResponse = completion.choices[0].message.content || "I'm sorry, I couldn't generate a response.";
+
+      // Save AI response
+      const aiMessage = await storage.createAiMessage({
+        conversationId,
+        role: 'assistant',
+        content: aiResponse,
+      });
+
+      res.json(aiMessage);
+    } catch (error: any) {
+      console.error("Error in AI chat:", error);
+      res.status(500).json({ message: "Failed to get AI response" });
+    }
+  });
+
+  app.post('/api/ai/study-plan', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { topic, duration, level } = req.body;
+
+      // Generate study plan with OpenAI
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert nursing educator. Create a detailed study plan in JSON format with topics, daily goals, and recommended resources for Filipino nursing students."
+          },
+          {
+            role: "user",
+            content: `Create a ${duration}-day study plan for ${topic} at ${level} level. Include specific topics, daily goals, and study tips. Return as JSON with structure: { topics: [{ day: number, topic: string, goals: string[], resources: string[] }] }`
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+
+      const planData = JSON.parse(completion.choices[0].message.content || '{"topics":[]}');
+
+      const studyPlan = await storage.createStudyPlan({
+        userId,
+        title: `${topic} Study Plan`,
+        description: `${duration}-day plan for ${level} level`,
+        topics: planData.topics,
+        duration,
+      });
+
+      res.json(studyPlan);
+    } catch (error: any) {
+      console.error("Error creating study plan:", error);
+      res.status(500).json({ message: "Failed to create study plan" });
+    }
+  });
+
+  app.get('/api/ai/study-plans', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const plans = await storage.getUserStudyPlans(userId);
+      res.json(plans);
+    } catch (error) {
+      console.error("Error fetching study plans:", error);
+      res.status(500).json({ message: "Failed to fetch study plans" });
     }
   });
 

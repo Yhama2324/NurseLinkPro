@@ -14,6 +14,10 @@ export default function Home() {
     queryKey: ["/api/posts"],
   });
 
+  const { data: trendingHashtags } = useQuery<string[]>({
+    queryKey: ["/api/trending-hashtags"],
+  });
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <TopHeader title="CareSpace" showSearch showNotifications />
@@ -33,7 +37,7 @@ export default function Home() {
         <Card className="p-4">
           <h3 className="font-semibold text-sm mb-3">Trending Topics</h3>
           <div className="flex flex-wrap gap-2">
-            {["StudyRN", "BoardJourney", "NurseGoals", "MedSurg", "NCLEX2024"].map((tag) => (
+            {(trendingHashtags || ["StudyRN", "BoardJourney", "NurseGoals", "MedSurg", "NCLEX2024"]).map((tag) => (
               <Button key={tag} variant="secondary" size="sm" className="text-xs h-8" data-testid={`trending-${tag}`}>
                 #{tag}
               </Button>

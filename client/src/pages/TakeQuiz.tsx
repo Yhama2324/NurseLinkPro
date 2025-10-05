@@ -1,22 +1,21 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useRoute } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Clock, CheckCircle, XCircle, Award } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-
-interface Question {
-  id: number;
-  questionText: string;
-  options: string[];
-  correctAnswer: string;
-  rationale: string;
-}
+import { Skeleton } from "@/components/ui/skeleton";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import type { Question } from "@shared/schema";
 
 export default function TakeQuiz() {
+  const [, params] = useRoute("/quiz/:id");
   const [, setLocation] = useLocation();
+  const quizId = params?.id ? parseInt(params.id) : null;
+  
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [showResult, setShowResult] = useState(false);
@@ -25,19 +24,24 @@ export default function TakeQuiz() {
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
   const [quizCompleted, setQuizCompleted] = useState(false);
 
-  // Mock questions
-  const questions: Question[] = [
-    {
-      id: 1,
-      questionText: "What is the normal range for adult blood pressure?",
-      options: ["90/60 to 120/80 mmHg", "100/70 to 140/90 mmHg", "80/50 to 110/70 mmHg", "110/80 to 150/100 mmHg"],
-      correctAnswer: "90/60 to 120/80 mmHg",
-      rationale: "Normal blood pressure for adults is typically between 90/60 mmHg and 120/80 mmHg. Values outside this range may indicate hypertension or hypotension."
-    }
-  ];
+  const { data: questions, isLoading } = useQuery<Question[]>({
+    queryKey: ["/api/quizzes", quizId, "questions"],
+    enabled: !!quizId,
+  });
 
-  const currentQ = questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const submitAttemptMutation = useMutation({
+    mutationFn: async (data: { quizId: number; score: number; totalQuestions: number }) =>
+      apiRequest(`/api/quizzes/${data.quizId}/attempt`, "POST", {
+        score: data.score,
+        totalQuestions: data.totalQuestions,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+    },
+  });
+
+  const currentQ = questions?.[currentQuestion];
+  const progress = questions ? ((currentQuestion + 1) / questions.length) * 100 : 0;
 
   useEffect(() => {
     if (timeLeft > 0 && !quizCompleted) {
@@ -60,14 +64,43 @@ export default function TakeQuiz() {
   };
 
   const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
+    if (questions && currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer("");
       setShowResult(false);
     } else {
       setQuizCompleted(true);
+      if (quizId && questions) {
+        submitAttemptMutation.mutate({
+          quizId,
+          score,
+          totalQuestions: questions.length,
+        });
+      }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background px-4 py-6">
+        <div className="max-w-md mx-auto space-y-4">
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground mb-4">Quiz not found or no questions available</p>
+          <Button onClick={() => setLocation("/quizzes")}>Back to Quizzes</Button>
+        </Card>
+      </div>
+    );
+  }
 
   if (quizCompleted) {
     const percentage = Math.round((score / questions.length) * 100);
@@ -152,7 +185,7 @@ export default function TakeQuiz() {
       <div className="px-4 py-6 max-w-md mx-auto space-y-6">
         <Card className="p-6">
           <h2 className="text-lg font-semibold leading-relaxed mb-6">
-            {currentQ.questionText}
+            {currentQ?.questionText}
           </h2>
 
           <RadioGroup
@@ -161,7 +194,7 @@ export default function TakeQuiz() {
             disabled={showResult}
             className="space-y-3"
           >
-            {currentQ.options.map((option, index) => (
+            {currentQ?.options.map((option, index) => (
               <div
                 key={index}
                 className="flex items-center space-x-3 p-4 rounded-lg border border-border hover-elevate"
@@ -191,7 +224,7 @@ export default function TakeQuiz() {
                 </>
               )}
             </div>
-            <p className="text-sm leading-relaxed">{currentQ.rationale}</p>
+            <p className="text-sm leading-relaxed">{currentQ?.rationale}</p>
           </Card>
         )}
 

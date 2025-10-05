@@ -8,13 +8,17 @@ import LeaderboardCard from "@/components/LeaderboardCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Clan, Leaderboard } from "@shared/schema";
+import type { Clan, Leaderboard, Party } from "@shared/schema";
 
 export default function Clans() {
   const [selectedTab, setSelectedTab] = useState("clans");
 
   const { data: clans } = useQuery<Clan[]>({
     queryKey: ["/api/clans"],
+  });
+
+  const { data: parties } = useQuery<Party[]>({
+    queryKey: ["/api/parties"],
   });
 
   const { data: leaderboard } = useQuery<Leaderboard[]>({
@@ -86,10 +90,30 @@ export default function Clans() {
               Create Party
             </Button>
 
-            <Card className="p-8 text-center">
-              <Users className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-              <p className="text-muted-foreground">No parties yet. Create a small study group!</p>
-            </Card>
+            {parties && parties.length > 0 ? (
+              parties.map((party) => (
+                <Card key={party.id} className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold">{party.name}</h3>
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Users className="w-4 h-4" />
+                      <span>{party.memberCount}/{party.maxMembers}</span>
+                    </div>
+                  </div>
+                  {party.description && (
+                    <p className="text-sm text-muted-foreground mb-3">{party.description}</p>
+                  )}
+                  <Button size="sm" className="w-full" data-testid={`button-join-party-${party.id}`}>
+                    Join Party
+                  </Button>
+                </Card>
+              ))
+            ) : (
+              <Card className="p-8 text-center">
+                <Users className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+                <p className="text-muted-foreground">No parties yet. Create a small study group!</p>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
       </div>
