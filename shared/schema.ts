@@ -271,6 +271,36 @@ export const curriculumQuestionTags = pgTable("curriculum_question_tags", {
   tag: varchar("tag").notNull(),
 });
 
+// Weekly Challenge tables
+export const weeklyChallengeProgress = pgTable("weekly_challenge_progress", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  weekStart: timestamp("week_start").notNull(),
+  answered: integer("answered").default(0).notNull(),
+  correct: integer("correct").default(0).notNull(),
+  streakWeeks: integer("streak_weeks").default(0).notNull(),
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+});
+
+export const weeklyChallengeEvents = pgTable("weekly_challenge_events", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  weekStart: timestamp("week_start").notNull(),
+  questionId: text("question_id").notNull(),
+  correct: boolean("correct").notNull(),
+  latencyMs: integer("latency_ms"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const weeklyLeaderboard = pgTable("weekly_leaderboard", {
+  id: serial("id").primaryKey(),
+  weekStart: timestamp("week_start").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  score: integer("score").default(0).notNull(),
+  rank: integer("rank"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Sessions table for Replit Auth
 export const sessions = pgTable("sessions", {
   sid: varchar("sid").primaryKey(),
@@ -496,3 +526,15 @@ export type CurriculumSubtopic = typeof curriculumSubtopics.$inferSelect;
 export type InsertCurriculumSubtopic = z.infer<typeof insertCurriculumSubtopicSchema>;
 export type CurriculumQuestionTag = typeof curriculumQuestionTags.$inferSelect;
 export type InsertCurriculumQuestionTag = z.infer<typeof insertCurriculumQuestionTagSchema>;
+
+// Weekly Challenge schemas and types
+export const insertWeeklyChallengeProgressSchema = createInsertSchema(weeklyChallengeProgress).omit({ id: true, lastUpdated: true });
+export const insertWeeklyChallengeEventSchema = createInsertSchema(weeklyChallengeEvents).omit({ id: true, createdAt: true });
+export const insertWeeklyLeaderboardSchema = createInsertSchema(weeklyLeaderboard).omit({ id: true, createdAt: true });
+
+export type WeeklyChallengeProgress = typeof weeklyChallengeProgress.$inferSelect;
+export type InsertWeeklyChallengeProgress = z.infer<typeof insertWeeklyChallengeProgressSchema>;
+export type WeeklyChallengeEvent = typeof weeklyChallengeEvents.$inferSelect;
+export type InsertWeeklyChallengeEvent = z.infer<typeof insertWeeklyChallengeEventSchema>;
+export type WeeklyLeaderboard = typeof weeklyLeaderboard.$inferSelect;
+export type InsertWeeklyLeaderboard = z.infer<typeof insertWeeklyLeaderboardSchema>;

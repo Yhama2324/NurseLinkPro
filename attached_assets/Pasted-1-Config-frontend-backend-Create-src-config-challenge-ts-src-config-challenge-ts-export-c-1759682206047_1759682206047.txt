@@ -1,0 +1,296 @@
+1) Config (frontend & backend)
+
+Create src/config/challenge.ts:
+
+// src/config/challenge.ts
+export const WEEKLY_CHALLENGE = {
+  enabled: true,
+  weeklyGoal: 100,                    // 1–100 MCQs/week
+  weekStartsOn: 1,                    // 0=Sun, 1=Mon
+  tiers: { Pro: "PRO", Elite: "ELITE" },
+  points: { correct: 2, streakBonus: 5, speedBonusMax: 10 }, // server calculates
+  badgeNames: {
+    week1: "Consistent Nurse",
+    week3: "Steady Learner",
+    week6: "Committed RN",
+    week12: "Streak Legend",
+  },
+};
+
+2) Database (Postgres / Prisma)
+
+Add tables (SQL). If you use Prisma, translate to schema accordingly.
+
+-- users table assumed (id uuid pk, tier text 'FREE'|'PRO'|'ELITE')
+
+create table weekly_challenge_progress (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  week_start date not null,                      -- Monday of that ISO week
+  answered int not null default 0,               -- total answered this week
+  correct int not null default 0,
+  streak_weeks int not null default 0,           -- consecutive 100/100 completions
+  last_updated timestamptz not null default now(),
+  unique (user_id, week_start)
+);
+
+create table weekly_challenge_events (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references users(id) on delete cascade,
+  week_start date not null,
+  question_id text not null,
+  correct boolean not null,
+  latency_ms int,
+  created_at timestamptz not null default now()
+);
+
+create table weekly_leaderboard (
+  id uuid primary key default gen_random_uuid(),
+  week_start date not null,
+  user_id uuid not null references users(id) on delete cascade,
+  score int not null default 0,
+  rank int,
+  created_at timestamptz not null default now(),
+  unique (week_start, user_id)
+);
+
+3) Server helpers
+
+Create server/utils/week.ts:
+
+// server/utils/week.ts
+export const startOfWeek = (d = new Date(), weekStartsOn = 1) => {
+  const date = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  const day = date.getUTCDay();
+  const diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
+  date.setUTCDate(date.getUTCDate() - diff);
+  date.setUTCHours(0,0,0,0);
+  return date; // Monday 00:00:00 UTC if weekStartsOn=1
+};
+
+4) API routes (Express)
+
+Create server/routes/weeklyChallenge.ts:
+
+import { Router } from "express";
+import { WEEKLY_CHALLENGE } from "../../src/config/challenge";
+import { startOfWeek } from "../utils/week";
+import pg from "pg";
+const router = Router();
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+
+// calc score for leaderboard
+function calcScore({ correct, events }:{correct:number, events:{correct:boolean, latency_ms:number|null}[]}) {
+  const base = correct * 2;
+  const speedBonus = Math.min(
+    WEEKLY_CHALLENGE.points.speedBonusMax,
+    Math.round(events.filter(e=>e.correct && (e.latency_ms ?? 9999) < 15000).length / 10)
+  );
+  return base + speedBonus;
+}
+
+// GET current progress
+router.get("/me", async (req:any, res) => {
+  const userId = req.user.id; // assume auth middleware
+  const weekStart = startOfWeek(new Date(), WEEKLY_CHALLENGE.weekStartsOn);
+  const { rows } = await pool.query(
+    `select * from weekly_challenge_progress where user_id=$1 and week_start=$2`,
+    [userId, weekStart]
+  );
+  const p = rows[0] ?? { answered:0, correct:0, streak_weeks:0 };
+  res.json({ goal: WEEKLY_CHALLENGE.weeklyGoal, ...p });
+});
+
+// POST answer record (called after each MCQ submission)
+router.post("/answer", async (req:any, res) => {
+  const userId = req.user.id;
+  const { questionId, correct, latencyMs } = req.body;
+  const weekStart = startOfWeek(new Date(), WEEKLY_CHALLENGE.weekStartsOn);
+
+  await pool.query("begin");
+  await pool.query(
+    `insert into weekly_challenge_events (user_id, week_start, question_id, correct, latency_ms)
+     values ($1,$2,$3,$4,$5)`,
+    [userId, weekStart, questionId, !!correct, latencyMs ?? null]
+  );
+  await pool.query(
+    `insert into weekly_challenge_progress (user_id, week_start, answered, correct)
+     values ($1,$2,1,$3) 
+     on conflict (user_id, week_start) do update
+       set answered = weekly_challenge_progress.answered + 1,
+           correct  = weekly_challenge_progress.correct  + excluded.correct,
+           last_updated = now()`,
+    [userId, weekStart, correct ? 1 : 0]
+  );
+  await pool.query("commit");
+  res.json({ ok:true });
+});
+
+// POST finalize week (award badge if 100/100)
+router.post("/finalize", async (req:any, res) => {
+  const userId = req.user.id;
+  const weekStart = startOfWeek(new Date(), WEEKLY_CHALLENGE.weekStartsOn);
+
+  const { rows: pr } = await pool.query(
+    `select * from weekly_challenge_progress where user_id=$1 and week_start=$2`,
+    [userId, weekStart]
+  );
+  const progress = pr[0];
+  if (!progress) return res.status(400).json({ error:"No progress" });
+
+  const { rows: ev } = await pool.query(
+    `select correct, latency_ms from weekly_challenge_events where user_id=$1 and week_start=$2`,
+    [userId, weekStart]
+  );
+  const score = calcScore({ correct: progress.correct, events: ev });
+
+  // streak update
+  let streak = progress.streak_weeks;
+  if (progress.answered >= WEEKLY_CHALLENGE.weeklyGoal) {
+    const { rows: prev } = await pool.query(
+      `select streak_weeks from weekly_challenge_progress
+       where user_id=$1 and week_start = ($2::date - interval '7 days')`,
+      [userId, weekStart]
+    );
+    const prevStreak = prev[0]?.streak_weeks ?? 0;
+    streak = prevStreak + 1;
+    await pool.query(
+      `update weekly_challenge_progress set streak_weeks=$1 where user_id=$2 and week_start=$3`,
+      [streak, userId, weekStart]
+    );
+  }
+
+  // upsert leaderboard
+  await pool.query(
+    `insert into weekly_leaderboard (week_start, user_id, score)
+     values ($1,$2,$3)
+     on conflict (week_start,user_id) do update set score=excluded.score`,
+    [weekStart, userId, score]
+  );
+
+  res.json({
+    completed: progress.answered >= WEEKLY_CHALLENGE.weeklyGoal,
+    score,
+    streakWeeks: streak
+  });
+});
+
+export default router;
+
+
+Mount the router in your server:
+
+// server/index.ts
+import weeklyChallenge from "./routes/weeklyChallenge";
+app.use("/api/weekly-challenge", authMiddleware, weeklyChallenge);
+
+5) Cron to rank weekly
+
+Run Sundays 23:59 (server time). Use node-cron or your platform’s scheduler.
+
+// server/jobs/weeklyRank.ts
+import pg from "pg";
+import { startOfWeek } from "../utils/week";
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+
+export async function computeWeeklyRanks() {
+  const now = new Date();
+  const weekStart = startOfWeek(now);
+  const { rows } = await pool.query(
+    `select id, user_id, score from weekly_leaderboard where week_start=$1 order by score desc`,
+    [weekStart]
+  );
+  let rank = 1;
+  for (const r of rows) {
+    await pool.query(`update weekly_leaderboard set rank=$1 where id=$2`, [rank++, r.id]);
+  }
+}
+
+6) Frontend components
+
+Progress card – src/components/WeeklyChallengeCard.tsx
+
+import { useEffect, useState } from "react";
+import { WEEKLY_CHALLENGE } from "@/config/challenge";
+
+export default function WeeklyChallengeCard() {
+  const [state, setState] = useState<{goal:number,answered:number,correct:number,streak_weeks:number}|null>(null);
+
+  useEffect(() => {
+    fetch("/api/weekly-challenge/me", { credentials:"include" })
+      .then(r=>r.json()).then(setState).catch(console.error);
+  }, []);
+
+  if (!state) return null;
+  const pct = Math.min(100, Math.round((state.answered / state.goal) * 100));
+
+  return (
+    <div className="rounded-2xl p-4 shadow bg-white/80 backdrop-blur border">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-lg font-semibold text-[#0080FF]">Weekly 1–100 Challenge</h3>
+        <span className="text-sm text-gray-600">Streak: {state.streak_weeks}w</span>
+      </div>
+
+      <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-3 bg-[#0080FF]" style={{ width: `${pct}%` }} />
+      </div>
+
+      <div className="mt-2 text-sm text-gray-700">
+        {state.answered}/{state.goal} answered • {state.correct} correct
+      </div>
+
+      <button
+        onClick={() => fetch("/api/weekly-challenge/finalize", {method:"POST",credentials:"include"}).then(r=>r.json()).then(alert)}
+        className="mt-3 w-full py-2 rounded-xl bg-[#FFD0FD] text-[#0080FF] font-semibold"
+      >
+        Finalize Week & Claim Badge
+      </button>
+
+      <p className="mt-2 text-xs text-gray-500">
+        Pro & Elite only. Complete 100 MCQs/week to earn badges and ranking XP.
+      </p>
+    </div>
+  );
+}
+
+
+Leaderboard list – src/components/WeeklyLeaderboard.tsx (minimal example)
+
+import useSWR from "swr";
+const fetcher = (u:string)=>fetch(u,{credentials:"include"}).then(r=>r.json());
+
+export default function WeeklyLeaderboard(){
+  const { data } = useSWR("/api/leaderboard/weekly", fetcher);
+  if(!data) return null;
+  return (
+    <div className="rounded-2xl p-4 shadow bg-white/80 border">
+      <h3 className="text-lg font-semibold mb-3 text-[#0080FF]">Weekly Rankings</h3>
+      <ul className="space-y-2">
+        {data.rows.map((r:any)=>(
+          <li key={r.user_id} className="flex justify-between text-sm">
+            <span className="font-medium">#{r.rank} • {r.display_name}</span>
+            <span className="text-gray-600">{r.score} pts</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
+Add a simple GET route to serve /api/leaderboard/weekly from weekly_leaderboard (ordered by rank).
+
+7) Subject-aware generation hook
+
+Where you generate quizzes, limit to enrolled subjects:
+
+// server/services/quizGen.ts
+export async function generateDailyQuiz(userId:string) {
+  const activeSubjects = await getActiveEnrollments(userId); // your table
+  const tags = await collectTopicTags(activeSubjects);       // from curriculum JSON
+  return buildQuiz({ length: 10, tags, mode: "daily" });     // MCQs only for now
+}
+
+8) Badges logic (client)
+
+Show badges when streak_weeks hits 1,3,6,12 and store on profile.
