@@ -353,6 +353,27 @@ export const userSettings = pgTable("user_settings", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Subject detailed content tables
+export const subjectOutcomes = pgTable("subject_outcomes", {
+  id: serial("id").primaryKey(),
+  subjectCode: text("subject_code").notNull().references(() => subjects.canonicalCode, { onDelete: 'cascade' }),
+  outcome: text("outcome").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  uniqueSubjectOutcome: unique().on(table.subjectCode, table.outcome),
+}));
+
+export const subjectTopics = pgTable("subject_topics", {
+  id: serial("id").primaryKey(),
+  subjectCode: text("subject_code").notNull().references(() => subjects.canonicalCode, { onDelete: 'cascade' }),
+  topicName: text("topic_name").notNull(),
+  subtopics: jsonb("subtopics").notNull().default('[]'),
+  tags: text("tags").array().notNull().default(sql`'{}'`),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  uniqueSubjectTopic: unique().on(table.subjectCode, table.topicName),
+}));
+
 // Sessions table for Replit Auth
 export const sessions = pgTable("sessions", {
   sid: varchar("sid").primaryKey(),
@@ -565,6 +586,16 @@ export const insertUserSettingsSchema = createInsertSchema(userSettings).omit({
   updatedAt: true,
 });
 
+export const insertSubjectOutcomeSchema = createInsertSchema(subjectOutcomes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSubjectTopicSchema = createInsertSchema(subjectTopics).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
@@ -628,3 +659,7 @@ export type Enrollment = typeof enrollments.$inferSelect;
 export type InsertEnrollment = z.infer<typeof insertEnrollmentSchema>;
 export type UserSettings = typeof userSettings.$inferSelect;
 export type InsertUserSettings = z.infer<typeof insertUserSettingsSchema>;
+export type SubjectOutcome = typeof subjectOutcomes.$inferSelect;
+export type InsertSubjectOutcome = z.infer<typeof insertSubjectOutcomeSchema>;
+export type SubjectTopic = typeof subjectTopics.$inferSelect;
+export type InsertSubjectTopic = z.infer<typeof insertSubjectTopicSchema>;
