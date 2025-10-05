@@ -20,6 +20,9 @@ export const users = pgTable("users", {
   stripeSubscriptionId: text("stripe_subscription_id"),
   lastQuizGenerationTime: timestamp("last_quiz_generation_time"),
   customQuizIntervalHours: integer("custom_quiz_interval_hours").default(1),
+  onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
+  schoolName: text("school_name"),
+  yearLevel: integer("year_level"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -305,6 +308,51 @@ export const weeklyLeaderboard = pgTable("weekly_leaderboard", {
   uniqueWeekUser: unique().on(table.weekStart, table.userId),
 }));
 
+// Enrollee Mode - Subject-Based Learning tables
+export const semesters = pgTable("semesters", {
+  id: serial("id").primaryKey(),
+  schoolName: text("school_name"),
+  academicYear: text("academic_year").notNull(),
+  term: integer("term").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const subjects = pgTable("subjects", {
+  id: serial("id").primaryKey(),
+  canonicalCode: text("canonical_code").notNull().unique(),
+  name: text("name").notNull(),
+  units: integer("units").default(3).notNull(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const schoolPacks = pgTable("school_packs", {
+  id: serial("id").primaryKey(),
+  schoolName: text("school_name").notNull().unique(),
+  mapping: jsonb("mapping").notNull().default('{}'),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const enrollments = pgTable("enrollments", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  semesterId: integer("semester_id").notNull().references(() => semesters.id, { onDelete: 'cascade' }),
+  subjectId: integer("subject_id").notNull().references(() => subjects.id, { onDelete: 'cascade' }),
+  schoolCode: text("school_code"),
+  units: integer("units").default(3).notNull(),
+  active: boolean("active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  uniqueUserSemesterSubject: unique().on(table.userId, table.semesterId, table.subjectId),
+}));
+
+export const userSettings = pgTable("user_settings", {
+  userId: varchar("user_id").primaryKey().references(() => users.id, { onDelete: 'cascade' }),
+  subjectFilterTags: text("subject_filter_tags").array().default(sql`'{}'`),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Sessions table for Replit Auth
 export const sessions = pgTable("sessions", {
   sid: varchar("sid").primaryKey(),
@@ -491,6 +539,32 @@ export const insertCurriculumQuestionTagSchema = createInsertSchema(curriculumQu
   id: true,
 });
 
+// Enrollee Mode insert schemas
+export const insertSemesterSchema = createInsertSchema(semesters).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSubjectSchema = createInsertSchema(subjects).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSchoolPackSchema = createInsertSchema(schoolPacks).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertEnrollmentSchema = createInsertSchema(enrollments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserSettingsSchema = createInsertSchema(userSettings).omit({
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
@@ -542,3 +616,15 @@ export type WeeklyChallengeEvent = typeof weeklyChallengeEvents.$inferSelect;
 export type InsertWeeklyChallengeEvent = z.infer<typeof insertWeeklyChallengeEventSchema>;
 export type WeeklyLeaderboard = typeof weeklyLeaderboard.$inferSelect;
 export type InsertWeeklyLeaderboard = z.infer<typeof insertWeeklyLeaderboardSchema>;
+
+// Enrollee Mode types
+export type Semester = typeof semesters.$inferSelect;
+export type InsertSemester = z.infer<typeof insertSemesterSchema>;
+export type Subject = typeof subjects.$inferSelect;
+export type InsertSubject = z.infer<typeof insertSubjectSchema>;
+export type SchoolPack = typeof schoolPacks.$inferSelect;
+export type InsertSchoolPack = z.infer<typeof insertSchoolPackSchema>;
+export type Enrollment = typeof enrollments.$inferSelect;
+export type InsertEnrollment = z.infer<typeof insertEnrollmentSchema>;
+export type UserSettings = typeof userSettings.$inferSelect;
+export type InsertUserSettings = z.infer<typeof insertUserSettingsSchema>;
