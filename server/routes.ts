@@ -25,6 +25,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // Weekly Challenge routes
+  const weeklyChallengeRouter = (await import('./routes/weeklyChallenge')).default;
+  app.use('/api/weekly-challenge', weeklyChallengeRouter);
+
   // Object storage routes - Referenced from blueprint:javascript_object_storage
   app.get("/objects/:objectPath(*)", isAuthenticated, async (req: any, res) => {
     const userId = req.user?.claims?.sub;
@@ -716,6 +720,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching curriculum subject details:", error);
       res.status(500).json({ message: "Failed to fetch subject details" });
+    }
+  });
+
+  // Weekly Leaderboard endpoint
+  app.get('/api/leaderboard/weekly', isAuthenticated, async (req, res) => {
+    try {
+      const { startOfWeek } = await import('./utils/week');
+      const { WEEKLY_CHALLENGE } = await import('../shared/config/challenge');
+      const weekStart = startOfWeek(new Date(), WEEKLY_CHALLENGE.weekStartsOn);
+      
+      const leaderboard = await storage.getWeeklyLeaderboard(weekStart);
+      res.json({ rows: leaderboard });
+    } catch (error) {
+      console.error("Error fetching weekly leaderboard:", error);
+      res.status(500).json({ message: "Failed to fetch leaderboard" });
     }
   });
 
