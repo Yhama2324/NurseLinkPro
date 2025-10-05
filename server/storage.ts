@@ -26,6 +26,11 @@ import {
   weeklyChallengeProgress,
   weeklyChallengeEvents,
   weeklyLeaderboard,
+  semesters,
+  subjects,
+  schoolPacks,
+  enrollments,
+  userSettings,
   type User,
   type UpsertUser,
   type Post,
@@ -65,6 +70,16 @@ import {
   type InsertWeeklyChallengeEvent,
   type WeeklyLeaderboard,
   type InsertWeeklyLeaderboard,
+  type Semester,
+  type InsertSemester,
+  type Subject,
+  type InsertSubject,
+  type SchoolPack,
+  type InsertSchoolPack,
+  type Enrollment,
+  type InsertEnrollment,
+  type UserSettings,
+  type InsertUserSettings,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -146,6 +161,22 @@ export interface IStorage {
   upsertWeeklyLeaderboard(entry: InsertWeeklyLeaderboard): Promise<WeeklyLeaderboard>;
   getWeeklyLeaderboard(weekStart: Date): Promise<(WeeklyLeaderboard & { user?: User })[]>;
   updateWeeklyLeaderboardRanks(weekStart: Date): Promise<void>;
+
+  // Enrollee Mode operations
+  updateUserOnboarding(userId: string, data: { onboardingCompleted: boolean; schoolName?: string; yearLevel?: number }): Promise<User>;
+  createOrGetSemester(data: InsertSemester): Promise<Semester>;
+  getAllSubjects(): Promise<Subject[]>;
+  getSubjectById(id: number): Promise<Subject | undefined>;
+  getSubjectByCanonicalCode(code: string): Promise<Subject | undefined>;
+  createSubject(subject: InsertSubject): Promise<Subject>;
+  getSchoolPack(schoolName: string): Promise<SchoolPack | undefined>;
+  createSchoolPack(pack: InsertSchoolPack): Promise<SchoolPack>;
+  getUserEnrollments(userId: string): Promise<(Enrollment & { subject?: Subject; semester?: Semester })[]>;
+  createEnrollment(enrollment: InsertEnrollment): Promise<Enrollment>;
+  updateEnrollmentStatus(id: number, active: boolean): Promise<Enrollment>;
+  getUserSettings(userId: string): Promise<UserSettings | undefined>;
+  upsertUserSettings(settings: InsertUserSettings): Promise<UserSettings>;
+  getActiveEnrolledSubjectIds(userId: string): Promise<number[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -406,7 +437,7 @@ export class DatabaseStorage implements IStorage {
       .where(eq(dailyChallenges.date, today))
       .limit(1);
     
-    return challenge?.quizzes;
+    return challenge?.quizzes || undefined;
   }
 
   // AI Copilot operations
@@ -594,6 +625,153 @@ export class DatabaseStorage implements IStorage {
         .set({ rank: i + 1 })
         .where(eq(weeklyLeaderboard.id, entries[i].id));
     }
+  }
+
+  // Enrollee Mode operations
+  async updateUserOnboarding(userId: string, data: { onboardingCompleted: boolean; schoolName?: string; yearLevel?: number }): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async createOrGetSemester(data: InsertSemester): Promise<Semester> {
+    const existing = await db
+      .select()
+      .from(semesters)
+      .where(
+        and(
+          data.schoolName ? eq(semesters.schoolName, data.schoolName) : sql`${semesters.schoolName} IS NULL`,
+          eq(semesters.academicYear, data.academicYear),
+          eq(semesters.term, data.term)
+        )
+      );
+    
+    if (existing.length > 0) {
+      return existing[0];
+    }
+
+    const [semester] = await db.insert(semesters).values(data).returning();
+    return semester;
+  }
+
+  async getAllSubjects(): Promise<Subject[]> {
+    return await db
+      .select()
+      .from(subjects)
+      .where(eq(subjects.active, true))
+      .orderBy(subjects.name);
+  }
+
+  async getSubjectById(id: number): Promise<Subject | undefined> {
+    const [subject] = await db
+      .select()
+      .from(subjects)
+      .where(eq(subjects.id, id));
+    return subject;
+  }
+
+  async getSubjectByCanonicalCode(code: string): Promise<Subject | undefined> {
+    const [subject] = await db
+      .select()
+      .from(subjects)
+      .where(eq(subjects.canonicalCode, code));
+    return subject;
+  }
+
+  async createSubject(subject: InsertSubject): Promise<Subject> {
+    const [newSubject] = await db
+      .insert(subjects)
+      .values(subject)
+      .returning();
+    return newSubject;
+  }
+
+  async getSchoolPack(schoolName: string): Promise<SchoolPack | undefined> {
+    const [pack] = await db
+      .select()
+      .from(schoolPacks)
+      .where(eq(schoolPacks.schoolName, schoolName));
+    return pack;
+  }
+
+  async createSchoolPack(pack: InsertSchoolPack): Promise<SchoolPack> {
+    const [newPack] = await db
+      .insert(schoolPacks)
+      .values(pack)
+      .returning();
+    return newPack;
+  }
+
+  async getUserEnrollments(userId: string): Promise<(Enrollment & { subject?: Subject; semester?: Semester })[]> {
+    const results = await db
+      .select()
+      .from(enrollments)
+      .leftJoin(subjects, eq(enrollments.subjectId, subjects.id))
+      .leftJoin(semesters, eq(enrollments.semesterId, semesters.id))
+      .where(eq(enrollments.userId, userId))
+      .orderBy(desc(enrollments.createdAt));
+
+    return results.map(row => ({
+      ...row.enrollments,
+      subject: row.subjects || undefined,
+      semester: row.semesters || undefined,
+    }));
+  }
+
+  async createEnrollment(enrollment: InsertEnrollment): Promise<Enrollment> {
+    const [newEnrollment] = await db
+      .insert(enrollments)
+      .values(enrollment)
+      .returning();
+    return newEnrollment;
+  }
+
+  async updateEnrollmentStatus(id: number, active: boolean): Promise<Enrollment> {
+    const [enrollment] = await db
+      .update(enrollments)
+      .set({ active })
+      .where(eq(enrollments.id, id))
+      .returning();
+    return enrollment;
+  }
+
+  async getUserSettings(userId: string): Promise<UserSettings | undefined> {
+    const [settings] = await db
+      .select()
+      .from(userSettings)
+      .where(eq(userSettings.userId, userId));
+    return settings;
+  }
+
+  async upsertUserSettings(settings: InsertUserSettings): Promise<UserSettings> {
+    const [userSetting] = await db
+      .insert(userSettings)
+      .values(settings)
+      .onConflictDoUpdate({
+        target: userSettings.userId,
+        set: {
+          ...settings,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return userSetting;
+  }
+
+  async getActiveEnrolledSubjectIds(userId: string): Promise<number[]> {
+    const results = await db
+      .select({ subjectId: enrollments.subjectId })
+      .from(enrollments)
+      .where(
+        and(
+          eq(enrollments.userId, userId),
+          eq(enrollments.active, true)
+        )
+      );
+    return results.map(r => r.subjectId);
   }
 }
 
