@@ -98,30 +98,36 @@ const SAMPLE_PARTIES: Party[] = [
   },
 ];
 
-const SAMPLE_LEADERBOARD: Leaderboard[] = [
+const SAMPLE_LEADERBOARD_ENTRIES = [
   {
-    id: 1,
-    userId: "user-1",
-    quizId: null,
     rank: 1,
+    user: {
+      id: "user-1",
+      firstName: "Maria",
+      lastName: "Santos",
+      profileImageUrl: null,
+    },
     score: 2850,
-    achievedAt: new Date(),
   },
   {
-    id: 2,
-    userId: "user-2",
-    quizId: null,
     rank: 2,
+    user: {
+      id: "user-2",
+      firstName: "Juan",
+      lastName: "Cruz",
+      profileImageUrl: null,
+    },
     score: 2420,
-    achievedAt: new Date(),
   },
   {
-    id: 3,
-    userId: "user-3",
-    quizId: null,
     rank: 3,
+    user: {
+      id: "user-3",
+      firstName: "Ana",
+      lastName: "Reyes",
+      profileImageUrl: null,
+    },
     score: 2180,
-    achievedAt: new Date(),
   },
 ];
 
@@ -142,7 +148,7 @@ export default function Clans() {
 
   const displayClans = clans && clans.length > 0 ? clans : SAMPLE_CLANS;
   const displayParties = parties && parties.length > 0 ? parties : SAMPLE_PARTIES;
-  const displayLeaderboard = leaderboard && leaderboard.length > 0 ? leaderboard : SAMPLE_LEADERBOARD;
+  const displayLeaderboard = leaderboard && leaderboard.length > 0 ? leaderboard : SAMPLE_LEADERBOARD_ENTRIES;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -163,8 +169,8 @@ export default function Clans() {
           <p className="text-sm text-muted-foreground mb-4">Top 3 today</p>
           <div className="space-y-2">
             {displayLeaderboard?.slice(0, 3).map((entry, index) => (
-              <div key={entry.id} className={`card-reveal stagger-${index + 1}`}>
-                <LeaderboardCard entry={entry as any} />
+              <div key={entry.rank} className={`card-reveal stagger-${index + 1}`}>
+                <LeaderboardCard entry={entry} />
               </div>
             ))}
           </div>
