@@ -6,6 +6,29 @@ import { isAuthenticated } from "../replitAuth";
 
 const router = Router();
 
+async function checkProEliteTier(req: any, res: any, next: any) {
+  try {
+    const userId = req.user.claims.sub;
+    const user = await storage.getUser(userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const tier = user.subscriptionTier?.toUpperCase();
+    if (tier !== "PRO" && tier !== "ELITE") {
+      return res.status(403).json({ 
+        message: "Weekly Challenge is available for Pro and Elite tier users only" 
+      });
+    }
+
+    next();
+  } catch (error) {
+    console.error("Error checking user tier:", error);
+    res.status(500).json({ message: "Failed to verify subscription tier" });
+  }
+}
+
 function calcScore(correct: number, events: { correct: boolean; latencyMs: number | null }[]) {
   const base = correct * WEEKLY_CHALLENGE.points.correct;
   const speedBonus = Math.min(
@@ -15,7 +38,7 @@ function calcScore(correct: number, events: { correct: boolean; latencyMs: numbe
   return base + speedBonus;
 }
 
-router.get("/me", isAuthenticated, async (req: any, res) => {
+router.get("/me", isAuthenticated, checkProEliteTier, async (req: any, res) => {
   try {
     const userId = req.user.claims.sub;
     const weekStart = startOfWeek(new Date(), WEEKLY_CHALLENGE.weekStartsOn);
@@ -34,7 +57,7 @@ router.get("/me", isAuthenticated, async (req: any, res) => {
   }
 });
 
-router.post("/answer", isAuthenticated, async (req: any, res) => {
+router.post("/answer", isAuthenticated, checkProEliteTier, async (req: any, res) => {
   try {
     const userId = req.user.claims.sub;
     const { questionId, correct, latencyMs } = req.body;
@@ -63,7 +86,7 @@ router.post("/answer", isAuthenticated, async (req: any, res) => {
   }
 });
 
-router.post("/finalize", isAuthenticated, async (req: any, res) => {
+router.post("/finalize", isAuthenticated, checkProEliteTier, async (req: any, res) => {
   try {
     const userId = req.user.claims.sub;
     const weekStart = startOfWeek(new Date(), WEEKLY_CHALLENGE.weekStartsOn);
