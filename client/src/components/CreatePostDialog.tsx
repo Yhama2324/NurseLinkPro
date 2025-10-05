@@ -39,7 +39,7 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
   };
 
   const handleGetUploadParams = async () => {
-    const response = await apiRequest("/api/objects/upload", { method: "POST" });
+    const response = await apiRequest("POST", "/api/objects/upload");
     const data = await response.json();
     return {
       method: "PUT" as const,
@@ -50,11 +50,7 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
   const handleUploadComplete = async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
     if (result.successful && result.successful[0]) {
       const uploadURL = result.successful[0].uploadURL;
-      const response = await apiRequest("/api/post-images", {
-        method: "PUT",
-        body: JSON.stringify({ imageURL: uploadURL }),
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await apiRequest("PUT", "/api/post-images", { imageURL: uploadURL });
       const data = await response.json();
       setImageUrl(data.objectPath);
     }

@@ -1,0 +1,1954 @@
+{
+  "program": "Bachelor of Science in Nursing (BSN) — CKalingaLink",
+  "country_framework": "Philippines (CHED CMO No. 15, s.2017 — adapted)",
+  "version": "2025-10-05",
+  "notes": [
+    "Starter but comprehensive curriculum map for CKalingaLink.",
+    "Includes Pre‑Nursing Pathway, Year 1–4 courses, PNLE/NCLEX blueprint mapping, RLE rotations, and sample quiz tags.",
+    "Hours are indicative; schools may vary. Customize per partner institution.",
+    "All topics include sample 'question_tags' to seed your item bank taxonomy.",
+    "Use 'blueprints' arrays to weight PNLE/NCLEX domains during mock generation."
+  ],
+  "blueprints_reference": {
+    "PNLE": [
+      "Safe & Quality Nursing Care",
+      "Communication",
+      "Collaboration & Teamwork",
+      "Health Education",
+      "Legal Responsibility",
+      "Ethico‑Moral Responsibility",
+      "Personal & Professional Development",
+      "Management of Resources & Environment",
+      "Records Management",
+      "Research",
+      "Quality Improvement"
+    ],
+    "NCLEX_Client_Needs": [
+      "Management of Care",
+      "Safety & Infection Control",
+      "Health Promotion & Maintenance",
+      "Psychosocial Integrity",
+      "Basic Care & Comfort",
+      "Pharmacological & Parenteral Therapies",
+      "Reduction of Risk Potential",
+      "Physiological Adaptation"
+    ]
+  },
+  "years": [
+    {
+      "year": 0,
+      "title": "Pre‑Nursing / Aspirant Pathway",
+      "semesters": [
+        {
+          "semester": 0,
+          "subjects": [
+            {
+              "code": "PRN-101",
+              "name": "Introduction to Nursing & Professional Identity",
+              "category": "Aspirant",
+              "year": 0,
+              "semester": 0,
+              "hours": {
+                "lec": 18,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Describe nursing roles, scopes, and settings.",
+                "Demonstrate basic therapeutic communication and professionalism."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Ethico‑Moral Responsibility",
+                  "Communication",
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Management of Care",
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "History & Roles",
+                  "subtopics": [
+                    "Nightingale, Philippine Nursing Act",
+                    "Practice settings"
+                  ],
+                  "question_tags": [
+                    "history",
+                    "scope_of_practice",
+                    "roles"
+                  ]
+                },
+                {
+                  "name": "Professionalism",
+                  "subtopics": [
+                    "Code of ethics",
+                    "Confidentiality"
+                  ],
+                  "question_tags": [
+                    "ethics",
+                    "confidentiality"
+                  ]
+                },
+                {
+                  "name": "Therapeutic Communication",
+                  "subtopics": [
+                    "SBAR basics",
+                    "Active listening"
+                  ],
+                  "question_tags": [
+                    "sbar",
+                    "communication"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "PRN-102",
+              "name": "Anatomy & Physiology Essentials",
+              "category": "Aspirant",
+              "year": 0,
+              "semester": 0,
+              "hours": {
+                "lec": 24,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Identify major body systems and basic functions."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Physiological Adaptation"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Cells & Tissues",
+                  "subtopics": [
+                    "Homeostasis",
+                    "Membranes"
+                  ],
+                  "question_tags": [
+                    "cells",
+                    "homeostasis"
+                  ]
+                },
+                {
+                  "name": "Cardiovascular",
+                  "subtopics": [
+                    "Heart chambers",
+                    "Cardiac cycle"
+                  ],
+                  "question_tags": [
+                    "cardio",
+                    "vitals"
+                  ]
+                },
+                {
+                  "name": "Respiratory",
+                  "subtopics": [
+                    "Gas exchange",
+                    "Lung volumes"
+                  ],
+                  "question_tags": [
+                    "resp",
+                    "abg_basics"
+                  ]
+                },
+                {
+                  "name": "Renal",
+                  "subtopics": [
+                    "Nephron",
+                    "Fluid & electrolytes"
+                  ],
+                  "question_tags": [
+                    "renal",
+                    "fluids"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "PRN-103",
+              "name": "Dosage Calculations & Basic Pharmacology",
+              "category": "Aspirant",
+              "year": 0,
+              "semester": 0,
+              "hours": {
+                "lec": 18,
+                "lab": 6,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Solve common dosage problems using dimensional analysis."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Pharmacological & Parenteral Therapies"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Dimensional Analysis",
+                  "subtopics": [
+                    "Ratios",
+                    "Proportions"
+                  ],
+                  "question_tags": [
+                    "dosage_calc",
+                    "math"
+                  ]
+                },
+                {
+                  "name": "Medication Safety",
+                  "subtopics": [
+                    "10 rights",
+                    "High‑alert meds"
+                  ],
+                  "question_tags": [
+                    "med_rights",
+                    "safety"
+                  ]
+                },
+                {
+                  "name": "Common Drug Classes",
+                  "subtopics": [
+                    "Antibiotics",
+                    "Analgesics",
+                    "Antihypertensives"
+                  ],
+                  "question_tags": [
+                    "antibiotics",
+                    "analgesics",
+                    "antihypertensives"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 1,
+      "title": "Year 1 — Foundations",
+      "semesters": [
+        {
+          "semester": 1,
+          "subjects": [
+            {
+              "code": "NUR-110",
+              "name": "Theoretical Foundations of Nursing",
+              "category": "Nursing Core",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Explain major nursing theories and apply to care planning."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care",
+                  "Research",
+                  "Communication"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Management of Care",
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Metaparadigm",
+                  "subtopics": [
+                    "Person",
+                    "Environment",
+                    "Health",
+                    "Nursing"
+                  ],
+                  "question_tags": [
+                    "theory",
+                    "metaparadigm"
+                  ]
+                },
+                {
+                  "name": "Orem/Roy/Watson/Peplau",
+                  "subtopics": [
+                    "Self‑Care",
+                    "Adaptation",
+                    "Caring",
+                    "Interpersonal"
+                  ],
+                  "question_tags": [
+                    "orem",
+                    "roy",
+                    "watson",
+                    "peplau"
+                  ]
+                },
+                {
+                  "name": "EBP",
+                  "subtopics": [
+                    "PICO",
+                    "Levels of evidence"
+                  ],
+                  "question_tags": [
+                    "ebp",
+                    "pico"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "SCI-121",
+              "name": "Anatomy & Physiology I",
+              "category": "Basic Sciences",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 36,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Relate structure to function for cells, musculoskeletal, integumentary, nervous systems (part I)."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Physiological Adaptation"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Cells & Tissues",
+                  "subtopics": [
+                    "Histology",
+                    "Repair"
+                  ],
+                  "question_tags": [
+                    "cells",
+                    "healing"
+                  ]
+                },
+                {
+                  "name": "Skeletal & Muscular",
+                  "subtopics": [
+                    "Bone physiology",
+                    "Muscle contraction"
+                  ],
+                  "question_tags": [
+                    "msk",
+                    "mobility"
+                  ]
+                },
+                {
+                  "name": "Nervous System I",
+                  "subtopics": [
+                    "Neuron",
+                    "CNS/PNS basics"
+                  ],
+                  "question_tags": [
+                    "neuro_basics",
+                    "neuron"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "SCI-131",
+              "name": "Biochemistry for Health Sciences",
+              "category": "Basic Sciences",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 36,
+                "lab": 18,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Connect biomolecules and metabolism to human physiology."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Physiological Adaptation"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Biomolecules",
+                  "subtopics": [
+                    "Carbs",
+                    "Lipids",
+                    "Proteins"
+                  ],
+                  "question_tags": [
+                    "biochem",
+                    "macros"
+                  ]
+                },
+                {
+                  "name": "Enzymes",
+                  "subtopics": [
+                    "Kinetics",
+                    "Regulation"
+                  ],
+                  "question_tags": [
+                    "enzymes"
+                  ]
+                },
+                {
+                  "name": "Metabolism",
+                  "subtopics": [
+                    "Glycolysis",
+                    "Krebs",
+                    "ETC"
+                  ],
+                  "question_tags": [
+                    "glycolysis",
+                    "krebs"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NUR-120",
+              "name": "Fundamentals of Nursing (Theory & Skills)",
+              "category": "Nursing Core",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 36,
+                "rle": 0
+              },
+              "prerequisites": [
+                "NUR-110"
+              ],
+              "outcomes": [
+                "Demonstrate basic nursing skills with safety and infection control."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safety & Infection Control",
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Safety & Infection Control",
+                  "Basic Care & Comfort"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Infection Control",
+                  "subtopics": [
+                    "Hand hygiene",
+                    "PPE",
+                    "Isolation"
+                  ],
+                  "question_tags": [
+                    "ppe",
+                    "isolation"
+                  ]
+                },
+                {
+                  "name": "Basic Care",
+                  "subtopics": [
+                    "Hygiene",
+                    "Positioning",
+                    "Ambulation"
+                  ],
+                  "question_tags": [
+                    "adl",
+                    "mobility"
+                  ]
+                },
+                {
+                  "name": "Documentation",
+                  "subtopics": [
+                    "Charting",
+                    "DAR/SOAPIE"
+                  ],
+                  "question_tags": [
+                    "documentation"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "GE-101",
+              "name": "Understanding the Self",
+              "category": "General Education",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Reflect on self and professional identity."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Personal & Professional Development"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Psychosocial Integrity"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Self & Identity",
+                  "subtopics": [
+                    "Personality",
+                    "Values"
+                  ],
+                  "question_tags": [
+                    "self_reflection"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "GE-111",
+              "name": "Readings in Philippine History",
+              "category": "General Education",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Analyze primary sources related to Philippine history."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Records Management"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Primary Sources",
+                  "subtopics": [
+                    "Bias",
+                    "Context"
+                  ],
+                  "question_tags": [
+                    "history_methods"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "PE-101",
+              "name": "Physical Education 1",
+              "category": "Wellness",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 18,
+                "lab": 18,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Demonstrate fitness and wellness principles."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Personal & Professional Development"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Fitness",
+                  "subtopics": [
+                    "Cardio",
+                    "Strength"
+                  ],
+                  "question_tags": [
+                    "fitness"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NSTP-1",
+              "name": "National Service Training Program 1",
+              "category": "Civic Welfare",
+              "year": 1,
+              "semester": 1,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Participate in civic activities."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Community Collaboration"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Community Service",
+                  "subtopics": [
+                    "Planning",
+                    "Participation"
+                  ],
+                  "question_tags": [
+                    "community_service"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "subjects": [
+            {
+              "code": "SCI-122",
+              "name": "Anatomy & Physiology II",
+              "category": "Basic Sciences",
+              "year": 1,
+              "semester": 2,
+              "hours": {
+                "lec": 54,
+                "lab": 36,
+                "rle": 0
+              },
+              "prerequisites": [
+                "SCI-121"
+              ],
+              "outcomes": [
+                "Explain cardiovascular, respiratory, renal, endocrine, and GI systems."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Physiological Adaptation"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Cardiovascular",
+                  "subtopics": [
+                    "Conduction",
+                    "Hemodynamics"
+                  ],
+                  "question_tags": [
+                    "cardio"
+                  ]
+                },
+                {
+                  "name": "Respiratory",
+                  "subtopics": [
+                    "Ventilation",
+                    "ABGs"
+                  ],
+                  "question_tags": [
+                    "resp",
+                    "abg"
+                  ]
+                },
+                {
+                  "name": "Renal",
+                  "subtopics": [
+                    "Fluid/Electrolytes",
+                    "Acid‑Base"
+                  ],
+                  "question_tags": [
+                    "fluids",
+                    "acid_base"
+                  ]
+                },
+                {
+                  "name": "Endocrine",
+                  "subtopics": [
+                    "Hormones",
+                    "Diabetes basics"
+                  ],
+                  "question_tags": [
+                    "endocrine",
+                    "diabetes"
+                  ]
+                },
+                {
+                  "name": "GI & Hepatic",
+                  "subtopics": [
+                    "Digestion",
+                    "LFTs"
+                  ],
+                  "question_tags": [
+                    "gi",
+                    "lft"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "SCI-141",
+              "name": "Microbiology & Parasitology",
+              "category": "Basic Sciences",
+              "year": 1,
+              "semester": 2,
+              "hours": {
+                "lec": 54,
+                "lab": 18,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Apply micro concepts to infection control and public health."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safety & Infection Control",
+                  "Health Education"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Safety & Infection Control"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Bacteria/Viruses/Fungi",
+                  "subtopics": [
+                    "Pathogens",
+                    "Resistance"
+                  ],
+                  "question_tags": [
+                    "pathogens",
+                    "antibiotic_resistance"
+                  ]
+                },
+                {
+                  "name": "Parasitology",
+                  "subtopics": [
+                    "Common parasites PH",
+                    "Prevention"
+                  ],
+                  "question_tags": [
+                    "parasites_ph"
+                  ]
+                },
+                {
+                  "name": "Lab",
+                  "subtopics": [
+                    "Cultures",
+                    "Sensitivity"
+                  ],
+                  "question_tags": [
+                    "cultures_c_s"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NUR-130",
+              "name": "Health Assessment",
+              "category": "Nursing Core",
+              "year": 1,
+              "semester": 2,
+              "hours": {
+                "lec": 36,
+                "lab": 36,
+                "rle": 0
+              },
+              "prerequisites": [
+                "NUR-120"
+              ],
+              "outcomes": [
+                "Perform head‑to‑toe assessment and document findings."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care",
+                  "Communication"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Reduction of Risk Potential"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Vital Signs",
+                  "subtopics": [
+                    "BP, HR, RR, Temp",
+                    "Pain"
+                  ],
+                  "question_tags": [
+                    "vitals"
+                  ]
+                },
+                {
+                  "name": "Head‑to‑Toe",
+                  "subtopics": [
+                    "HEENT",
+                    "CV, Resp, GI, MSK, Neuro, Skin"
+                  ],
+                  "question_tags": [
+                    "assessment"
+                  ]
+                },
+                {
+                  "name": "Documentation",
+                  "subtopics": [
+                    "Normal vs abnormal",
+                    "SBAR handoff"
+                  ],
+                  "question_tags": [
+                    "sbar",
+                    "charting"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NUR-140",
+              "name": "Health Education & Promotion",
+              "category": "Nursing Core",
+              "year": 1,
+              "semester": 2,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Develop learner‑centered teaching plans."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Health Education",
+                  "Communication"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Teaching‑Learning",
+                  "subtopics": [
+                    "Adult learning",
+                    "Barriers"
+                  ],
+                  "question_tags": [
+                    "teaching"
+                  ]
+                },
+                {
+                  "name": "Patient Education",
+                  "subtopics": [
+                    "Diabetes",
+                    "HTN basics"
+                  ],
+                  "question_tags": [
+                    "patient_ed"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "GE-121",
+              "name": "Purposive Communication",
+              "category": "General Education",
+              "year": 1,
+              "semester": 2,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [],
+              "outcomes": [
+                "Communicate effectively in academic and clinical contexts."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Communication"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Management of Care"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Clinical Writing",
+                  "subtopics": [
+                    "SBAR",
+                    "Handoff"
+                  ],
+                  "question_tags": [
+                    "sbar_comm"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "PE-102",
+              "name": "Physical Education 2",
+              "category": "Wellness",
+              "year": 1,
+              "semester": 2,
+              "hours": {
+                "lec": 18,
+                "lab": 18,
+                "rle": 0
+              },
+              "prerequisites": [
+                "PE-101"
+              ],
+              "outcomes": [
+                "Apply exercise principles to wellness plans."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Personal & Professional Development"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Wellness",
+                  "subtopics": [
+                    "Programs"
+                  ],
+                  "question_tags": [
+                    "wellness_programs"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NSTP-2",
+              "name": "National Service Training Program 2",
+              "category": "Civic Welfare",
+              "year": 1,
+              "semester": 2,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [
+                "NSTP-1"
+              ],
+              "outcomes": [
+                "Implement a community project."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Community Collaboration"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Community Project",
+                  "subtopics": [
+                    "Implementation"
+                  ],
+                  "question_tags": [
+                    "community_project"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2,
+      "title": "Year 2 — Core Clinicals",
+      "semesters": [
+        {
+          "semester": 1,
+          "subjects": [
+            {
+              "code": "NUR-210",
+              "name": "Pathophysiology I",
+              "category": "Nursing Core",
+              "year": 2,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [
+                "SCI-121",
+                "SCI-122"
+              ],
+              "outcomes": [
+                "Explain mechanisms of disease: cardio, resp, renal, endocrine."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care",
+                  "Research"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Physiological Adaptation"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Cardio Patho",
+                  "subtopics": [
+                    "HF, MI, HTN"
+                  ],
+                  "question_tags": [
+                    "hf",
+                    "mi",
+                    "htn"
+                  ]
+                },
+                {
+                  "name": "Resp Patho",
+                  "subtopics": [
+                    "Asthma, COPD, PNA"
+                  ],
+                  "question_tags": [
+                    "asthma",
+                    "copd",
+                    "pna"
+                  ]
+                },
+                {
+                  "name": "Renal Patho",
+                  "subtopics": [
+                    "AKI, CKD"
+                  ],
+                  "question_tags": [
+                    "aki",
+                    "ckd"
+                  ]
+                },
+                {
+                  "name": "Endocrine Patho",
+                  "subtopics": [
+                    "DM, Thyroid"
+                  ],
+                  "question_tags": [
+                    "dm",
+                    "thyroid"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NUR-220",
+              "name": "Pharmacology I",
+              "category": "Nursing Core",
+              "year": 2,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [
+                "PRN-103"
+              ],
+              "outcomes": [
+                "Apply pharm principles and safe med admin across systems."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Pharmacological & Parenteral Therapies"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Cardio Drugs",
+                  "subtopics": [
+                    "ACEi, BB, Diuretics"
+                  ],
+                  "question_tags": [
+                    "acei",
+                    "beta_blockers",
+                    "diuretics"
+                  ]
+                },
+                {
+                  "name": "Resp Drugs",
+                  "subtopics": [
+                    "SABA/LABA, Steroids"
+                  ],
+                  "question_tags": [
+                    "saba",
+                    "ics"
+                  ]
+                },
+                {
+                  "name": "Endocrine Drugs",
+                  "subtopics": [
+                    "Insulins, OHA"
+                  ],
+                  "question_tags": [
+                    "insulin",
+                    "metformin"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NUR-230",
+              "name": "Adult Health Nursing I (Med‑Surg I)",
+              "category": "Nursing Core",
+              "year": 2,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 36,
+                "rle": 102
+              },
+              "prerequisites": [
+                "NUR-210",
+                "NUR-220"
+              ],
+              "outcomes": [
+                "Provide safe care to adult clients with common conditions; document using SBAR."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care",
+                  "Records Management",
+                  "Management of Resources & Environment"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Physiological Adaptation",
+                  "Safety & Infection Control",
+                  "Basic Care & Comfort"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Cardio Care",
+                  "subtopics": [
+                    "ACS, HF nursing care"
+                  ],
+                  "question_tags": [
+                    "cardio_nursing"
+                  ]
+                },
+                {
+                  "name": "Resp Care",
+                  "subtopics": [
+                    "O2 therapy, Nebulization"
+                  ],
+                  "question_tags": [
+                    "oxygen",
+                    "nebulization"
+                  ]
+                },
+                {
+                  "name": "Fluids & Electrolytes",
+                  "subtopics": [
+                    "IV therapy, dehydration"
+                  ],
+                  "question_tags": [
+                    "iv_therapy",
+                    "electrolytes"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "Medical‑Surgical Ward",
+                "hours": 102
+              }
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "subjects": [
+            {
+              "code": "NUR-240",
+              "name": "Maternal & Newborn Nursing",
+              "category": "Nursing Core",
+              "year": 2,
+              "semester": 2,
+              "hours": {
+                "lec": 54,
+                "lab": 18,
+                "rle": 102
+              },
+              "prerequisites": [
+                "NUR-230"
+              ],
+              "outcomes": [
+                "Deliver woman‑centered care in prenatal, intrapartum, and postpartum settings."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care",
+                  "Ethico‑Moral Responsibility",
+                  "Records Management"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance",
+                  "Basic Care & Comfort",
+                  "Reduction of Risk Potential"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Prenatal",
+                  "subtopics": [
+                    "Risk assessment",
+                    "Education"
+                  ],
+                  "question_tags": [
+                    "prenatal"
+                  ]
+                },
+                {
+                  "name": "Intrapartum",
+                  "subtopics": [
+                    "Stages of labor",
+                    "FHR monitoring"
+                  ],
+                  "question_tags": [
+                    "labor",
+                    "fhr"
+                  ]
+                },
+                {
+                  "name": "Postpartum & Newborn",
+                  "subtopics": [
+                    "Lactation",
+                    "Newborn assessment"
+                  ],
+                  "question_tags": [
+                    "lactation",
+                    "apgar"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "OB Ward/Delivery Room/NSY",
+                "hours": 102
+              }
+            },
+            {
+              "code": "NUR-250",
+              "name": "Pediatric Nursing",
+              "category": "Nursing Core",
+              "year": 2,
+              "semester": 2,
+              "hours": {
+                "lec": 54,
+                "lab": 18,
+                "rle": 102
+              },
+              "prerequisites": [
+                "NUR-230"
+              ],
+              "outcomes": [
+                "Provide developmentally appropriate care for infants to adolescents."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care",
+                  "Communication",
+                  "Health Education"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance",
+                  "Reduction of Risk Potential"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Growth & Development",
+                  "subtopics": [
+                    "Milestones",
+                    "Play"
+                  ],
+                  "question_tags": [
+                    "milestones",
+                    "growth_dev"
+                  ]
+                },
+                {
+                  "name": "Common Peds Illness",
+                  "subtopics": [
+                    "URI, Dehydration, Seizure"
+                  ],
+                  "question_tags": [
+                    "uri",
+                    "dehydration",
+                    "seizure"
+                  ]
+                },
+                {
+                  "name": "Immunization",
+                  "subtopics": [
+                    "Schedules",
+                    "Contraindications"
+                  ],
+                  "question_tags": [
+                    "immunization"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "Pediatric Ward",
+                "hours": 102
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 3,
+      "title": "Year 3 — Community & Specialized Nursing",
+      "semesters": [
+        {
+          "semester": 1,
+          "subjects": [
+            {
+              "code": "NUR-310",
+              "name": "Psychiatric Mental Health Nursing",
+              "category": "Nursing Core",
+              "year": 3,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 18,
+                "rle": 90
+              },
+              "prerequisites": [
+                "NUR-230"
+              ],
+              "outcomes": [
+                "Apply therapeutic communication and safe care for clients with mental health conditions."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Communication",
+                  "Ethico‑Moral Responsibility",
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Psychosocial Integrity",
+                  "Safety & Infection Control"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Therapeutic Communication",
+                  "subtopics": [
+                    "Boundaries",
+                    "De‑escalation"
+                  ],
+                  "question_tags": [
+                    "therapeutic_comm"
+                  ]
+                },
+                {
+                  "name": "Common Disorders",
+                  "subtopics": [
+                    "Depression",
+                    "Anxiety",
+                    "Schizophrenia"
+                  ],
+                  "question_tags": [
+                    "depression",
+                    "anxiety",
+                    "schizophrenia"
+                  ]
+                },
+                {
+                  "name": "Psych Meds",
+                  "subtopics": [
+                    "SSRIs",
+                    "Mood stabilizers"
+                  ],
+                  "question_tags": [
+                    "ssri",
+                    "lithium"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "Psych Unit/OPD",
+                "hours": 90
+              }
+            },
+            {
+              "code": "NUR-320",
+              "name": "Community & Public Health Nursing I",
+              "category": "Nursing Core",
+              "year": 3,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 18,
+                "rle": 90
+              },
+              "prerequisites": [
+                "NUR-140"
+              ],
+              "outcomes": [
+                "Implement community assessment and health promotion programs."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Health Education",
+                  "Community Collaboration",
+                  "Records Management"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Health Promotion & Maintenance",
+                  "Safety & Infection Control"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Epidemiology Basics",
+                  "subtopics": [
+                    "Rates",
+                    "Surveillance"
+                  ],
+                  "question_tags": [
+                    "epi"
+                  ]
+                },
+                {
+                  "name": "Barangay Assessment",
+                  "subtopics": [
+                    "Windshield survey",
+                    "FHx"
+                  ],
+                  "question_tags": [
+                    "community_assessment"
+                  ]
+                },
+                {
+                  "name": "Programs",
+                  "subtopics": [
+                    "Maternal/Child",
+                    "TB/NTF"
+                  ],
+                  "question_tags": [
+                    "ncd",
+                    "tb_program"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "Community/Barangay",
+                "hours": 90
+              }
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "subjects": [
+            {
+              "code": "NUR-330",
+              "name": "Research in Nursing",
+              "category": "Research",
+              "year": 3,
+              "semester": 2,
+              "hours": {
+                "lec": 54,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [
+                "NUR-110"
+              ],
+              "outcomes": [
+                "Develop a research proposal applying EBP principles."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Research",
+                  "Quality Improvement"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Management of Care"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Methods",
+                  "subtopics": [
+                    "Quantitative",
+                    "Qualitative"
+                  ],
+                  "question_tags": [
+                    "research_methods"
+                  ]
+                },
+                {
+                  "name": "Statistics Basics",
+                  "subtopics": [
+                    "Descriptive",
+                    "Inferential"
+                  ],
+                  "question_tags": [
+                    "stats"
+                  ]
+                },
+                {
+                  "name": "Ethics",
+                  "subtopics": [
+                    "IRB",
+                    "Consent"
+                  ],
+                  "question_tags": [
+                    "research_ethics"
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "NUR-340",
+              "name": "Leadership & Management I",
+              "category": "Leadership",
+              "year": 3,
+              "semester": 2,
+              "hours": {
+                "lec": 54,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [
+                "NUR-230"
+              ],
+              "outcomes": [
+                "Demonstrate basic leadership, delegation, and prioritization."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Management of Resources & Environment",
+                  "Collaboration & Teamwork"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Management of Care"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Delegation",
+                  "subtopics": [
+                    "5 Rights",
+                    "Scope"
+                  ],
+                  "question_tags": [
+                    "delegation"
+                  ]
+                },
+                {
+                  "name": "Prioritization",
+                  "subtopics": [
+                    "ABCs",
+                    "Maslow"
+                  ],
+                  "question_tags": [
+                    "abcs",
+                    "maslow"
+                  ]
+                },
+                {
+                  "name": "Quality & Safety",
+                  "subtopics": [
+                    "QI tools",
+                    "Reporting"
+                  ],
+                  "question_tags": [
+                    "qi",
+                    "incident_report"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 4,
+      "title": "Year 4 — Advanced Practice & Transition",
+      "semesters": [
+        {
+          "semester": 1,
+          "subjects": [
+            {
+              "code": "NUR-410",
+              "name": "Adult Health Nursing II (Med‑Surg II & Critical Care)",
+              "category": "Nursing Core",
+              "year": 4,
+              "semester": 1,
+              "hours": {
+                "lec": 54,
+                "lab": 18,
+                "rle": 120
+              },
+              "prerequisites": [
+                "NUR-230",
+                "NUR-210"
+              ],
+              "outcomes": [
+                "Manage complex adult conditions and emergencies; apply ICU safety protocols."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care",
+                  "Management of Resources & Environment"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Physiological Adaptation",
+                  "Reduction of Risk Potential"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Neuro Emergencies",
+                  "subtopics": [
+                    "Stroke, ICP"
+                  ],
+                  "question_tags": [
+                    "stroke",
+                    "icp"
+                  ]
+                },
+                {
+                  "name": "Sepsis & Shock",
+                  "subtopics": [
+                    "SIRS, Septic shock"
+                  ],
+                  "question_tags": [
+                    "sepsis",
+                    "shock"
+                  ]
+                },
+                {
+                  "name": "ECG Basics",
+                  "subtopics": [
+                    "Rhythm strips",
+                    "ACS"
+                  ],
+                  "question_tags": [
+                    "ecg",
+                    "acs"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "ICU/ER/Step‑down",
+                "hours": 120
+              }
+            },
+            {
+              "code": "NUR-420",
+              "name": "Pharmacology II (Advanced)",
+              "category": "Nursing Core",
+              "year": 4,
+              "semester": 1,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 0
+              },
+              "prerequisites": [
+                "NUR-220"
+              ],
+              "outcomes": [
+                "Integrate advanced pharmacology in critical and specialized settings."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Safe & Quality Nursing Care"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Pharmacological & Parenteral Therapies"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Critical Care Pharm",
+                  "subtopics": [
+                    "Vasopressors",
+                    "Sedation"
+                  ],
+                  "question_tags": [
+                    "vasopressors",
+                    "sedation"
+                  ]
+                },
+                {
+                  "name": "Antimicrobials Advanced",
+                  "subtopics": [
+                    "Broad spectrum",
+                    "Stewardship"
+                  ],
+                  "question_tags": [
+                    "abx_stewardship"
+                  ]
+                },
+                {
+                  "name": "Anticoag/Thrombolytics",
+                  "subtopics": [
+                    "Warfarin/NOACs",
+                    "tPA"
+                  ],
+                  "question_tags": [
+                    "anticoag",
+                    "tpa"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "semester": 2,
+          "subjects": [
+            {
+              "code": "NUR-430",
+              "name": "Leadership & Management II (Transition to Practice)",
+              "category": "Leadership",
+              "year": 4,
+              "semester": 2,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 90
+              },
+              "prerequisites": [
+                "NUR-340"
+              ],
+              "outcomes": [
+                "Coordinate care, manage teams, and prepare for licensure transition."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Collaboration & Teamwork",
+                  "Management of Resources & Environment"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Management of Care"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Shift Leadership",
+                  "subtopics": [
+                    "Huddles",
+                    "Staffing"
+                  ],
+                  "question_tags": [
+                    "leadership_shift"
+                  ]
+                },
+                {
+                  "name": "Legal & Ethical",
+                  "subtopics": [
+                    "Documentation pitfalls",
+                    "Consent"
+                  ],
+                  "question_tags": [
+                    "legal",
+                    "consent"
+                  ]
+                },
+                {
+                  "name": "Professional Growth",
+                  "subtopics": [
+                    "Portfolio",
+                    "Interview"
+                  ],
+                  "question_tags": [
+                    "portfolio",
+                    "interview"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "Preceptorship/Unit Management",
+                "hours": 90
+              }
+            },
+            {
+              "code": "NUR-440",
+              "name": "PNLE/NCLEX Comprehensive Review & Capstone",
+              "category": "Capstone",
+              "year": 4,
+              "semester": 2,
+              "hours": {
+                "lec": 36,
+                "lab": 0,
+                "rle": 120
+              },
+              "prerequisites": [
+                "All core"
+              ],
+              "outcomes": [
+                "Synthesize knowledge through board‑style mocks, remediation, and capstone project."
+              ],
+              "blueprints": {
+                "PNLE": [
+                  "Research",
+                  "Quality Improvement",
+                  "Records Management"
+                ],
+                "NCLEX_Client_Needs": [
+                  "Management of Care",
+                  "Reduction of Risk Potential",
+                  "Physiological Adaptation"
+                ]
+              },
+              "topics": [
+                {
+                  "name": "Mock Exams",
+                  "subtopics": [
+                    "150‑item PNLE/NCLEX",
+                    "Blueprint balancing"
+                  ],
+                  "question_tags": [
+                    "mock_exams"
+                  ]
+                },
+                {
+                  "name": "Remediation",
+                  "subtopics": [
+                    "Weak area repair plans",
+                    "Spaced repetition"
+                  ],
+                  "question_tags": [
+                    "remediation"
+                  ]
+                },
+                {
+                  "name": "Capstone",
+                  "subtopics": [
+                    "QI project",
+                    "Presentation"
+                  ],
+                  "question_tags": [
+                    "capstone_qi"
+                  ]
+                }
+              ],
+              "rle_rotation": {
+                "setting": "Capstone/Review Center/Community Project",
+                "hours": 120
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rle_summary": [
+    {
+      "year": 2,
+      "areas": [
+        {
+          "setting": "Med‑Surg Ward",
+          "hours": 102
+        },
+        {
+          "setting": "OB/DR/NSY",
+          "hours": 102
+        },
+        {
+          "setting": "Pediatrics",
+          "hours": 102
+        }
+      ]
+    },
+    {
+      "year": 3,
+      "areas": [
+        {
+          "setting": "Psych Unit/OPD",
+          "hours": 90
+        },
+        {
+          "setting": "Community/Barangay",
+          "hours": 90
+        }
+      ]
+    },
+    {
+      "year": 4,
+      "areas": [
+        {
+          "setting": "ICU/ER/Step‑down",
+          "hours": 120
+        },
+        {
+          "setting": "Preceptorship/Unit Mgmt",
+          "hours": 90
+        },
+        {
+          "setting": "Capstone/Review",
+          "hours": 120
+        }
+      ]
+    }
+  ]
+}

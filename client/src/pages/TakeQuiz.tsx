@@ -31,7 +31,7 @@ export default function TakeQuiz() {
 
   const submitAttemptMutation = useMutation({
     mutationFn: async (data: { quizId: number; score: number; totalQuestions: number }) =>
-      apiRequest(`/api/quizzes/${data.quizId}/attempt`, "POST", {
+      apiRequest("POST", `/api/quizzes/${data.quizId}/attempt`, {
         score: data.score,
         totalQuestions: data.totalQuestions,
       }),

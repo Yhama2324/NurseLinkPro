@@ -40,7 +40,10 @@ export default function NurseMind() {
   });
 
   const createConversationMutation = useMutation({
-    mutationFn: () => apiRequest("/api/ai/conversations", "POST", { title: "New Chat" }),
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/ai/conversations", { title: "New Chat" });
+      return await response.json();
+    },
     onSuccess: (data: AiChatConversation) => {
       queryClient.invalidateQueries({ queryKey: ["/api/ai/conversations"] });
       setSelectedConversationId(data.id);
@@ -49,7 +52,7 @@ export default function NurseMind() {
 
   const sendMessageMutation = useMutation({
     mutationFn: (msg: string) =>
-      apiRequest("/api/ai/chat", "POST", {
+      apiRequest("POST", "/api/ai/chat", {
         conversationId: selectedConversationId,
         message: msg,
       }),
@@ -63,7 +66,7 @@ export default function NurseMind() {
 
   const createStudyPlanMutation = useMutation({
     mutationFn: (data: typeof studyPlanData) =>
-      apiRequest("/api/ai/study-plan", "POST", data),
+      apiRequest("POST", "/api/ai/study-plan", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/ai/study-plans"] });
       setStudyPlanOpen(false);
