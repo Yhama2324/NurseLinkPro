@@ -204,11 +204,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const tierLimits = {
         free: { questionCount: 3, cooldownHours: 24, earnXP: false },
-        basic: { questionCount: 30, cooldownHours: 4, earnXP: true },
-        premium: { questionCount: 50, cooldownHours: user.customQuizIntervalHours || 1, earnXP: true }
+        pro: { questionCount: 30, cooldownHours: 4, earnXP: true },
+        elite: { questionCount: 50, cooldownHours: user.customQuizIntervalHours || 1, earnXP: true }
       };
 
-      const tier = user.subscriptionTier as 'free' | 'basic' | 'premium';
+      const tier = user.subscriptionTier as 'free' | 'pro' | 'elite';
       const limits = tierLimits[tier] || tierLimits.free;
       
       let canGenerate = true;
@@ -268,11 +268,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Determine quiz limits based on subscription tier
       const tierLimits = {
         free: { questionCount: 3, cooldownHours: 24, earnXP: false },
-        basic: { questionCount: 30, cooldownHours: 4, earnXP: true },
-        premium: { questionCount: 50, cooldownHours: user.customQuizIntervalHours || 1, earnXP: true }
+        pro: { questionCount: 30, cooldownHours: 4, earnXP: true },
+        elite: { questionCount: 50, cooldownHours: user.customQuizIntervalHours || 1, earnXP: true }
       };
 
-      const tier = user.subscriptionTier as 'free' | 'basic' | 'premium';
+      const tier = user.subscriptionTier as 'free' | 'pro' | 'elite';
       const limits = tierLimits[tier] || tierLimits.free;
 
       // Check if user can generate a new quiz (cooldown check)
