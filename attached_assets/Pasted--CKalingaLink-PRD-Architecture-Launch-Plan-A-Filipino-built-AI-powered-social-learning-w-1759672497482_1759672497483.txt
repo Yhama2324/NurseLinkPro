@@ -1,0 +1,162 @@
+# CKalingaLink — PRD, Architecture & Launch Plan
+
+> A Filipino-built, AI-powered social learning world for aspiring nurses, students, and graduates — connecting care, courage, and community.
+
+---
+
+## 1) Vision & Goals
+
+* **Vision:** Build the most compassionate and connected learning platform for nursing — merging education, mentorship, and social connection in one unified ecosystem.
+* **Mission:** To empower the next generation of nurses through experience, not shortcuts — providing tools, mentorship, and a community built on *kalinga* (care).
+
+### 🎯 Goals
+
+1. Inspire students from pre-nursing to professional practice through interactive, experience-based learning.
+2. Build a social platform (CareSpace) where nurses share stories, motivation, and support.
+3. Offer AI-powered study tools to improve board exam readiness (PNLE & NCLEX).
+4. Connect users to review centers, schools, hospitals, and job opportunities.
+5. Establish a monetization system to sustain growth through ethical ads and partnerships.
+
+---
+
+## 2) Brand & Identity
+
+* **App Name:** **CKalingaLink**
+* **Meaning:** *C* (Calingacion) + *Kalinga* (Care) + *Link* (Connection) = **Connecting care, courage, and community.**
+* **Feed Name:** **CareSpace** – the social hub for nurses to post, share, and learn.
+* **Ad Page:** **AdSpace** – verified partners and sponsors promoting nursing-related products and services.
+* **AI Copilot:** **NurseMind** – your personal AI-powered learning assistant.
+
+### 💙 Tagline Series (rotating)
+
+1. “We don’t just give answers — we build nurses through experience.”
+2. “No shortcuts. No cheating. Just experience, growth, and mastery.”
+3. “Where learning feels real — we provide experience, not just answers.”
+4. “You don’t memorize to pass — you experience to become.”
+5. “We can’t give you answers, but we’ll give you the strength to find them.”
+6. “Train hard. Think smart. Feel the nurse within you.”
+7. “Experience nursing before you wear the uniform.”
+
+✨ **Display Locations:** Loading screen, login page, CareSpace banners, and motivational cards.
+
+---
+
+## 3) Core Feature Overview
+
+### 🩺 Learning System
+
+* **AI Review Generator:** Builds adaptive quizzes, exams, and practice boards based on topics (Y1–Y4 + PNLE/NCLEX domains).
+* **Assignments:** Custom and timed exercises with AI feedback and analytics.
+* **Daily Challenge:** 24-hour event-style quizzes with leaderboard tracking.
+* **Pre-Nursing Pathway:** Intro modules for aspiring students and freshmen.
+
+### 🌐 CareSpace (Social Feed)
+
+* Home feed where users post study tips, experiences, memes, and stories.
+* Comment, like, share, and hashtag system (#StudyRN, #BoardJourney, #NurseGoals).
+* Mentorship threads linking freshmen to senior students and professionals.
+* Clan/Party posts, announcements, and study achievements.
+* Moderated for positive and educational content.
+
+### 👥 Parties & Clans
+
+* **Parties:** 2–10 members for group studies.
+* **Clans:** 10–200 members, competing in challenges and earning XP.
+* **Clan Wars:** Timed competitions rewarding engagement and accuracy.
+
+### 🧠 AI Copilot — “NurseMind”
+
+* Generate quizzes from chosen topics.
+* Explain rationales in conversational mode.
+* Create personalized 7-day or 30-day study plans.
+* Recommend practice sets and motivational reminders.
+
+### 🏫 Review Center & Job Hub
+
+* **Review Center Listing:** ₱2,000/month for 40 days; highlights achievements, topnotchers, and NCLEX passers.
+* **Job Board:** Hospitals and clinics can post openings for board passers, fresh graduates, and interns.
+* **Verification Badges:** for legitimate review centers and employers.
+
+### 💼 AdSpace (Advertisement Page)
+
+* Dedicated section for sponsored educational and healthcare partners.
+* **Tiers:** ₱1,000 (Basic 30 days) / ₱3,000 (Featured 60 days).
+* Ad categories: Education, Career, Tools, Uniforms, and Equipment.
+* Ad analytics dashboard for impressions and engagement.
+* Ads also appear as rotating banners inside CareSpace.
+
+### 📈 Progress & Gamification
+
+* **XP System:** Earn points for quizzes, posts, and challenges.
+* **Badges:** Consistency, Accuracy, Top Scorer, Community Helper.
+* **Ranks:** Student → Practitioner → Mentor → Leader.
+
+---
+
+## 4) Monetization Model
+
+| Revenue Stream        | Description                     | Price (PHP)   | Duration   |
+| --------------------- | ------------------------------- | ------------- | ---------- |
+| Subscription – Pro    | Unlimited drills & analytics    | ₱149          | Monthly    |
+| Subscription – Elite  | Mock exams + AI Copilot         | ₱299          | Monthly    |
+| Review Center Listing | Ads on Review Hub               | ₱2,000        | 40 days    |
+| Job Board Premium     | Featured employer posts         | ₱1,000        | 30 days    |
+| AdSpace Sponsorship   | Basic & featured ads            | ₱1,000–₱3,000 | 30–60 days |
+| Team Licenses         | Bulk for schools/review centers | Custom        | Custom     |
+
+---
+
+## 5) Visual Identity — Color Palette
+
+🎨 **Theme Colors**
+
+* #FFFFFF → Clean base (clinical)
+* #C7DCFF → Calm secondary (trust & peace)
+* #FFD0FD → Warm accent (empathy & humanity)
+* #0080FF → Primary CTA (focus & growth)
+
+Fonts: Poppins (modern), Nunito Sans (friendly, readable).
+
+---
+
+## 6) UI Overview
+
+* **Splash Screen:** CKalingaLink logo + rotating tagline.
+* **Login Page:** Background with animated care icons.
+* **CareSpace Feed:** Posts, media, trending hashtags, and ad banners.
+* **AdSpace Page:** Scrollable sponsor grid with analytics preview.
+* **Quiz Interface:** Minimalist timer, progress bar, XP tracker.
+* **Profile Page:** Shows streaks, mastery radar, badges, and CareSpace activity.
+
+---
+
+## 7) Architecture Overview
+
+* **Frontend:** React Native (mobile) + PWA (web).
+* **Backend:** Node.js (NestJS) or Python (FastAPI).
+* **Database:** PostgreSQL (core), Redis (cache), S3 (media).
+* **AI Layer:** OpenAI API (quiz gen, rationale, tutoring).
+* **Payments:** Stripe / Xendit / GCash integration.
+* **Auth:** Firebase Auth / Google / Email login.
+* **Analytics:** ClickHouse or BigQuery + Metabase.
+* **Infra:** Railway / Vercel / Render deployment.
+
+---
+
+## 8) Roadmap
+
+| Version | Key Features                                     |
+| ------- | ------------------------------------------------ |
+| v1.0    | Core app, login, AI quiz system                  |
+| v1.1    | CareSpace feed + Clans + Daily Challenge         |
+| v1.2    | Review Center Hub + Job Board                    |
+| v1.3    | NurseMind AI + Analytics Dashboard               |
+| v1.4    | Mentorship Threads + Verification Badges         |
+| v1.5    | AdSpace Dashboard + Institutional Partnerships   |
+| v2.0    | Global expansion + Scholarships + Offline Access |
+
+---
+
+## 9) Mission Statement
+
+> **CKalingaLink** is more than an app — it’s a movement. We don’t just prepare nurses to pass exams; we help them *live* the calling of care. Through learning, mentorship, and community, we connect every future nurse to the heart of compassion — one link at a time.

@@ -1,0 +1,152 @@
+# NurseLink — PRD, Architecture & Launch Plan
+
+> A modern, AI-powered social learning network for nursing students, aspiring nurses, and graduates preparing for the Philippine Nurse Licensure Exam (PNLE) and NCLEX.
+
+---
+
+## 1) Vision & Goals
+
+* **Vision:** Build the first-ever *social learning world* for nurses — connecting aspiring students, current learners, and professional nurses through collaboration, competition, and compassion.
+* **Primary Goals**
+
+  1. Create a safe and interactive digital ecosystem that merges social media and nursing education.
+  2. Inspire freshmen and future nursing students to join the community early and learn through real experiences.
+  3. Support active nursing students with adaptive AI-powered study tools.
+  4. Guide graduates toward licensure success and job opportunities.
+  5. Build a global network where nurses learn, teach, and grow together.
+  6. Enable monetization and sustainability through ethical, relevant advertising spaces.
+
+---
+
+## 2) Brand & Identity
+
+* **App Name:** **NurseLink**
+* **Home Feed Name:** **CareSpace** — The social learning feed where nurses share, post, and grow together.
+
+### 🎯 Tagline
+
+> **“We don’t just give answers — we build nurses through experience.”**
+
+### 💬 Tagline Variants (rotating display)
+
+1. “We don’t just give answers — we build nurses through experience.”
+2. “No shortcuts. No cheating. Just experience, growth, and mastery.”
+3. “Where learning feels real — we provide experience, not just answers.”
+4. “You don’t memorize to pass — you experience to become.”
+5. “We can’t give you answers, but we’ll give you the strength to find them.”
+6. “Train hard. Think smart. Feel the nurse within you.”
+7. “Experience nursing before you wear the uniform.”
+
+✨ **Display:** These quotes rotate across the **loading screen**, **login page**, and **CareSpace home cards**, encouraging positivity and motivation.
+
+---
+
+## 3) Core Feature Overview
+
+### 🩺 Learning System
+
+* **AI Review Generator:** Creates adaptive quizzes, mocks, and assignments from topics (Y1–Y4 curriculum + PNLE/NCLEX blueprint).
+* **Assignments:** Time-limited tasks with AI feedback and analytics.
+* **Daily Challenge:** 24-hour competitive quiz for global and clan rankings.
+* **Pre-Nursing Pathway:** Orientation and foundation modules for aspiring students.
+
+### 🌐 CareSpace (Social Feed)
+
+* Acts as the **Home Feed** of NurseLink.
+* Users can post study tips, experiences, memes, motivational stories, and achievements.
+* Like, comment, share, and follow system.
+* **Trending Topics:** #MedSurg, #BoardJourney, #StudyTips, #FutureRN.
+* **Mentorship Threads:** Connect freshmen with graduates and mentors.
+* **Achievements Showcase:** Board passers, top scorers, and event highlights.
+
+### 👥 Parties & Clans
+
+* Create or join **Parties (2–10)** or **Clans (10–200)**.
+* Clan Wars: Competitive quiz events with XP and rewards.
+* Clan Rank & Honor Board: Based on total quiz performance and contribution.
+
+### 🧠 AI Copilot — “NurseMind”
+
+* Ask: “Make me a quiz from Med-Surg Cardiovascular.”
+* Explain: “Rationale for question 12 like I’m a first-year.”
+* Plan: “7-day review plan for weak areas in Pharma.”
+
+### 🏫 Review Center & Job Hub
+
+* **Review Center Posting:** ₱2,000/month per listing, visible for 40 days.
+
+  * Show topnotchers, board passers, and international exam achievers.
+  * Include schedules, links, and verified badges.
+* **Job Hiring Page:** Hospitals and clinics post openings for:
+
+  * Fresh graduates.
+  * Board passers seeking experience.
+  * Internship or volunteer programs.
+
+### 💼 Advertisement Space Page
+
+* **AdSpace Page:** A dedicated section where verified sponsors and educational partners can advertise.
+
+  * Review centers, nursing schools, hospitals, and uniform suppliers can showcase promotions or events.
+  * Pricing tiers: ₱1,000 basic (30 days) / ₱3,000 featured (60 days).
+  * Ads appear in rotating banners within CareSpace and on the AdSpace Page.
+  * **Ad Categories:** Education, Healthcare, Career Opportunities, Student Lifestyle, and Tools.
+  * Admin moderation ensures all ads are educationally aligned and safe.
+* **Ad Analytics Dashboard:** Shows impressions, clicks, and engagement.
+
+### 📈 Progress & Gamification
+
+* **XP, streaks, mastery charts.**
+* **Badges:** Quiz Streaks, Top Clans, Consistent Learner.
+* **Levels:** 1–50 ranks (Student → Nurse Leader).
+
+---
+
+## 4) Monetization
+
+* Free Tier: Daily challenge, CareSpace feed, limited drills.
+* **Pro ₱149/mo:** Unlimited drills, analytics, and assignments.
+* **Elite ₱299/mo:** AI Copilot, clan wars, advanced analytics.
+* **Review Center Listing ₱2,000/mo (40 days)** — premium visibility.
+* **Job Board Premium ₱1,000/30 days** — for featured employers.
+* **AdSpace Packages:** ₱1,000–₱3,000 depending on duration and placement.
+* **Team Licenses:** For schools/review centers.
+
+---
+
+## 5) Visual Identity — Color Palette
+
+🎨 **Theme Colors**
+
+* #FFFFFF → Base background (clean & clinical)
+* #C7DCFF → Calm blue secondary panels
+* #FFD0FD → Accent (empathy & warmth)
+* #0080FF → Primary buttons & CTAs (focus & trust)
+
+---
+
+## 6) UI Inspiration
+
+* **Splash Screen:** NurseLink logo with rotating tagline.
+* **Login Screen:** Animated quote fade-in.
+* **CareSpace Home:** Feed layout with user avatars, post cards, and trending tags.
+* **AdSpace Page:** Dedicated banner area and featured ad cards with sponsor info.
+* **Quiz Page:** Timer-based quiz interface with XP progress.
+* **Profile:** Shows streak, XP, mastery radar, badges, and CareSpace posts.
+
+---
+
+## 7) Roadmap
+
+* v1.0: NurseLink Core + AI Quiz System.
+* v1.1: CareSpace Feed + Clans + 24-hour challenge.
+* v1.2: Review Center Ads + Job Board Integration.
+* v1.3: AI Copilot + Analytics Dashboard.
+* v1.4: Mentorship Threads & Verified Institution Badges.
+* v1.5: **AdSpace Page with Dashboard Analytics.**
+
+---
+
+### 💙 NurseLink Mission Statement
+
+> *We can’t give you answers — but we’ll give you the experience, courage, and connection to find them yourself. Together, we link every future nurse to their purpose.*
