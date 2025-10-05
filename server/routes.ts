@@ -18,7 +18,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
+  apiVersion: "2025-09-30.clover",
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -28,6 +28,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Weekly Challenge routes
   const weeklyChallengeRouter = (await import('./routes/weeklyChallenge')).default;
   app.use('/api/weekly-challenge', weeklyChallengeRouter);
+
+  // Enrollee Mode routes
+  const enrolleeModeRouter = (await import('./routes/enrolleeMode')).default;
+  app.use('/api/enrollee', enrolleeModeRouter);
 
   // Object storage routes - Referenced from blueprint:javascript_object_storage
   app.get("/objects/:objectPath(*)", isAuthenticated, async (req: any, res) => {
