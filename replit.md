@@ -83,11 +83,20 @@ Preferred communication style: Simple, everyday language.
 - Support for multiple subscription tiers (free, basic, premium)
 - Customer and subscription ID tracking in user records
 
+**BSN Curriculum Database**:
+- Secure server-side storage of BSN curriculum data (31 subjects, 82 topics, 159 subtopics, 142 question tags)
+- Structured curriculum covering Pre-nursing (Year 0) through Year 4
+- PNLE and NCLEX blueprint mappings for each subject
+- Organized by year, semester, and category (Aspirant/General Education/Major)
+- Curriculum data stored in database tables, not as public JSON files
+- Import script: `server/scripts/import-curriculum.ts` loads data from `server/data/bsn_curriculum.json`
+
 **Key Route Categories**:
 - `/api/auth/*` - Authentication endpoints (login, logout, user profile)
 - `/api/posts/*` - Social feed CRUD operations
 - `/api/quizzes/*` - Quiz generation, retrieval, and attempt tracking
 - `/api/ai/*` - NurseMind conversations and study plans
+- `/api/curriculum/*` - BSN curriculum data access (subjects, topics, subtopics, question tags)
 - `/api/clans/*` and `/api/parties/*` - Community features
 - `/api/review-centers/*`, `/api/jobs/*`, `/api/advertisements/*` - Marketplace
 - `/objects/*` - Object storage access with ACL checks
@@ -105,6 +114,7 @@ Preferred communication style: Simple, everyday language.
 - `daily_challenges`, `leaderboards` - Gamification features
 - `ai_chat_conversations`, `ai_chat_messages` - AI interaction history
 - `ai_study_plans` - Personalized learning paths
+- `curriculum_subjects`, `curriculum_topics`, `curriculum_subtopics`, `curriculum_question_tags` - BSN curriculum database
 - `sessions` - Server-side session storage
 
 **Key Design Patterns**:

@@ -673,7 +673,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Curriculum routes - Secure access to BSN curriculum database
-  app.get('/api/curriculum/subjects', async (req, res) => {
+  app.get('/api/curriculum/subjects', isAuthenticated, async (req, res) => {
     try {
       const subjects = await storage.getAllCurriculumSubjects();
       res.json(subjects);
@@ -683,7 +683,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/curriculum/subjects/year/:year', async (req, res) => {
+  app.get('/api/curriculum/subjects/year/:year', isAuthenticated, async (req, res) => {
     try {
       const year = parseInt(req.params.year);
       const subjects = await storage.getCurriculumSubjectsByYear(year);
@@ -694,7 +694,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/curriculum/subjects/:id', async (req, res) => {
+  app.get('/api/curriculum/subjects/:id', isAuthenticated, async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const subject = await storage.getCurriculumSubjectById(id);
