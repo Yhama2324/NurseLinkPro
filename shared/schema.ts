@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, timestamp, boolean, jsonb, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, timestamp, boolean, jsonb, serial, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { relations } from "drizzle-orm";
@@ -280,7 +280,9 @@ export const weeklyChallengeProgress = pgTable("weekly_challenge_progress", {
   correct: integer("correct").default(0).notNull(),
   streakWeeks: integer("streak_weeks").default(0).notNull(),
   lastUpdated: timestamp("last_updated").defaultNow().notNull(),
-});
+}, (table) => ({
+  uniqueUserWeek: unique().on(table.userId, table.weekStart),
+}));
 
 export const weeklyChallengeEvents = pgTable("weekly_challenge_events", {
   id: serial("id").primaryKey(),
@@ -299,7 +301,9 @@ export const weeklyLeaderboard = pgTable("weekly_leaderboard", {
   score: integer("score").default(0).notNull(),
   rank: integer("rank"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  uniqueWeekUser: unique().on(table.weekStart, table.userId),
+}));
 
 // Sessions table for Replit Auth
 export const sessions = pgTable("sessions", {
