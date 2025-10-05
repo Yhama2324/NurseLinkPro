@@ -232,6 +232,45 @@ export const leaderboards = pgTable("leaderboards", {
   achievedAt: timestamp("achieved_at").defaultNow().notNull(),
 });
 
+// Curriculum tables - Secure backend storage
+export const curriculumSubjects = pgTable("curriculum_subjects", {
+  id: serial("id").primaryKey(),
+  code: varchar("code").notNull().unique(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  year: integer("year").notNull(),
+  semester: integer("semester").notNull(),
+  hoursLec: integer("hours_lec").default(0).notNull(),
+  hoursLab: integer("hours_lab").default(0).notNull(),
+  hoursRle: integer("hours_rle").default(0).notNull(),
+  prerequisites: text("prerequisites").array(),
+  outcomes: text("outcomes").array(),
+  pnleBlueprints: text("pnle_blueprints").array(),
+  nclexBlueprints: text("nclex_blueprints").array(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const curriculumTopics = pgTable("curriculum_topics", {
+  id: serial("id").primaryKey(),
+  subjectId: integer("subject_id").notNull().references(() => curriculumSubjects.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  orderIndex: integer("order_index").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const curriculumSubtopics = pgTable("curriculum_subtopics", {
+  id: serial("id").primaryKey(),
+  topicId: integer("topic_id").notNull().references(() => curriculumTopics.id, { onDelete: 'cascade' }),
+  name: text("name").notNull(),
+  orderIndex: integer("order_index").default(0).notNull(),
+});
+
+export const curriculumQuestionTags = pgTable("curriculum_question_tags", {
+  id: serial("id").primaryKey(),
+  topicId: integer("topic_id").notNull().references(() => curriculumTopics.id, { onDelete: 'cascade' }),
+  tag: varchar("tag").notNull(),
+});
+
 // Sessions table for Replit Auth
 export const sessions = pgTable("sessions", {
   sid: varchar("sid").primaryKey(),
@@ -400,6 +439,24 @@ export const insertAiStudyPlanSchema = createInsertSchema(aiStudyPlans).omit({
   createdAt: true,
 });
 
+export const insertCurriculumSubjectSchema = createInsertSchema(curriculumSubjects).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCurriculumTopicSchema = createInsertSchema(curriculumTopics).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCurriculumSubtopicSchema = createInsertSchema(curriculumSubtopics).omit({
+  id: true,
+});
+
+export const insertCurriculumQuestionTagSchema = createInsertSchema(curriculumQuestionTags).omit({
+  id: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
@@ -431,3 +488,11 @@ export type AiChatMessage = typeof aiChatMessages.$inferSelect;
 export type InsertAiMessage = z.infer<typeof insertAiMessageSchema>;
 export type AiStudyPlan = typeof aiStudyPlans.$inferSelect;
 export type InsertAiStudyPlan = z.infer<typeof insertAiStudyPlanSchema>;
+export type CurriculumSubject = typeof curriculumSubjects.$inferSelect;
+export type InsertCurriculumSubject = z.infer<typeof insertCurriculumSubjectSchema>;
+export type CurriculumTopic = typeof curriculumTopics.$inferSelect;
+export type InsertCurriculumTopic = z.infer<typeof insertCurriculumTopicSchema>;
+export type CurriculumSubtopic = typeof curriculumSubtopics.$inferSelect;
+export type InsertCurriculumSubtopic = z.infer<typeof insertCurriculumSubtopicSchema>;
+export type CurriculumQuestionTag = typeof curriculumQuestionTags.$inferSelect;
+export type InsertCurriculumQuestionTag = z.infer<typeof insertCurriculumQuestionTagSchema>;

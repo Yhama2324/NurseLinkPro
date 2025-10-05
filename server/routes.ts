@@ -672,6 +672,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Curriculum routes - Secure access to BSN curriculum database
+  app.get('/api/curriculum/subjects', async (req, res) => {
+    try {
+      const subjects = await storage.getAllCurriculumSubjects();
+      res.json(subjects);
+    } catch (error) {
+      console.error("Error fetching curriculum subjects:", error);
+      res.status(500).json({ message: "Failed to fetch curriculum subjects" });
+    }
+  });
+
+  app.get('/api/curriculum/subjects/year/:year', async (req, res) => {
+    try {
+      const year = parseInt(req.params.year);
+      const subjects = await storage.getCurriculumSubjectsByYear(year);
+      res.json(subjects);
+    } catch (error) {
+      console.error("Error fetching curriculum subjects by year:", error);
+      res.status(500).json({ message: "Failed to fetch curriculum subjects" });
+    }
+  });
+
+  app.get('/api/curriculum/subjects/:id', async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const subject = await storage.getCurriculumSubjectById(id);
+      
+      if (!subject) {
+        return res.status(404).json({ message: "Subject not found" });
+      }
+
+      const topics = await storage.getCurriculumTopicsBySubject(id);
+      const topicsWithDetails = await Promise.all(
+        topics.map(async (topic) => {
+          const subtopics = await storage.getCurriculumSubtopicsByTopic(topic.id);
+          const questionTags = await storage.getCurriculumQuestionTagsByTopic(topic.id);
+          return { ...topic, subtopics, questionTags };
+        })
+      );
+
+      res.json({ ...subject, topics: topicsWithDetails });
+    } catch (error) {
+      console.error("Error fetching curriculum subject details:", error);
+      res.status(500).json({ message: "Failed to fetch subject details" });
+    }
+  });
+
   // Stripe subscription routes
   app.post('/api/create-subscription', isAuthenticated, async (req: any, res) => {
     try {

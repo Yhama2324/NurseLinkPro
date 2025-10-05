@@ -19,6 +19,10 @@ import {
   aiChatConversations,
   aiChatMessages,
   aiStudyPlans,
+  curriculumSubjects,
+  curriculumTopics,
+  curriculumSubtopics,
+  curriculumQuestionTags,
   type User,
   type UpsertUser,
   type Post,
@@ -48,6 +52,10 @@ import {
   type InsertAiMessage,
   type AiStudyPlan,
   type InsertAiStudyPlan,
+  type CurriculumSubject,
+  type CurriculumTopic,
+  type CurriculumSubtopic,
+  type CurriculumQuestionTag,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -112,6 +120,14 @@ export interface IStorage {
   createAiMessage(message: InsertAiMessage): Promise<AiChatMessage>;
   createStudyPlan(plan: InsertAiStudyPlan): Promise<AiStudyPlan>;
   getUserStudyPlans(userId: string): Promise<AiStudyPlan[]>;
+
+  // Curriculum operations
+  getAllCurriculumSubjects(): Promise<CurriculumSubject[]>;
+  getCurriculumSubjectsByYear(year: number): Promise<CurriculumSubject[]>;
+  getCurriculumSubjectById(id: number): Promise<CurriculumSubject | undefined>;
+  getCurriculumTopicsBySubject(subjectId: number): Promise<CurriculumTopic[]>;
+  getCurriculumSubtopicsByTopic(topicId: number): Promise<CurriculumSubtopic[]>;
+  getCurriculumQuestionTagsByTopic(topicId: number): Promise<CurriculumQuestionTag[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -420,6 +436,53 @@ export class DatabaseStorage implements IStorage {
       .from(aiStudyPlans)
       .where(eq(aiStudyPlans.userId, userId))
       .orderBy(desc(aiStudyPlans.createdAt));
+  }
+
+  // Curriculum operations
+  async getAllCurriculumSubjects(): Promise<CurriculumSubject[]> {
+    return await db
+      .select()
+      .from(curriculumSubjects)
+      .orderBy(curriculumSubjects.year, curriculumSubjects.semester);
+  }
+
+  async getCurriculumSubjectsByYear(year: number): Promise<CurriculumSubject[]> {
+    return await db
+      .select()
+      .from(curriculumSubjects)
+      .where(eq(curriculumSubjects.year, year))
+      .orderBy(curriculumSubjects.semester);
+  }
+
+  async getCurriculumSubjectById(id: number): Promise<CurriculumSubject | undefined> {
+    const [subject] = await db
+      .select()
+      .from(curriculumSubjects)
+      .where(eq(curriculumSubjects.id, id));
+    return subject;
+  }
+
+  async getCurriculumTopicsBySubject(subjectId: number): Promise<CurriculumTopic[]> {
+    return await db
+      .select()
+      .from(curriculumTopics)
+      .where(eq(curriculumTopics.subjectId, subjectId))
+      .orderBy(curriculumTopics.orderIndex);
+  }
+
+  async getCurriculumSubtopicsByTopic(topicId: number): Promise<CurriculumSubtopic[]> {
+    return await db
+      .select()
+      .from(curriculumSubtopics)
+      .where(eq(curriculumSubtopics.topicId, topicId))
+      .orderBy(curriculumSubtopics.orderIndex);
+  }
+
+  async getCurriculumQuestionTagsByTopic(topicId: number): Promise<CurriculumQuestionTag[]> {
+    return await db
+      .select()
+      .from(curriculumQuestionTags)
+      .where(eq(curriculumQuestionTags.topicId, topicId));
   }
 }
 
