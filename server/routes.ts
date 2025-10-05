@@ -206,8 +206,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/quizzes/generate', isAuthenticated, async (req: any, res) => {
     try {
-      const { topic, category, difficulty, questionCount = 10 } = req.body;
+      const { topic, category, difficulty } = req.body;
       const userId = req.user.claims.sub;
+
+      // Get user to check subscription tier and last generation time
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Determine quiz limits based on subscription tier
+      const tierLimits = {
+        free: { questionCount: 3, cooldownHours: 24, earnXP: false },
+        basic: { questionCount: 30, cooldownHours: 4, earnXP: true },
+        premium: { questionCount: 50, cooldownHours: user.customQuizIntervalHours || 1, earnXP: true }
+      };
+
+      const tier = user.subscriptionTier as 'free' | 'basic' | 'premium';
+      const limits = tierLimits[tier] || tierLimits.free;
+
+      // Check if user can generate a new quiz (cooldown check)
+      if (user.lastQuizGenerationTime) {
+        const timeSinceLastGeneration = Date.now() - new Date(user.lastQuizGenerationTime).getTime();
+        const cooldownMs = limits.cooldownHours * 60 * 60 * 1000;
+        
+        if (timeSinceLastGeneration < cooldownMs) {
+          const remainingMs = cooldownMs - timeSinceLastGeneration;
+          const remainingHours = Math.ceil(remainingMs / (60 * 60 * 1000));
+          return res.status(429).json({ 
+            message: `You can generate a new quiz in ${remainingHours} hour(s). Upgrade your plan for faster quiz generation!`,
+            nextAvailableTime: new Date(new Date(user.lastQuizGenerationTime).getTime() + cooldownMs).toISOString()
+          });
+        }
+      }
+
+      const questionCount = limits.questionCount;
 
       // Generate quiz using OpenAI
       const completion = await openai.chat.completions.create({
@@ -251,7 +284,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      res.json(quiz);
+      // Update last quiz generation time
+      await storage.updateUserQuizGenerationTime(userId);
+
+      res.json({ 
+        ...quiz, 
+        canEarnXP: limits.earnXP,
+        questionCount: questionsData.length 
+      });
     } catch (error: any) {
       console.error("Error generating quiz:", error);
       res.status(500).json({ message: error.message || "Failed to generate quiz" });
@@ -264,7 +304,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const quizId = parseInt(req.params.id);
       const { score, correctAnswers, totalQuestions } = req.body;
       
-      const xpEarned = correctAnswers * 10;
+      // Get user to check subscription tier
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Free tier users don't earn XP
+      const canEarnXP = user.subscriptionTier !== 'free';
+      const xpEarned = canEarnXP ? correctAnswers * 10 : 0;
       
       const attempt = await storage.saveQuizAttempt({
         userId,
@@ -275,10 +323,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         xpEarned
       });
 
-      // Update user XP
-      await storage.updateUserXP(userId, xpEarned);
+      // Update user XP only if they can earn it
+      if (canEarnXP) {
+        await storage.updateUserXP(userId, xpEarned);
+      }
 
-      res.json(attempt);
+      res.json({ ...attempt, canEarnXP });
     } catch (error) {
       console.error("Error saving quiz attempt:", error);
       res.status(500).json({ message: "Failed to save quiz attempt" });

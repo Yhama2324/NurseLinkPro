@@ -55,11 +55,13 @@ import { eq, desc, and, sql } from "drizzle-orm";
 export interface IStorage {
   // User operations
   getUser(id: string): Promise<User | undefined>;
+  getUserById(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUserXP(id: string, xp: number): Promise<void>;
   updateUserStreak(id: string, streak: number): Promise<void>;
   updateStripeCustomerId(id: string, customerId: string): Promise<User>;
   updateUserStripeInfo(id: string, info: { stripeCustomerId: string; stripeSubscriptionId: string }): Promise<User>;
+  updateUserQuizGenerationTime(id: string): Promise<void>;
   
   // Posts operations
   getAllPosts(): Promise<(Post & { user?: User })[]>;
@@ -168,6 +170,18 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, id))
       .returning();
     return user;
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async updateUserQuizGenerationTime(id: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ lastQuizGenerationTime: new Date(), updatedAt: new Date() })
+      .where(eq(users.id, id));
   }
 
   // Posts operations
