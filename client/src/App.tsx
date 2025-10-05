@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import SplashScreen from "@/components/SplashScreen";
-import Landing from "@/pages/Landing";
+import LoginRegister from "@/pages/LoginRegister";
 import Home from "@/pages/Home";
 import Quizzes from "@/pages/Quizzes";
 import Profile from "@/pages/Profile";
@@ -40,7 +40,7 @@ function Router() {
   return (
     <Switch>
       {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
+        <Route path="/" component={LoginRegister} />
       ) : !user?.onboardingCompleted ? (
         <Route component={Onboarding} />
       ) : (
