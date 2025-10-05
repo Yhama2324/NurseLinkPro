@@ -92,6 +92,21 @@ export const quizAttempts = pgTable("quiz_attempts", {
   completedAt: timestamp("completed_at").defaultNow().notNull(),
 });
 
+// Quiz items pool - AI-generated questions stored for later use
+export const quizItems = pgTable("quiz_items", {
+  id: serial("id").primaryKey(),
+  subjectCode: text("subject_code").notNull(),
+  topicName: text("topic_name"),
+  question: text("question").notNull(),
+  choices: jsonb("choices").notNull(),
+  correctIndex: integer("correct_index").notNull(),
+  difficulty: text("difficulty").default("medium").notNull(),
+  tags: text("tags").array().default(sql`'{}'`),
+  rationale: text("rationale"),
+  sourceNote: text("source_note"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Clans table
 export const clans = pgTable("clans", {
   id: serial("id").primaryKey(),
@@ -495,6 +510,11 @@ export const insertQuestionSchema = createInsertSchema(questions).omit({
   id: true,
 });
 
+export const insertQuizItemSchema = createInsertSchema(quizItems).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertClanSchema = createInsertSchema(clans).omit({
   id: true,
   memberCount: true,
@@ -608,6 +628,8 @@ export type Quiz = typeof quizzes.$inferSelect;
 export type InsertQuiz = z.infer<typeof insertQuizSchema>;
 export type Question = typeof questions.$inferSelect;
 export type InsertQuestion = z.infer<typeof insertQuestionSchema>;
+export type QuizItem = typeof quizItems.$inferSelect;
+export type InsertQuizItem = z.infer<typeof insertQuizItemSchema>;
 export type QuizAttempt = typeof quizAttempts.$inferSelect;
 export type Clan = typeof clans.$inferSelect;
 export type InsertClan = z.infer<typeof insertClanSchema>;
