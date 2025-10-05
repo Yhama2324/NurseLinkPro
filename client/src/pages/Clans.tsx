@@ -10,6 +10,121 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Clan, Leaderboard, Party } from "@shared/schema";
 
+const SAMPLE_CLANS: Clan[] = [
+  {
+    id: 1,
+    name: "NCLEX Warriors",
+    description: "Dedicated group preparing for NCLEX. Daily quizzes and study sessions!",
+    creatorId: "user-1",
+    memberCount: 156,
+    totalXp: 45890,
+    rank: 1,
+    createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 2,
+    name: "Future Nurse Leaders",
+    description: "Building the next generation of compassionate healthcare providers.",
+    creatorId: "user-2",
+    memberCount: 142,
+    totalXp: 42150,
+    rank: 2,
+    createdAt: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 3,
+    name: "Med-Surg Masters",
+    description: "Focused on mastering medical-surgical nursing concepts.",
+    creatorId: "user-3",
+    memberCount: 128,
+    totalXp: 38920,
+    rank: 3,
+    createdAt: new Date(Date.now() - 70 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 4,
+    name: "PNLE Achievers",
+    description: "Filipino nurses preparing for the Philippine Nursing Licensure Exam.",
+    creatorId: "user-4",
+    memberCount: 98,
+    totalXp: 29340,
+    rank: 4,
+    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 5,
+    name: "Cardiac Care Experts",
+    description: "Specializing in cardiovascular nursing and critical care.",
+    creatorId: "user-5",
+    memberCount: 87,
+    totalXp: 26100,
+    rank: 5,
+    createdAt: new Date(Date.now() - 50 * 24 * 60 * 60 * 1000),
+  },
+];
+
+const SAMPLE_PARTIES: Party[] = [
+  {
+    id: 1,
+    name: "Pharmacology Study Group",
+    description: "Weekly sessions focusing on drug classifications and mechanisms",
+    creatorId: "user-1",
+    memberCount: 4,
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 2,
+    name: "Night Shift Study Crew",
+    description: "Study together during late night hours",
+    creatorId: "user-2",
+    memberCount: 3,
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 3,
+    name: "Maternal Health Focus",
+    description: "Preparing for OB/GYN nursing topics",
+    creatorId: "user-3",
+    memberCount: 5,
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: 4,
+    name: "Pediatrics Champions",
+    description: "Mastering pediatric nursing care",
+    creatorId: "user-4",
+    memberCount: 2,
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+  },
+];
+
+const SAMPLE_LEADERBOARD: Leaderboard[] = [
+  {
+    id: 1,
+    userId: "user-1",
+    quizId: null,
+    rank: 1,
+    score: 2850,
+    achievedAt: new Date(),
+  },
+  {
+    id: 2,
+    userId: "user-2",
+    quizId: null,
+    rank: 2,
+    score: 2420,
+    achievedAt: new Date(),
+  },
+  {
+    id: 3,
+    userId: "user-3",
+    quizId: null,
+    rank: 3,
+    score: 2180,
+    achievedAt: new Date(),
+  },
+];
+
 export default function Clans() {
   const [selectedTab, setSelectedTab] = useState("clans");
 
@@ -25,13 +140,17 @@ export default function Clans() {
     queryKey: ["/api/leaderboard"],
   });
 
+  const displayClans = clans && clans.length > 0 ? clans : SAMPLE_CLANS;
+  const displayParties = parties && parties.length > 0 ? parties : SAMPLE_PARTIES;
+  const displayLeaderboard = leaderboard && leaderboard.length > 0 ? leaderboard : SAMPLE_LEADERBOARD;
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <TopHeader title="Clans & Leaderboards" showSearch />
 
       <div className="px-4 py-6 max-w-md mx-auto space-y-6">
         {/* Daily Challenge Leaderboard */}
-        <Card className="p-6 bg-gradient-to-br from-chart-4/10 to-chart-3/10">
+        <Card className="p-6 bg-gradient-to-br from-chart-4/10 to-chart-3/10 card-reveal shimmer">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Trophy className="w-5 h-5 text-chart-4" />
@@ -43,11 +162,10 @@ export default function Clans() {
           </div>
           <p className="text-sm text-muted-foreground mb-4">Top 3 today</p>
           <div className="space-y-2">
-            {leaderboard?.slice(0, 3).map((entry) => (
-              <LeaderboardCard
-                key={entry.id}
-                entry={entry as any}
-              />
+            {displayLeaderboard?.slice(0, 3).map((entry, index) => (
+              <div key={entry.id} className={`card-reveal stagger-${index + 1}`}>
+                <LeaderboardCard entry={entry as any} />
+              </div>
             ))}
           </div>
         </Card>
@@ -66,54 +184,41 @@ export default function Clans() {
           </TabsList>
 
           <TabsContent value="clans" className="space-y-4 mt-4">
-            <Button className="w-full gap-2" data-testid="button-create-clan">
+            <Button className="w-full gap-2 card-reveal" data-testid="button-create-clan">
               <Plus className="w-4 h-4" />
               Create Clan
             </Button>
 
-            {clans && clans.length > 0 ? (
-              clans.map((clan) => <ClanCard key={clan.id} clan={clan} />)
-            ) : (
-              <Card className="p-8 text-center">
-                <Users className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                <p className="text-muted-foreground mb-4">No clans available yet</p>
-                <Button size="sm" data-testid="button-create-first-clan">
-                  Create the First Clan
-                </Button>
-              </Card>
-            )}
+            {displayClans.map((clan, index) => (
+              <div key={clan.id} className={`card-reveal stagger-${Math.min(index + 1, 5)}`}>
+                <ClanCard clan={clan} />
+              </div>
+            ))}
           </TabsContent>
 
           <TabsContent value="parties" className="space-y-4 mt-4">
-            <Button className="w-full gap-2" data-testid="button-create-party">
+            <Button className="w-full gap-2 card-reveal" data-testid="button-create-party">
               <Plus className="w-4 h-4" />
               Create Party
             </Button>
 
-            {parties && parties.length > 0 ? (
-              parties.map((party) => (
-                <Card key={party.id} className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold">{party.name}</h3>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Users className="w-4 h-4" />
-                      <span>{party.memberCount}/{party.maxMembers}</span>
-                    </div>
+            {displayParties.map((party, index) => (
+              <Card key={party.id} className={`p-4 hover-elevate scale-on-hover card-reveal stagger-${Math.min(index + 1, 5)}`} data-testid={`party-${party.id}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold">{party.name}</h3>
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Users className="w-4 h-4" />
+                    <span>{party.memberCount} members</span>
                   </div>
-                  {party.description && (
-                    <p className="text-sm text-muted-foreground mb-3">{party.description}</p>
-                  )}
-                  <Button size="sm" className="w-full" data-testid={`button-join-party-${party.id}`}>
-                    Join Party
-                  </Button>
-                </Card>
-              ))
-            ) : (
-              <Card className="p-8 text-center">
-                <Users className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
-                <p className="text-muted-foreground">No parties yet. Create a small study group!</p>
+                </div>
+                {party.description && (
+                  <p className="text-sm text-muted-foreground mb-3">{party.description}</p>
+                )}
+                <Button size="sm" className="w-full" data-testid={`button-join-party-${party.id}`}>
+                  Join Party
+                </Button>
               </Card>
-            )}
+            ))}
           </TabsContent>
         </Tabs>
       </div>
