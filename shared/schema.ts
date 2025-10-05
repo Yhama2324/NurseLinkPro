@@ -18,6 +18,8 @@ export const users = pgTable("users", {
   subscriptionTier: text("subscription_tier").default("free").notNull(),
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
+  lastQuizGenerationTime: timestamp("last_quiz_generation_time"),
+  customQuizIntervalHours: integer("custom_quiz_interval_hours").default(1),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
