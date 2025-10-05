@@ -82,7 +82,7 @@ import {
   type InsertUserSettings,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, sql } from "drizzle-orm";
+import { eq, desc, and, sql, inArray } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -149,6 +149,7 @@ export interface IStorage {
   getAllCurriculumSubjects(): Promise<CurriculumSubject[]>;
   getCurriculumSubjectsByYear(year: number): Promise<CurriculumSubject[]>;
   getCurriculumSubjectById(id: number): Promise<CurriculumSubject | undefined>;
+  getCurriculumSubjectsByCodes(codes: string[]): Promise<CurriculumSubject[]>;
   getCurriculumTopicsBySubject(subjectId: number): Promise<CurriculumTopic[]>;
   getCurriculumSubtopicsByTopic(topicId: number): Promise<CurriculumSubtopic[]>;
   getCurriculumQuestionTagsByTopic(topicId: number): Promise<CurriculumQuestionTag[]>;
@@ -509,6 +510,14 @@ export class DatabaseStorage implements IStorage {
       .from(curriculumSubjects)
       .where(eq(curriculumSubjects.id, id));
     return subject;
+  }
+
+  async getCurriculumSubjectsByCodes(codes: string[]): Promise<CurriculumSubject[]> {
+    if (codes.length === 0) return [];
+    return await db
+      .select()
+      .from(curriculumSubjects)
+      .where(inArray(curriculumSubjects.code, codes));
   }
 
   async getCurriculumTopicsBySubject(subjectId: number): Promise<CurriculumTopic[]> {

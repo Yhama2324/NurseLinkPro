@@ -300,6 +300,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const questionCount = limits.questionCount;
 
+      // Get user's enrolled subjects if onboarding is completed
+      let topicContext = topic;
+      if (user.onboardingCompleted) {
+        const enrollments = await storage.getUserEnrollments(userId);
+        const activeEnrollments = enrollments.filter(e => e.active);
+        
+        if (activeEnrollments.length > 0) {
+          // Get canonical codes from enrolled subjects
+          const canonicalCodes = activeEnrollments
+            .map(e => e.subject?.canonicalCode)
+            .filter(Boolean) as string[];
+          
+          // Get curriculum subjects by codes
+          const curriculumSubjects = await storage.getCurriculumSubjectsByCodes(canonicalCodes);
+          
+          // Get topics for each curriculum subject
+          const allTopics = [];
+          for (const subject of curriculumSubjects) {
+            const topics = await storage.getCurriculumTopicsBySubject(subject.id);
+            allTopics.push(...topics.map(t => `${subject.name}: ${t.name}`));
+          }
+          
+          if (allTopics.length > 0) {
+            topicContext = `${topic}. Focus on topics from the student's enrolled subjects: ${allTopics.slice(0, 10).join(', ')}`;
+          }
+        }
+      }
+
       // Generate quiz using OpenAI
       const completion = await openai.chat.completions.create({
         model: "gpt-4",
@@ -310,7 +338,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           },
           {
             role: "user",
-            content: `Create ${questionCount} multiple choice questions about ${topic} at ${difficulty} difficulty level. Return a JSON array with this format:
+            content: `Create ${questionCount} multiple choice questions about ${topicContext} at ${difficulty} difficulty level. Return a JSON array with this format:
             [{"questionText": "...", "options": ["A", "B", "C", "D"], "correctAnswer": "...", "rationale": "..."}]`
           }
         ],
