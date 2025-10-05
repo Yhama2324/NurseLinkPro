@@ -23,6 +23,9 @@ import {
   curriculumTopics,
   curriculumSubtopics,
   curriculumQuestionTags,
+  weeklyChallengeProgress,
+  weeklyChallengeEvents,
+  weeklyLeaderboard,
   type User,
   type UpsertUser,
   type Post,
@@ -56,6 +59,12 @@ import {
   type CurriculumTopic,
   type CurriculumSubtopic,
   type CurriculumQuestionTag,
+  type WeeklyChallengeProgress,
+  type InsertWeeklyChallengeProgress,
+  type WeeklyChallengeEvent,
+  type InsertWeeklyChallengeEvent,
+  type WeeklyLeaderboard,
+  type InsertWeeklyLeaderboard,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, sql } from "drizzle-orm";
@@ -128,6 +137,15 @@ export interface IStorage {
   getCurriculumTopicsBySubject(subjectId: number): Promise<CurriculumTopic[]>;
   getCurriculumSubtopicsByTopic(topicId: number): Promise<CurriculumSubtopic[]>;
   getCurriculumQuestionTagsByTopic(topicId: number): Promise<CurriculumQuestionTag[]>;
+
+  // Weekly Challenge operations
+  getWeeklyChallengeProgress(userId: string, weekStart: Date): Promise<WeeklyChallengeProgress | undefined>;
+  upsertWeeklyChallengeProgress(progress: InsertWeeklyChallengeProgress): Promise<WeeklyChallengeProgress>;
+  recordWeeklyChallengeEvent(event: InsertWeeklyChallengeEvent): Promise<WeeklyChallengeEvent>;
+  getWeeklyChallengeEvents(userId: string, weekStart: Date): Promise<WeeklyChallengeEvent[]>;
+  upsertWeeklyLeaderboard(entry: InsertWeeklyLeaderboard): Promise<WeeklyLeaderboard>;
+  getWeeklyLeaderboard(weekStart: Date): Promise<(WeeklyLeaderboard & { user?: User })[]>;
+  updateWeeklyLeaderboardRanks(weekStart: Date): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -483,6 +501,99 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(curriculumQuestionTags)
       .where(eq(curriculumQuestionTags.topicId, topicId));
+  }
+
+  // Weekly Challenge operations
+  async getWeeklyChallengeProgress(userId: string, weekStart: Date): Promise<WeeklyChallengeProgress | undefined> {
+    const [progress] = await db
+      .select()
+      .from(weeklyChallengeProgress)
+      .where(
+        and(
+          eq(weeklyChallengeProgress.userId, userId),
+          eq(weeklyChallengeProgress.weekStart, weekStart)
+        )
+      );
+    return progress;
+  }
+
+  async upsertWeeklyChallengeProgress(progressData: InsertWeeklyChallengeProgress): Promise<WeeklyChallengeProgress> {
+    const [progress] = await db
+      .insert(weeklyChallengeProgress)
+      .values(progressData)
+      .onConflictDoUpdate({
+        target: [weeklyChallengeProgress.userId, weeklyChallengeProgress.weekStart],
+        set: {
+          answered: sql`${weeklyChallengeProgress.answered} + ${progressData.answered}`,
+          correct: sql`${weeklyChallengeProgress.correct} + ${progressData.correct}`,
+          lastUpdated: new Date(),
+        },
+      })
+      .returning();
+    return progress;
+  }
+
+  async recordWeeklyChallengeEvent(event: InsertWeeklyChallengeEvent): Promise<WeeklyChallengeEvent> {
+    const [newEvent] = await db
+      .insert(weeklyChallengeEvents)
+      .values(event)
+      .returning();
+    return newEvent;
+  }
+
+  async getWeeklyChallengeEvents(userId: string, weekStart: Date): Promise<WeeklyChallengeEvent[]> {
+    return await db
+      .select()
+      .from(weeklyChallengeEvents)
+      .where(
+        and(
+          eq(weeklyChallengeEvents.userId, userId),
+          eq(weeklyChallengeEvents.weekStart, weekStart)
+        )
+      );
+  }
+
+  async upsertWeeklyLeaderboard(entry: InsertWeeklyLeaderboard): Promise<WeeklyLeaderboard> {
+    const [leaderboardEntry] = await db
+      .insert(weeklyLeaderboard)
+      .values(entry)
+      .onConflictDoUpdate({
+        target: [weeklyLeaderboard.weekStart, weeklyLeaderboard.userId],
+        set: {
+          score: entry.score,
+        },
+      })
+      .returning();
+    return leaderboardEntry;
+  }
+
+  async getWeeklyLeaderboard(weekStart: Date): Promise<(WeeklyLeaderboard & { user?: User })[]> {
+    const results = await db
+      .select()
+      .from(weeklyLeaderboard)
+      .leftJoin(users, eq(weeklyLeaderboard.userId, users.id))
+      .where(eq(weeklyLeaderboard.weekStart, weekStart))
+      .orderBy(desc(weeklyLeaderboard.score));
+
+    return results.map((row) => ({
+      ...row.weekly_leaderboard,
+      user: row.users || undefined,
+    }));
+  }
+
+  async updateWeeklyLeaderboardRanks(weekStart: Date): Promise<void> {
+    const entries = await db
+      .select()
+      .from(weeklyLeaderboard)
+      .where(eq(weeklyLeaderboard.weekStart, weekStart))
+      .orderBy(desc(weeklyLeaderboard.score));
+
+    for (let i = 0; i < entries.length; i++) {
+      await db
+        .update(weeklyLeaderboard)
+        .set({ rank: i + 1 })
+        .where(eq(weeklyLeaderboard.id, entries[i].id));
+    }
   }
 }
 
