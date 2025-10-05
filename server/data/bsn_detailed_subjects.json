@@ -1,0 +1,329 @@
+{
+  "version": "2025-10-05",
+  "coverage_note": "Core subjects expanded with outcomes, topics, and tags. No school attribution.",
+  "subjects": [
+    {
+      "code": "NCM6103",
+      "title": "Fundamentals of Nursing Practice",
+      "outcomes": [
+        "Demonstrate safe basic nursing skills following infection control protocols",
+        "Document care using accepted charting methods and SBAR"
+      ],
+      "topics": [
+        {
+          "name": "Professionalism & Ethics",
+          "subtopics": [
+            "Code of Ethics",
+            "Legal responsibilities"
+          ],
+          "tags": [
+            "ethics",
+            "legal",
+            "professionalism"
+          ]
+        },
+        {
+          "name": "Safety & Infection Control",
+          "subtopics": [
+            "Hand hygiene",
+            "PPE",
+            "Isolation",
+            "Sharps"
+          ],
+          "tags": [
+            "infection_control",
+            "ppe",
+            "isolation"
+          ]
+        },
+        {
+          "name": "Basic Care",
+          "subtopics": [
+            "Hygiene",
+            "Mobility",
+            "Positioning",
+            "Elimination"
+          ],
+          "tags": [
+            "adl",
+            "mobility",
+            "positioning",
+            "elimination"
+          ]
+        },
+        {
+          "name": "Documentation",
+          "subtopics": [
+            "DAR/SOAPIE",
+            "SBAR handoff"
+          ],
+          "tags": [
+            "documentation",
+            "sbar"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NURS6101",
+      "title": "Anatomy and Physiology",
+      "outcomes": [
+        "Explain structure–function relationships across major systems"
+      ],
+      "topics": [
+        {
+          "name": "Cells & Tissues",
+          "subtopics": [
+            "Homeostasis",
+            "Repair"
+          ],
+          "tags": [
+            "cells",
+            "homeostasis"
+          ]
+        },
+        {
+          "name": "Cardiovascular",
+          "subtopics": [
+            "Cardiac cycle",
+            "Hemodynamics"
+          ],
+          "tags": [
+            "cardio"
+          ]
+        },
+        {
+          "name": "Respiratory",
+          "subtopics": [
+            "Ventilation",
+            "Gas exchange"
+          ],
+          "tags": [
+            "resp"
+          ]
+        },
+        {
+          "name": "Renal & F/E",
+          "subtopics": [
+            "Nephron",
+            "Acid-base"
+          ],
+          "tags": [
+            "renal",
+            "fluids",
+            "acid_base"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NURS6103",
+      "title": "Microbiology and Parasitology",
+      "outcomes": [
+        "Apply concepts of pathogens and prevention to clinical practice"
+      ],
+      "topics": [
+        {
+          "name": "Bacteria/Viruses/Fungi",
+          "subtopics": [
+            "Virulence",
+            "Resistance"
+          ],
+          "tags": [
+            "pathogens",
+            "antibiotic_resistance"
+          ]
+        },
+        {
+          "name": "Parasitology",
+          "subtopics": [
+            "Common parasites",
+            "Prevention"
+          ],
+          "tags": [
+            "parasites"
+          ]
+        },
+        {
+          "name": "Lab Basics",
+          "subtopics": [
+            "Cultures",
+            "Sensitivity"
+          ],
+          "tags": [
+            "cultures",
+            "lab"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NCM6206",
+      "title": "Pharmacology",
+      "outcomes": [
+        "Ensure safe medication administration and monitoring"
+      ],
+      "topics": [
+        {
+          "name": "Dosage & Calculations",
+          "subtopics": [
+            "Dimensional analysis",
+            "IV drip rates"
+          ],
+          "tags": [
+            "dosage_calc"
+          ]
+        },
+        {
+          "name": "Med Safety",
+          "subtopics": [
+            "10 Rights",
+            "High-alert meds"
+          ],
+          "tags": [
+            "med_rights",
+            "safety"
+          ]
+        },
+        {
+          "name": "Systems Pharm",
+          "subtopics": [
+            "Cardio",
+            "Resp",
+            "Endocrine"
+          ],
+          "tags": [
+            "cardio_pharm",
+            "resp_pharm",
+            "endocrine_pharm"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NCM6418",
+      "title": "Nursing Care of Clients with Life Threatening Conditions",
+      "outcomes": [
+        "Recognize and manage acute/critical conditions following protocols"
+      ],
+      "topics": [
+        {
+          "name": "Shock & Sepsis",
+          "subtopics": [
+            "Types of shock",
+            "Sepsis bundles"
+          ],
+          "tags": [
+            "shock",
+            "sepsis"
+          ]
+        },
+        {
+          "name": "Neurologic Emergencies",
+          "subtopics": [
+            "Stroke",
+            "ICP management"
+          ],
+          "tags": [
+            "stroke",
+            "icp"
+          ]
+        },
+        {
+          "name": "Cardiac Emergencies",
+          "subtopics": [
+            "ACS",
+            "Arrhythmias basics"
+          ],
+          "tags": [
+            "acs",
+            "ecg"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NCM6421",
+      "title": "Disaster Nursing",
+      "outcomes": [
+        "Apply disaster risk reduction and mass-casualty triage principles"
+      ],
+      "topics": [
+        {
+          "name": "DRRM Cycle",
+          "subtopics": [
+            "Mitigation",
+            "Preparedness",
+            "Response",
+            "Recovery"
+          ],
+          "tags": [
+            "drrm"
+          ]
+        },
+        {
+          "name": "Triage",
+          "subtopics": [
+            "START/JumpSTART",
+            "Color codes"
+          ],
+          "tags": [
+            "triage"
+          ]
+        },
+        {
+          "name": "Public Health Emergencies",
+          "subtopics": [
+            "Outbreak control",
+            "ICS"
+          ],
+          "tags": [
+            "outbreak",
+            "ics"
+          ]
+        }
+      ]
+    },
+    {
+      "code": "NCM6419",
+      "title": "Nursing Leadership and Management",
+      "outcomes": [
+        "Demonstrate delegation, prioritization, and unit leadership"
+      ],
+      "topics": [
+        {
+          "name": "Delegation",
+          "subtopics": [
+            "5 Rights",
+            "Scope of practice"
+          ],
+          "tags": [
+            "delegation"
+          ]
+        },
+        {
+          "name": "Prioritization",
+          "subtopics": [
+            "ABCs",
+            "Maslow"
+          ],
+          "tags": [
+            "abcs",
+            "maslow"
+          ]
+        },
+        {
+          "name": "Quality & Safety",
+          "subtopics": [
+            "Incident reporting",
+            "QI tools"
+          ],
+          "tags": [
+            "qi",
+            "incident_report"
+          ]
+        }
+      ]
+    }
+  ]
+}
