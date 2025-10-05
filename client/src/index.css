@@ -26,17 +26,17 @@
 
   --card-border: 220 8% 92%;
 
-  --sidebar: 217 20% 96%;
+  --sidebar: 217 100% 90%;
 
   --sidebar-foreground: 220 18% 22%;
 
-  --sidebar-border: 217 15% 90%;
+  --sidebar-border: 217 60% 85%;
 
   --sidebar-primary: 207 100% 50%;
 
   --sidebar-primary-foreground: 0 0% 98%;
 
-  --sidebar-accent: 217 35% 88%;
+  --sidebar-accent: 300 100% 91%;
 
   --sidebar-accent-foreground: 220 20% 25%;
 
@@ -52,7 +52,7 @@
 
   --primary-foreground: 0 0% 98%;
 
-  --secondary: 217 25% 90%;
+  --secondary: 217 100% 90%;
 
   --secondary-foreground: 220 20% 25%;
 
@@ -60,7 +60,7 @@
 
   --muted-foreground: 220 15% 40%;
 
-  --accent: 217 30% 90%;
+  --accent: 300 100% 91%;
 
   --accent-foreground: 220 20% 25%;
 
@@ -76,7 +76,7 @@
   --chart-4: 38 92% 50%;
   --chart-5: 217 80% 60%;
 
-  --font-sans: Poppins, Open Sans, sans-serif;
+  --font-sans: Poppins, Nunito Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: .75rem;
