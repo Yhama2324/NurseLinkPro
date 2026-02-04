@@ -1,0 +1,61 @@
+2026-01-21 16:00:18.778 UTC [68342] LOG:  received direct SSL connection request without ALPN protocol negotiation extension
+2026-01-21 16:00:21.566 UTC [68343] LOG:  received direct SSL connection request without ALPN protocol negotiation extension
+2026-01-21 16:00:31.459 UTC [68345] LOG:  received direct SSL connection request without ALPN protocol negotiation extension
+2026-01-21 16:00:37.918 UTC [68346] LOG:  received direct SSL connection request without ALPN protocol negotiation extension
+2026-01-21 16:00:39.913 UTC [68348] LOG:  could not accept SSL connection: unsupported protocol
+2026-01-21 16:00:39.913 UTC [68348] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-21 16:00:42.819 UTC [68349] LOG:  could not accept SSL connection: unsupported protocol
+2026-01-21 16:00:42.819 UTC [68349] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-21 16:00:46.224 UTC [68350] LOG:  could not accept SSL connection: version too low
+2026-01-21 16:00:46.224 UTC [68350] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-21 16:00:49.102 UTC [68351] LOG:  received direct SSL connection request without ALPN protocol negotiation extension
+2026-01-21 16:00:51.197 UTC [68352] LOG:  could not accept SSL connection: unsupported protocol
+2026-01-21 16:00:51.197 UTC [68352] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-21 16:00:54.344 UTC [68353] LOG:  could not accept SSL connection: unsupported protocol
+2026-01-21 16:00:54.344 UTC [68353] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-21 16:00:56.706 UTC [68355] LOG:  could not accept SSL connection: version too low
+2026-01-21 16:00:56.706 UTC [68355] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-21 17:04:23.839 UTC [68546] LOG:  could not accept SSL connection: no application protocol
+2026-01-21 17:04:25.926 UTC [68547] LOG:  could not accept SSL connection: no application protocol
+2026-01-21 17:04:28.027 UTC [68548] LOG:  could not accept SSL connection: no application protocol
+2026-01-21 17:04:30.578 UTC [68549] LOG:  could not accept SSL connection: no application protocol
+2026-01-21 17:04:35.089 UTC [68550] LOG:  could not accept SSL connection: no application protocol
+2026-01-21 17:04:37.769 UTC [68551] LOG:  could not accept SSL connection: unsupported protocol
+2026-01-21 17:04:37.769 UTC [68551] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-21 17:04:40.135 UTC [68553] LOG:  could not accept SSL connection: no application protocol
+2026-01-21 17:04:42.759 UTC [68554] LOG:  could not accept SSL connection: no application protocol
+2026-01-21 17:04:46.237 UTC [68555] LOG:  could not accept SSL connection: no shared cipher
+2026-01-21 17:04:49.446 UTC [68556] LOG:  could not accept SSL connection: bad key share
+2026-01-28 17:16:12.060 UTC [98820] LOG:  could not accept SSL connection: no application protocol
+2026-01-28 17:16:12.639 UTC [98821] LOG:  could not accept SSL connection: no application protocol
+2026-01-28 17:16:13.299 UTC [98822] LOG:  could not accept SSL connection: no application protocol
+2026-01-28 17:16:14.014 UTC [98823] LOG:  could not accept SSL connection: no application protocol
+2026-01-28 17:16:15.602 UTC [98824] LOG:  could not accept SSL connection: no application protocol
+2026-01-28 17:16:16.152 UTC [98825] LOG:  could not accept SSL connection: unsupported protocol
+2026-01-28 17:16:16.152 UTC [98825] HINT:  This may indicate that the client does not support any SSL protocol version between TLSv1.2 and TLSv1.3.
+2026-01-28 17:16:16.816 UTC [98826] LOG:  could not accept SSL connection: no application protocol
+2026-01-28 17:16:17.513 UTC [98827] LOG:  could not accept SSL connection: no application protocol
+2026-01-28 17:16:18.364 UTC [98828] LOG:  could not accept SSL connection: no shared cipher
+2026-01-28 17:16:19.707 UTC [98829] LOG:  could not accept SSL connection: bad key share
+2026-02-04 04:55:42.265 UTC [27140] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:55:42.265 UTC [27140] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:55:43.584 UTC [27141] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:55:43.584 UTC [27141] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:55:46.750 UTC [27142] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:55:46.750 UTC [27142] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:55:51.833 UTC [27143] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:55:51.833 UTC [27143] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:55:54.040 UTC [27144] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:55:54.040 UTC [27144] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:55:54.220 UTC [27145] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:55:54.220 UTC [27145] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:56:07.848 UTC [27147] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:56:07.848 UTC [27147] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:56:35.744 UTC [27149] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:56:35.744 UTC [27149] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:56:37.386 UTC [27150] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:56:37.386 UTC [27150] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:56:37.573 UTC [27151] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:56:37.573 UTC [27151] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
+2026-02-04 04:56:37.859 UTC [27152] FATAL:  password authentication failed for user "postgres"
+2026-02-04 04:56:37.859 UTC [27152] DETAIL:  Connection matched file "/var/lib/postgresql/data/pgdata/pg_hba.conf" line 128: "host all all all scram-sha-256"
