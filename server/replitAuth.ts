@@ -131,7 +131,27 @@ export async function setupAuth(app: Express) {
   });
 }
 
+// Development mode: bypass authentication
+const DEV_MODE_SKIP_AUTH = process.env.NODE_ENV === 'development';
+
+const devUser = {
+  claims: {
+    sub: 'dev-user-123',
+    email: 'dev@example.com',
+    first_name: 'Dev',
+    last_name: 'User',
+    profile_image_url: null,
+  },
+  expires_at: Math.floor(Date.now() / 1000) + 86400,
+};
+
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  // Skip auth in development mode
+  if (DEV_MODE_SKIP_AUTH) {
+    (req as any).user = devUser;
+    return next();
+  }
+
   const user = req.user as any;
 
   if (!req.isAuthenticated() || !user.expires_at) {
