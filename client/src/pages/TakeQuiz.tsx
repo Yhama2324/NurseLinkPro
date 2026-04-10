@@ -17,7 +17,7 @@ const CATEGORY_META: Record<string, { label: string; emoji: string; color: strin
   daily:        { label: "Daily Challenge",          emoji: "⚡", color: "text-indigo-600" },
 };
 
-const OPTION_LABELS = ["A", "B", "C", "D", "E"];
+const OPTION_LABELS = ["A", "B", "C", "D"];
 
 export default function TakeQuiz() {
   const [, navigate] = useLocation();
