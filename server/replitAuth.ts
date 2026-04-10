@@ -4,7 +4,7 @@ import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
-import { getUserByEmail, setUserPassword, seedAdminUser } from "./storage";
+import { getUserByEmail, setUserPassword, seedAdminUser, getUserByUsername } from "./storage";
 import crypto from "crypto";
 
 export function getSession() {
