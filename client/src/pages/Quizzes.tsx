@@ -121,7 +121,7 @@ export default function Quizzes() {
   const [selectedTab, setSelectedTab] = useState("all");
   
   const { data: quizzes } = useQuery<Quiz[]>({
-    queryKey: ["/api/quizzes"],
+    queryKey: ["/api/quiz-items"],
   });
 
   const { data: dailyChallenge } = useQuery<Quiz>({
