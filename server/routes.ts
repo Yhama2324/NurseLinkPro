@@ -843,7 +843,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 }
 
 // AI Quiz Generator endpoint
-app.post("/api/ai/generate-quiz", async (req, res) => {
+  app.post("/api/ai/generate-quiz", async (req, res) => {
   try {
     const { topic, category, difficulty, count } = req.body;
     const Anthropic = (await import("@anthropic-ai/sdk")).default;
