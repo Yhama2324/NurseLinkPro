@@ -838,6 +838,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+  // Quiz items endpoint - serves questions from quiz_items table
+  app.get('/api/quiz-items', async (req, res) => {
+    try {
+      const { subject_code, limit = '20' } = req.query as any;
+      const { db } = await import('./db');
+      const { quizItems } = await import('@shared/schema');
+      const { eq, sql } = await import('drizzle-orm');
+      const items = subject_code
+        ? await db.select().from(quizItems).where(eq(quizItems.subjectCode, subject_code)).orderBy(sql`RANDOM()`).limit(parseInt(limit))
+        : await db.select().from(quizItems).orderBy(sql`RANDOM()`).limit(parseInt(limit));
+      res.json(items);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
