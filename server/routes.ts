@@ -841,29 +841,3 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   return httpServer;
 }
-
-// AI Quiz Generator endpoint
-  app.post("/api/ai/generate-quiz", async (req, res) => {
-  try {
-    const { topic, category, difficulty, count } = req.body;
-    const Anthropic = (await import("@anthropic-ai/sdk")).default;
-    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-    
-    const message = await client.messages.create({
-      model: "claude-opus-4-5",
-      max_tokens: 4000,
-      messages: [{
-        role: "user",
-        content: `Generate exactly ${count} PNLE-style multiple choice questions about: "${topic}". Category: ${category}. Difficulty: ${difficulty}. Return ONLY valid JSON array: [{"question":"...","choices":{"a":"...","b":"...","c":"...","d":"...","e":"..."},"correct":"b","rationale":"..."}]`
-      }]
-    });
-    
-    const text = message.content[0].type === "text" ? message.content[0].text : "";
-    const match = text.match(/\[[\s\S]*\]/);
-    if (!match) throw new Error("Could not parse questions");
-    const questions = JSON.parse(match[0]);
-    res.json({ questions });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
