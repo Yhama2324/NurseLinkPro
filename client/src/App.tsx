@@ -49,8 +49,8 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/my-semester" component={MySemester} />
           <Route path="/quizzes" component={Quizzes} />
+          <Route path="/take-quiz/:category" component={({ params }: any) => <TakeQuiz />} />
           <Route path="/quiz/:category" component={({ params }: any) => <QuizPage category={params.category} />} />
-          <Route path="/quiz/:id" component={TakeQuiz} />
           <Route path="/clans" component={Clans} />
           <Route path="/profile" component={Profile} />
           <Route path="/nursemind" component={NurseMind} />

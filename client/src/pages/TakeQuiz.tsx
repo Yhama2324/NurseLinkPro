@@ -1,162 +1,119 @@
 import { useState, useEffect } from "react";
 import { useLocation, useRoute } from "wouter";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Clock, CheckCircle, XCircle, Award } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Clock, CheckCircle, XCircle, ChevronLeft, Lightbulb } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import type { Question } from "@shared/schema";
+import type { QuizItem } from "@shared/schema";
+
+const CATEGORY_META: Record<string, { label: string; emoji: string; color: string }> = {
+  fundamentals: { label: "Fundamentals of Nursing", emoji: "📋", color: "text-blue-600" },
+  maternal:     { label: "Maternal & Child Health", emoji: "👶", color: "text-pink-600" },
+  medsurg:      { label: "Medical-Surgical Nursing", emoji: "🏥", color: "text-green-600" },
+  psychiatric:  { label: "Psychiatric Nursing",      emoji: "🧠", color: "text-purple-600" },
+  pharmacology: { label: "Pharmacology",             emoji: "💊", color: "text-yellow-600" },
+  community:    { label: "Community Health Nursing", emoji: "🌍", color: "text-red-600" },
+  daily:        { label: "Daily Challenge",          emoji: "⚡", color: "text-indigo-600" },
+};
+
+const OPTION_LABELS = ["A", "B", "C", "D"];
 
 export default function TakeQuiz() {
-  const [, params] = useRoute("/quiz/:id");
-  const [, setLocation] = useLocation();
-  const quizId = params?.id ? parseInt(params.id) : null;
-  
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
-  const [showResult, setShowResult] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
+  const [, navigate] = useLocation();
+  const [matchTake, paramsTake] = useRoute("/take-quiz/:category");
+  const [matchQuiz, paramsQuiz] = useRoute("/quiz/:category");
+  const category = (matchTake ? paramsTake?.category : paramsQuiz?.category) ?? "daily";
+  const meta = CATEGORY_META[category] ?? { label: category, emoji: "📝", color: "text-gray-600" };
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [revealed, setRevealed] = useState(false);
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
-  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(600);
 
-  const { data: questions, isLoading } = useQuery<Question[]>({
-    queryKey: ["/api/quizzes", quizId, "questions"],
-    enabled: !!quizId,
-  });
-
-  const submitAttemptMutation = useMutation({
-    mutationFn: async (data: { quizId: number; score: number; totalQuestions: number }) =>
-      apiRequest("POST", `/api/quizzes/${data.quizId}/attempt`, {
-        score: data.score,
-        totalQuestions: data.totalQuestions,
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+  const { data: items = [], isLoading } = useQuery<QuizItem[]>({
+    queryKey: ["/api/quiz-items", category],
+    queryFn: async () => {
+      const url = category === "daily"
+        ? "/api/quiz-items?limit=10"
+        : `/api/quiz-items?subject_code=${category}&limit=10`;
+      const res = await fetch(url, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
     },
   });
 
-  const currentQ = questions?.[currentQuestion];
-  const progress = questions ? ((currentQuestion + 1) / questions.length) * 100 : 0;
-
   useEffect(() => {
-    if (timeLeft > 0 && !quizCompleted) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [timeLeft, quizCompleted]);
+    if (completed || items.length === 0) return;
+    if (timeLeft <= 0) { setCompleted(true); return; }
+    const t = setTimeout(() => setTimeLeft(v => v - 1), 1000);
+    return () => clearTimeout(t);
+  }, [timeLeft, completed, items.length]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  const formatTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  const currentItem = items[currentIndex];
+  const choices: string[] = currentItem ? (currentItem.choices as string[]) : [];
+  const progress = items.length ? ((currentIndex + (revealed ? 1 : 0)) / items.length) * 100 : 0;
 
-  const handleSubmitAnswer = () => {
-    const correct = selectedAnswer === currentQ.correctAnswer;
-    setIsCorrect(correct);
-    setShowResult(true);
-    if (correct) setScore(score + 1);
-  };
-
-  const handleNext = () => {
-    if (questions && currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer("");
-      setShowResult(false);
-    } else {
-      setQuizCompleted(true);
-      if (quizId && questions) {
-        submitAttemptMutation.mutate({
-          quizId,
-          score,
-          totalQuestions: questions.length,
-        });
-      }
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background px-4 py-6">
-        <div className="max-w-md mx-auto space-y-4">
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-96 w-full" />
-        </div>
+  if (isLoading) return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="text-center space-y-3">
+        <div className="text-4xl animate-bounce">{meta.emoji}</div>
+        <p className="text-gray-500 text-sm">Loading questions…</p>
       </div>
-    );
-  }
+    </div>
+  );
 
-  if (!questions || questions.length === 0) {
+  if (!isLoading && items.length === 0) return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
+      <Card className="p-8 text-center max-w-sm w-full">
+        <div className="text-5xl mb-4">🗂️</div>
+        <h2 className="font-bold text-lg mb-2">No questions available</h2>
+        <p className="text-sm text-gray-500 mb-6">No questions found for <strong>{meta.label}</strong> yet.</p>
+        <Button className="w-full" onClick={() => navigate("/quizzes")}>← Back to Quizzes</Button>
+      </Card>
+    </div>
+  );
+
+  if (completed) {
+    const pct = Math.round((score / items.length) * 100);
+    const xp = score * 10 + (pct >= 80 ? 20 : 0);
+    const emoji = pct >= 80 ? "🎉" : pct >= 60 ? "👍" : "💪";
+    const msg = pct >= 80 ? "Excellent work!" : pct >= 60 ? "Good job!" : "Keep practicing!";
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <Card className="p-8 text-center">
-          <p className="text-muted-foreground mb-4">Quiz not found or no questions available</p>
-          <Button onClick={() => setLocation("/quizzes")}>Back to Quizzes</Button>
-        </Card>
-      </div>
-    );
-  }
-
-  if (quizCompleted) {
-    const percentage = Math.round((score / questions.length) * 100);
-    const xpEarned = score * 10;
-
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-4">
-        <Card className="p-8 max-w-md w-full text-center space-y-6">
-          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-primary/20 to-accent/20 rounded-full flex items-center justify-center">
-            <Award className="w-12 h-12 text-primary" />
-          </div>
-
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <Card className="p-8 max-w-sm w-full text-center space-y-6">
+          <div className="text-6xl">{emoji}</div>
           <div>
-            <h2 className="text-3xl font-bold mb-2">Quiz Complete!</h2>
-            <p className="text-muted-foreground">Great job on completing the quiz</p>
+            <h2 className="text-2xl font-bold">{msg}</h2>
+            <p className="text-gray-500 text-sm mt-1">{meta.emoji} {meta.label}</p>
           </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-center gap-8">
-              <div className="text-center">
-                <p className="text-4xl font-bold text-primary">{percentage}%</p>
-                <p className="text-sm text-muted-foreground">Score</p>
-              </div>
-              <div className="text-center">
-                <p className="text-4xl font-bold text-chart-4">+{xpEarned}</p>
-                <p className="text-sm text-muted-foreground">XP</p>
-              </div>
+          <div className="flex justify-center gap-10">
+            <div>
+              <p className="text-4xl font-bold text-blue-600">{pct}%</p>
+              <p className="text-xs text-gray-400 mt-0.5">Score</p>
             </div>
-
-            <div className="flex items-center justify-center gap-4 text-sm">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-chart-3" />
-                <span>{score} Correct</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <XCircle className="w-5 h-5 text-destructive" />
-                <span>{questions.length - score} Wrong</span>
-              </div>
+            <div>
+              <p className="text-4xl font-bold text-yellow-500">+{xp}</p>
+              <p className="text-xs text-gray-400 mt-0.5">XP Earned</p>
             </div>
           </div>
-
+          <div className="flex justify-center gap-6 text-sm">
+            <div className="flex items-center gap-1.5 text-green-600">
+              <CheckCircle className="w-4 h-4" /><span>{score} correct</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-red-500">
+              <XCircle className="w-4 h-4" /><span>{items.length - score} wrong</span>
+            </div>
+          </div>
           <div className="space-y-2">
-            <Button
-              className="w-full"
-              onClick={() => setLocation("/quizzes")}
-              data-testid="button-back-quizzes"
-            >
-              Back to Quizzes
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              data-testid="button-review-answers"
-            >
-              Review Answers
-            </Button>
+            <Button className="w-full" onClick={() => navigate("/quizzes")}>Back to Quizzes</Button>
+            <Button variant="outline" className="w-full" onClick={() => {
+              setCurrentIndex(0); setSelectedIndex(null); setRevealed(false);
+              setScore(0); setCompleted(false); setTimeLeft(600);
+            }}>Try Again</Button>
           </div>
         </Card>
       </div>
@@ -164,87 +121,84 @@ export default function TakeQuiz() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur border-b border-border z-10">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <div className="sticky top-0 bg-white border-b border-gray-200 z-10 shadow-sm">
         <div className="px-4 py-3 max-w-md mx-auto">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              <span className="font-semibold tabular-nums">{formatTime(timeLeft)}</span>
+          <div className="flex items-center justify-between mb-2">
+            <button onClick={() => navigate("/quizzes")} className="flex items-center gap-1 text-gray-500 text-sm hover:text-gray-800">
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
+            <span className={"text-sm font-semibold " + meta.color}>{meta.emoji} {meta.label}</span>
+            <div className="flex items-center gap-1 text-sm text-gray-500">
+              <Clock className="w-4 h-4" />
+              <span className={timeLeft < 60 ? "text-red-500 font-bold" : ""}>{formatTime(timeLeft)}</span>
             </div>
-            <span className="text-sm text-muted-foreground">
-              Question {currentQuestion + 1}/{questions.length}
-            </span>
           </div>
-          <Progress value={progress} className="h-2" data-testid="quiz-progress" />
+          <div className="flex items-center gap-3">
+            <Progress value={progress} className="flex-1 h-2" />
+            <span className="text-xs text-gray-400 whitespace-nowrap">{currentIndex + 1} / {items.length}</span>
+          </div>
         </div>
       </div>
 
-      {/* Question */}
-      <div className="px-4 py-6 max-w-md mx-auto space-y-6">
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold leading-relaxed mb-6">
-            {currentQ?.questionText}
-          </h2>
-
-          <RadioGroup
-            value={selectedAnswer}
-            onValueChange={setSelectedAnswer}
-            disabled={showResult}
-            className="space-y-3"
-          >
-            {currentQ?.options.map((option, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-3 p-4 rounded-lg border border-border hover-elevate"
-              >
-                <RadioGroupItem value={option} id={`option-${index}`} />
-                <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer">
-                  {option}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
+      <div className="flex-1 px-4 py-5 max-w-md mx-auto w-full space-y-4">
+        <Card className="p-5">
+          {currentItem.topicName && (
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">{currentItem.topicName}</p>
+          )}
+          <p className="text-base font-semibold text-gray-900 leading-relaxed">{currentItem.question}</p>
         </Card>
 
-        {/* Result Feedback */}
-        {showResult && (
-          <Card className={`p-6 ${isCorrect ? 'bg-chart-3/10' : 'bg-destructive/10'}`}>
-            <div className="flex items-center gap-3 mb-3">
-              {isCorrect ? (
-                <>
-                  <CheckCircle className="w-6 h-6 text-chart-3" />
-                  <h3 className="font-semibold text-chart-3">Correct!</h3>
-                </>
-              ) : (
-                <>
-                  <XCircle className="w-6 h-6 text-destructive" />
-                  <h3 className="font-semibold text-destructive">Incorrect</h3>
-                </>
-              )}
+        <div className="space-y-2.5">
+          {choices.map((choice, idx) => {
+            const isSelected = selectedIndex === idx;
+            const isCorrect = idx === currentItem.correctIndex;
+            const isWrong = revealed && isSelected && !isCorrect;
+            const isRight = revealed && isCorrect;
+            let style = "border-gray-200 bg-white text-gray-800 hover:border-blue-400 hover:bg-blue-50";
+            if (!revealed && isSelected) style = "border-blue-500 bg-blue-50 text-blue-800";
+            if (isRight) style = "border-green-500 bg-green-50 text-green-800";
+            if (isWrong) style = "border-red-400 bg-red-50 text-red-800";
+            return (
+              <button key={idx} onClick={() => { if (!revealed) setSelectedIndex(idx); }} disabled={revealed}
+                className={"w-full flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all duration-150 " + style}>
+                <span className={"flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold border-2 mt-0.5 " +
+                  (isRight ? "bg-green-500 border-green-500 text-white" :
+                   isWrong ? "bg-red-400 border-red-400 text-white" :
+                   isSelected && !revealed ? "bg-blue-500 border-blue-500 text-white" :
+                   "border-gray-300 text-gray-500")}>
+                  {OPTION_LABELS[idx]}
+                </span>
+                <span className="text-sm leading-relaxed">{choice}</span>
+                {isRight && <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5 ml-auto" />}
+                {isWrong && <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5 ml-auto" />}
+              </button>
+            );
+          })}
+        </div>
+
+        {revealed && currentItem.rationale && (
+          <Card className="p-4 bg-amber-50 border-amber-200">
+            <div className="flex items-center gap-2 mb-2">
+              <Lightbulb className="w-4 h-4 text-amber-500" />
+              <span className="text-xs font-bold text-amber-700 uppercase tracking-wide">Rationale</span>
             </div>
-            <p className="text-sm leading-relaxed">{currentQ?.rationale}</p>
+            <p className="text-sm text-amber-900 leading-relaxed">{currentItem.rationale}</p>
           </Card>
         )}
 
-        {/* Action Button */}
-        {!showResult ? (
-          <Button
-            className="w-full h-12"
-            disabled={!selectedAnswer}
-            onClick={handleSubmitAnswer}
-            data-testid="button-submit-answer"
-          >
-            Submit Answer
+        {!revealed ? (
+          <Button className="w-full h-12 text-sm font-bold" disabled={selectedIndex === null}
+            onClick={() => { setRevealed(true); if (selectedIndex === currentItem.correctIndex) setScore(s => s + 1); }}>
+            Confirm Answer
           </Button>
         ) : (
-          <Button
-            className="w-full h-12"
-            onClick={handleNext}
-            data-testid="button-next-question"
-          >
-            {currentQuestion < questions.length - 1 ? "Next Question" : "Complete Quiz"}
+          <Button className="w-full h-12 text-sm font-bold" onClick={() => {
+            if (currentIndex < items.length - 1) {
+              setCurrentIndex(i => i + 1); setSelectedIndex(null); setRevealed(false);
+            } else { setCompleted(true); }
+          }}>
+            {currentIndex < items.length - 1 ? "Next Question →" : "See Results 🎉"}
           </Button>
         )}
       </div>
