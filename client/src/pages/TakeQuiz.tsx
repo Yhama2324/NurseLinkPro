@@ -8,13 +8,12 @@ import { Progress } from "@/components/ui/progress";
 import type { QuizItem } from "@shared/schema";
 
 const CATEGORY_META: Record<string, { label: string; emoji: string; color: string }> = {
-  fundamentals: { label: "Fundamentals of Nursing", emoji: "📋", color: "text-blue-600" },
-  maternal:     { label: "Maternal & Child Health", emoji: "👶", color: "text-pink-600" },
-  medsurg:      { label: "Medical-Surgical Nursing", emoji: "🏥", color: "text-green-600" },
-  psychiatric:  { label: "Psychiatric Nursing",      emoji: "🧠", color: "text-purple-600" },
-  pharmacology: { label: "Pharmacology",             emoji: "💊", color: "text-yellow-600" },
-  community:    { label: "Community Health Nursing", emoji: "🌍", color: "text-red-600" },
-  daily:        { label: "Daily Challenge",          emoji: "⚡", color: "text-indigo-600" },
+  np1:  { label: "NP I — Community Health Nursing",       emoji: "🌍", color: "text-red-600" },
+  np2:  { label: "NP II — Care of Mother & Child",        emoji: "👶", color: "text-pink-600" },
+  np3:  { label: "NP III — Physiologic Alterations A",    emoji: "🏥", color: "text-blue-600" },
+  np4:  { label: "NP IV — Physiologic Alterations B",     emoji: "🩺", color: "text-green-600" },
+  np5:  { label: "NP V — Psychosocial Alterations",       emoji: "🧠", color: "text-purple-600" },
+  daily:{ label: "Daily Challenge",                        emoji: "⚡", color: "text-indigo-600" },
 };
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
