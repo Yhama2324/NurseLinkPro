@@ -44,8 +44,8 @@ export default function LoginRegister() {
 
             <form className="space-y-4">
               <Input
-                type="email"
-                placeholder="Email address"
+                type="text"
+                placeholder="Email or username"
                 className="p-3 rounded-xl border-gray-300 focus:border-[#0080FF]"
                 data-testid="input-email"
               />
@@ -75,8 +75,8 @@ export default function LoginRegister() {
                 data-testid="input-fullname"
               />
               <Input
-                type="email"
-                placeholder="Email address"
+                type="text"
+                placeholder="Email or username"
                 className="p-3 rounded-xl border-gray-300 focus:border-[#0080FF]"
                 data-testid="input-register-email"
               />
