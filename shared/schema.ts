@@ -23,6 +23,7 @@ export const users = pgTable("users", {
   onboardingCompleted: boolean("onboarding_completed").default(false).notNull(),
   schoolName: text("school_name"),
   yearLevel: integer("year_level"),
+  passwordHash: text("password_hash"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

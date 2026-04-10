@@ -785,3 +785,52 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
+
+// Auth helpers added for Railway deployment
+export async function getUserByEmail(email: string) {
+  const { db } = await import("./db");
+  const { users } = await import("@shared/schema");
+  const { eq } = await import("drizzle-orm");
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result[0] || null;
+}
+
+export async function setUserPassword(userId: string, passwordHash: string) {
+  const { db } = await import("./db");
+  const { users } = await import("@shared/schema");
+  const { eq } = await import("drizzle-orm");
+  await db.update(users).set({ passwordHash }).where(eq(users.id, userId));
+}
+
+export async function seedAdminUser() {
+  const crypto = await import("crypto");
+  const { db } = await import("./db");
+  const { users } = await import("@shared/schema");
+  const { eq } = await import("drizzle-orm");
+  
+  const adminEmail = process.env.ADMIN_EMAIL || "admin_vip777";
+  const adminPassword = process.env.ADMIN_PASSWORD || "";
+  
+  if (!adminPassword) return;
+  
+  const existing = await db.select().from(users).where(eq(users.email, adminEmail)).limit(1);
+  if (existing.length > 0) return;
+  
+  const hash = crypto.createHash("sha256").update(adminPassword).digest("hex");
+  const id = crypto.randomUUID();
+  
+  await db.insert(users).values({
+    id,
+    email: adminEmail,
+    firstName: "Admin",
+    lastName: "CKalingaLink",
+    passwordHash: hash,
+    xp: 0,
+    streak: 0,
+    rank: "Admin",
+    subscriptionTier: "premium",
+    onboardingCompleted: true,
+  });
+  
+  console.log("Admin user seeded successfully!");
+}
