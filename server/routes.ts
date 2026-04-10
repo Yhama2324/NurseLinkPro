@@ -8,13 +8,9 @@ import OpenAI from "openai";
 import Stripe from "stripe";
 import { insertPostSchema, insertCommentSchema, insertClanSchema, insertPartySchema, insertReviewCenterSchema, insertJobSchema, insertAdSchema } from "@shared/schema";
 
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error('Missing required OpenAI key: OPENAI_API_KEY');
-}
+// OpenAI optional
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
-}
+// Stripe optional
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
