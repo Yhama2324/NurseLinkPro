@@ -855,6 +855,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+  app.get('/api/quiz-items/counts', async (req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { quizItems } = await import('@shared/schema');
+      const { sql } = await import('drizzle-orm');
+      const result = await db.select({
+        subjectCode: quizItems.subjectCode,
+        count: sql`count(*)::int`
+      }).from(quizItems).groupBy(quizItems.subjectCode);
+      const counts: Record<string, number> = {};
+      result.forEach((r: any) => { counts[r.subjectCode] = r.count; });
+      res.json(counts);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

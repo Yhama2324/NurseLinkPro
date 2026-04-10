@@ -20,6 +20,7 @@ import NurseMind from "@/pages/NurseMind";
 import Onboarding from "@/pages/Onboarding";
 import MySemester from "@/pages/MySemester";
 import NotFound from "@/pages/not-found";
+import QuizPage from "@/pages/QuizPage";
 
 function Router() {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -48,6 +49,7 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/my-semester" component={MySemester} />
           <Route path="/quizzes" component={Quizzes} />
+          <Route path="/quiz/:category" component={({ params }: any) => <QuizPage category={params.category} />} />
           <Route path="/quiz/:id" component={TakeQuiz} />
           <Route path="/clans" component={Clans} />
           <Route path="/profile" component={Profile} />
