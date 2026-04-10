@@ -40,7 +40,7 @@ export async function setupAuth(app: Express) {
     { usernameField: "email", passReqToCallback: false },
     async (email, password, done) => {
       try {
-        const user = await getUserByEmail(email);
+        const user = await getUserByEmail(email) || await getUserByUsername(email);
         if (!user) return done(null, false, { message: "Invalid email or password" });
         const hash = crypto.createHash("sha256").update(password).digest("hex");
         if (user.passwordHash !== hash) return done(null, false, { message: "Invalid email or password" });
