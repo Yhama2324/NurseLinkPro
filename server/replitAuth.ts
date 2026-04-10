@@ -37,7 +37,7 @@ export async function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(new LocalStrategy(
-    { usernameField: "email" },
+    { usernameField: "email", passReqToCallback: false },
     async (email, password, done) => {
       try {
         const user = await getUserByEmail(email);

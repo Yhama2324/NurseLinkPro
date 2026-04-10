@@ -791,7 +791,7 @@ export async function getUserByEmail(email: string) {
   const { db } = await import("./db");
   const { users } = await import("@shared/schema");
   const { eq } = await import("drizzle-orm");
-  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  const result = await db.select().from(users).where(sql`${users.email} = ${email} OR ${users.firstName} = ${email}`).limit(1);
   return result[0] || null;
 }
 
@@ -833,4 +833,12 @@ export async function seedAdminUser() {
   });
   
   console.log("Admin user seeded successfully!");
+}
+
+export async function getUserByUsername(username: string) {
+  const { db } = await import("./db");
+  const { users } = await import("@shared/schema");
+  const { eq, sql } = await import("drizzle-orm");
+  const result = await db.select().from(users).where(sql`${users.email} = ${username} OR username = ${username}`).limit(1);
+  return result[0] || null;
 }
