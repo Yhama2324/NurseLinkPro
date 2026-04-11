@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginRegister() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -17,6 +18,9 @@ export default function LoginRegister() {
   const [regYear, setRegYear] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showLoginPw, setShowLoginPw] = useState(false);
+  const [showRegPw, setShowRegPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +67,12 @@ export default function LoginRegister() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Password</label>
-                  <Input type="password" placeholder="Enter password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="rounded-xl border-gray-200 h-11" required />
+                  <div className="relative">
+                    <Input type={showLoginPw ? "text" : "password"} placeholder="Enter password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} className="rounded-xl border-gray-200 h-11 pr-10" required />
+                    <button type="button" onClick={() => setShowLoginPw(!showLoginPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      {showLoginPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
                 <Button type="submit" disabled={loading} className="w-full bg-[#0080FF] hover:bg-[#0066cc] text-white font-semibold rounded-xl h-11">{loading ? "Logging in..." : "Login"}</Button>
                 <p className="text-center text-gray-400 text-xs">No account? <button type="button" onClick={() => setMode("register")} className="text-[#0080FF] font-semibold">Register here</button></p>
@@ -101,11 +110,21 @@ export default function LoginRegister() {
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Password</label>
-                  <Input type="password" placeholder="Minimum 8 characters" value={regPassword} onChange={e => setRegPassword(e.target.value)} className="rounded-xl border-gray-200 h-11" required minLength={8} />
+                  <div className="relative">
+                    <Input type={showRegPw ? "text" : "password"} placeholder="Minimum 8 characters" value={regPassword} onChange={e => setRegPassword(e.target.value)} className="rounded-xl border-gray-200 h-11 pr-10" required minLength={8} />
+                    <button type="button" onClick={() => setShowRegPw(!showRegPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      {showRegPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5 block">Confirm Password</label>
-                  <Input type="password" placeholder="Re-enter password" value={regConfirmPassword} onChange={e => setRegConfirmPassword(e.target.value)} className={"rounded-xl h-11 border " + (regConfirmPassword && regPassword !== regConfirmPassword ? "border-red-400" : "border-gray-200")} required />
+                  <div className="relative">
+                    <Input type={showConfirmPw ? "text" : "password"} placeholder="Re-enter password" value={regConfirmPassword} onChange={e => setRegConfirmPassword(e.target.value)} className={"rounded-xl h-11 border pr-10 " + (regConfirmPassword && regPassword !== regConfirmPassword ? "border-red-400" : "border-gray-200")} required />
+                    <button type="button" onClick={() => setShowConfirmPw(!showConfirmPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      {showConfirmPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                   {regConfirmPassword && regPassword !== regConfirmPassword && <p className="text-xs text-red-500 mt-1">Passwords do not match</p>}
                 </div>
                 <Button type="submit" disabled={loading} className="w-full bg-[#0080FF] hover:bg-[#0066cc] text-white font-semibold rounded-xl h-11 mt-1">{loading ? "Creating account..." : "Create Account"}</Button>
