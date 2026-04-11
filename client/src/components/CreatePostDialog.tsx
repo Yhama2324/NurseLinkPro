@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Hash, X } from "lucide-react";
+import { Hash, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,10 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ObjectUploader } from "./ObjectUploader";
 import { apiRequest } from "@/lib/queryClient";
-import type { UploadResult } from "@uppy/core";
 
 interface CreatePostDialogProps {
-  onSubmit?: (content: string, hashtags: string[], imageUrl?: string) => void;
   trigger?: React.ReactNode;
 }
 
@@ -25,7 +23,6 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
   const [content, setContent] = useState("");
   const [hashtag, setHashtag] = useState("");
   const [hashtags, setHashtags] = useState<string[]>([]);
-  const [imageUrl, setImageUrl] = useState<string>("");
 
   const handleAddHashtag = () => {
     if (hashtag && !hashtags.includes(hashtag)) {
@@ -43,22 +40,17 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
     const data = await response.json();
     return {
       method: "PUT" as const,
-      url: data.uploadURL,
     };
   };
 
   const handleUploadComplete = async (result: UploadResult<Record<string, unknown>, Record<string, unknown>>) => {
     if (result.successful && result.successful[0]) {
-      const uploadURL = result.successful[0].uploadURL;
-      const response = await apiRequest("PUT", "/api/post-images", { imageURL: uploadURL });
       const data = await response.json();
-      setImageUrl(data.objectPath);
     }
   };
 
   const handleSubmit = () => {
     if (content.trim()) {
-      onSubmit?.(content, hashtags, imageUrl);
       setContent("");
       setHashtags([]);
       setImageUrl("");
@@ -131,9 +123,7 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
               buttonClassName="gap-2"
             >
               <Image className="w-4 h-4" />
-              Add Image
             </ObjectUploader>
-            {imageUrl && (
               <Badge variant="secondary" className="gap-1">
                 Image uploaded
                 <button onClick={() => setImageUrl("")}>
