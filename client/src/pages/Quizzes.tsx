@@ -73,6 +73,9 @@ export default function Quizzes() {
             {CATEGORIES.map((cat) => {
               const count = (counts as any)[cat.id] || 0;
               const hasQuestions = count > 0;
+              const prog = (allProgress as any)[cat.id] || { currentLevel: 0, totalAnswered: 0 };
+              const catLevel = prog.currentLevel || 0;
+              const catPct = count > 0 ? Math.min(100, Math.round((prog.totalAnswered || 0) / count * 100)) : 0;
               return (
                 <Card key={cat.id} className={"p-0 overflow-hidden border " + cat.border + " shadow-sm transition-all duration-200 " + (hasQuestions ? "hover:shadow-md" : "opacity-60")}>
                   <div className="flex items-center">
