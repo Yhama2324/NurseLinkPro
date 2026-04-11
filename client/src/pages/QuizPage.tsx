@@ -253,7 +253,7 @@ export default function QuizPage({ category }: { category: string }) {
   // Results screen
   if (finished) {
     const pct = Math.round((score / total) * 100);
-    const passed = pct >= 75;
+    const passed = pct >= 90;
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <div className="bg-white border-b px-4 py-3 flex items-center gap-3">
@@ -298,11 +298,11 @@ export default function QuizPage({ category }: { category: string }) {
           </div>
           {passed ? (
             <p className="text-green-600 font-semibold text-sm mb-4">
-              ✅ Passed! Proceeding to next level.
+              🏆 Excellent! 90%+ score — you can proceed!
             </p>
           ) : (
             <p className="text-orange-500 font-semibold text-sm mb-4">
-              ⚠️ Score below 75%. Review wrong answers!
+              ❌ Need 9/10 (90%) to advance. Please retake this level!
             </p>
           )}
           <div className="flex flex-col gap-3 w-full max-w-xs">

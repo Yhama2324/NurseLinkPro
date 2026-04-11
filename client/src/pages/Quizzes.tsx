@@ -75,7 +75,7 @@ export default function Quizzes() {
               const hasQuestions = count > 0;
               const prog = (allProgress as any)[cat.id] || { currentLevel: 0, totalAnswered: 0 };
               const catLevel = prog.currentLevel || 0;
-              const catPct = count > 0 ? Math.min(100, Math.round((prog.totalAnswered || 0) / count * 100)) : 0;
+              const catPct = count > 0 ? Math.min(99, Math.round((prog.totalAnswered || 0) / count * 100)) : 0;
               return (
                 <Card key={cat.id} className={"p-0 overflow-hidden border " + cat.border + " shadow-sm transition-all duration-200 " + (hasQuestions ? "hover:shadow-md" : "opacity-60")}>
                   <div className="flex items-center">
@@ -102,7 +102,7 @@ export default function Quizzes() {
                         <div className={"h-1.5 rounded-full bg-gradient-to-r " + cat.color + " transition-all duration-500"} style={{ width: catPct + "%" }} />
                       </div>
                       <div className="flex justify-between mt-1">
-                        <span className="text-xs text-gray-400">{catLevel === 0 ? "Not started" : "Level " + catLevel}</span>
+                        <span className="text-xs text-gray-400">{catLevel === 0 ? "Not started" : "Level " + catLevel + " done"}</span>
                         <span className="text-xs text-gray-400">{catPct}%</span>
                       </div>
                     </div>
