@@ -122,6 +122,8 @@ export default function QuizPage({ category }: { category: string }) {
       return res.json();
     },
     enabled: page !== null,
+    staleTime: 0,
+    gcTime: 0,
   });
 
   if (page === null || isLoading) {
