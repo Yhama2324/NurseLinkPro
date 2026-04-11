@@ -4,7 +4,6 @@ import { ArrowLeft, CheckCircle, XCircle, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import BottomNav from "@/components/BottomNav";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -173,7 +172,6 @@ export default function QuizPage({ category }: { category: string }) {
             Back to Quizzes
           </Button>
         </div>
-        <BottomNav />
       </div>
     );
   }
@@ -341,7 +339,6 @@ export default function QuizPage({ category }: { category: string }) {
             </Button>
           </div>
         </div>
-        <BottomNav />
       </div>
     );
   }
@@ -456,7 +453,6 @@ export default function QuizPage({ category }: { category: string }) {
           </Button>
         )}
       </div>
-      <BottomNav />
     </div>
   );
 }
