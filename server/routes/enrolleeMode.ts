@@ -8,7 +8,7 @@ const router = Router();
 
 router.post("/onboarding/complete", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user.claims.sub;
+    const userId = req.user?.id || req.user?.claims?.sub;
     const { schoolName, academicYear, term, yearLevel, selectedSubjects } = req.body;
 
     const semester = await storage.createOrGetSemester({
@@ -53,7 +53,7 @@ router.get("/subjects", isAuthenticated, async (req: any, res) => {
 
 router.get("/enrollments", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user.claims.sub;
+    const userId = req.user?.id || req.user?.claims?.sub;
     const enrollments = await storage.getUserEnrollments(userId);
     res.json(enrollments);
   } catch (error) {
@@ -64,7 +64,7 @@ router.get("/enrollments", isAuthenticated, async (req: any, res) => {
 
 router.post("/enrollments", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user.claims.sub;
+    const userId = req.user?.id || req.user?.claims?.sub;
     const { semesterId, subjectId, schoolCode, units } = req.body;
 
     const enrollment = await storage.createEnrollment({
@@ -98,7 +98,7 @@ router.patch("/enrollments/:id/status", isAuthenticated, async (req: any, res) =
 
 router.get("/active-subjects", isAuthenticated, async (req: any, res) => {
   try {
-    const userId = req.user.claims.sub;
+    const userId = req.user?.id || req.user?.claims?.sub;
     const subjectIds = await storage.getActiveEnrolledSubjectIds(userId);
     res.json(subjectIds);
   } catch (error) {
