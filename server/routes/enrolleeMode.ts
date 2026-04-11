@@ -9,31 +9,12 @@ const router = Router();
 router.post("/onboarding/complete", isAuthenticated, async (req: any, res) => {
   try {
     const userId = req.user?.id || req.user?.claims?.sub;
-    const { schoolName, academicYear, term, yearLevel, selectedSubjects } = req.body;
-
-    const semester = await storage.createOrGetSemester({
-      schoolName,
-      academicYear,
-      term,
-    });
-
-    for (const subj of selectedSubjects) {
-      await storage.createEnrollment({
-        userId,
-        semesterId: semester.id,
-        subjectId: subj.id,
-        schoolCode: subj.schoolCode,
-        units: subj.units || 3,
-        active: true,
-      });
-    }
-
+    const { schoolName, yearLevel } = req.body;
     const user = await storage.updateUserOnboarding(userId, {
       onboardingCompleted: true,
-      schoolName,
-      yearLevel,
+      schoolName: schoolName || null,
+      yearLevel: yearLevel || null,
     });
-
     res.json({ success: true, user });
   } catch (error) {
     console.error("Error completing onboarding:", error);
