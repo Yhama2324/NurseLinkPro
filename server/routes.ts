@@ -956,13 +956,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { sql } = await import('drizzle-orm');
       await db.execute(sql`
         INSERT INTO quiz_progress (user_id, subject_code, current_level, total_correct, total_answered, updated_at)
-        VALUES (\${userId}, \${subjectCode}, \${currentLevel}, \${totalCorrect}, \${totalAnswered}, NOW())
+        VALUES (${userId}, ${subjectCode}, ${currentLevel}, ${totalCorrect}, ${totalAnswered}, NOW())
         ON CONFLICT (user_id, subject_code) DO UPDATE SET
-          current_level = \${currentLevel},
-          total_correct = total_correct + \${totalCorrect},
-          total_answered = total_answered + \${totalAnswered},
+          current_level = ${currentLevel},
+          total_correct = total_correct + ${totalCorrect},
+          total_answered = total_answered + ${totalAnswered},
           updated_at = NOW()
-      \`);
+      `);
       res.json({ ok: true });
     } catch (e: any) { res.status(500).json({ message: e.message }); }
   });
