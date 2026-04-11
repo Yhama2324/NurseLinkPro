@@ -94,6 +94,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id || req.user?.claims?.sub;
       const user = await storage.getUserById(userId);
+      console.log('[auth/user] userId:', userId, 'onboardingCompleted:', user?.onboardingCompleted);
       res.json(user);
     } catch (error) {
       console.error("Error fetching user:", error);
