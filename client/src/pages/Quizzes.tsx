@@ -99,7 +99,7 @@ export default function Quizzes() {
                         <div className={"h-1.5 rounded-full bg-gradient-to-r " + cat.color + " transition-all duration-500"} style={{ width: catPct + "%" }} />
                       </div>
                       <div className="flex justify-between mt-1">
-                        <span className="text-xs text-gray-400">{level === 0 ? "Not started" : "Level " + catLevel}</span>
+                        <span className="text-xs text-gray-400">{catLevel === 0 ? "Not started" : "Level " + catLevel}</span>
                         <span className="text-xs text-gray-400">{catPct}%</span>
                       </div>
                     </div>
