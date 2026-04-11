@@ -240,7 +240,8 @@ export class DatabaseStorage implements IStorage {
 
   async getUserById(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    if (!user) return undefined;
+    return { ...user, onboardingCompleted: (user as any).onboardingCompleted ?? (user as any).onboarding_completed ?? false };
   }
 
   async updateUserQuizGenerationTime(id: string): Promise<void> {
