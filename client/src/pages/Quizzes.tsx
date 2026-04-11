@@ -26,6 +26,18 @@ export default function Quizzes() {
     },
   });
 
+  const { data: wrongCount = 0 } = useQuery<number>({
+    queryKey: ["/api/wrong-answers/count"],
+    queryFn: async () => {
+      const res = await fetch("/api/wrong-answers", { credentials: "include" });
+      if (!res.ok) return 0;
+      const data = await res.json();
+      return Array.isArray(data) ? data.length : 0;
+    },
+  });
+
+  const isLocked = wrongCount >= 3;
+
   const { data: allProgress = {} } = useQuery<Record<string, any>>({
     queryKey: ["/api/quiz-progress/all"],
     queryFn: async () => {
@@ -69,6 +81,17 @@ export default function Quizzes() {
             <BookOpen className="w-4 h-4 text-gray-500" />
             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">PNLE Subjects</span>
           </div>
+          {isLocked && (
+            <div className="mb-3 p-3 bg-red-50 border-2 border-red-400 rounded-xl flex items-center gap-3 cursor-pointer"
+              onClick={() => navigate("/wrong-answers")}>
+              <span className="text-2xl">⚠️</span>
+              <div className="flex-1">
+                <p className="text-sm font-bold text-red-600">You have {wrongCount} wrong answers!</p>
+                <p className="text-xs text-red-400">Review and answer them first before proceeding to the next level.</p>
+              </div>
+              <span className="text-red-400 text-xs font-semibold">Review →</span>
+            </div>
+          )}
           <div className="space-y-3">
             {CATEGORIES.map((cat) => {
               const count = (counts as any)[cat.id] || 0;
@@ -90,7 +113,7 @@ export default function Quizzes() {
                           <p className="text-xs text-gray-400 mt-0.5">Level {catLevel} • {catPct}% done</p>
                         )}
                       </div>
-                      <Button size="sm" disabled={!hasQuestions} onClick={() => navigate("/quiz/" + cat.id)}
+                      <Button size="sm" disabled={!hasQuestions || isLocked} onClick={() => !isLocked && navigate("/quiz/" + cat.id)}
                         className={"flex-shrink-0 h-9 px-4 text-xs font-bold bg-gradient-to-r " + cat.color + " text-white border-0 hover:opacity-90 disabled:opacity-40"}>
                         Start <ChevronRight className="w-3 h-3 ml-0.5" />
                       </Button>
