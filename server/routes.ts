@@ -936,7 +936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) return res.json({ currentLevel: 0, totalCorrect: 0, totalAnswered: 0 });
       const { db } = await import('./db');
       const { sql } = await import('drizzle-orm');
-      const result = await db.execute(sql\`
+      const result = await db.execute(sql`
         SELECT * FROM quiz_progress 
         WHERE user_id = \${userId} AND subject_code = \${req.params.subjectCode}
       \`);
@@ -954,7 +954,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { subjectCode, currentLevel, totalCorrect, totalAnswered } = req.body;
       const { db } = await import('./db');
       const { sql } = await import('drizzle-orm');
-      await db.execute(sql\`
+      await db.execute(sql`
         INSERT INTO quiz_progress (user_id, subject_code, current_level, total_correct, total_answered, updated_at)
         VALUES (\${userId}, \${subjectCode}, \${currentLevel}, \${totalCorrect}, \${totalAnswered}, NOW())
         ON CONFLICT (user_id, subject_code) DO UPDATE SET
