@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const CATEGORIES = [
-  { id: "np1", label: "Community Health Nursing", sub: "NP I", color: "from-red-500 to-orange-500", bg: "bg-red-50", border: "border-red-200", textColor: "text-red-700", emoji: "🌍" },
-  { id: "np2", label: "Care of Mother & Child", sub: "NP II · Healthy/At Risk", color: "from-pink-500 to-rose-500", bg: "bg-pink-50", border: "border-pink-200", textColor: "text-pink-700", emoji: "👶" },
-  { id: "np3", label: "Physiologic Alterations A", sub: "NP III · Fundamentals, Cardio, Respiratory, GI", color: "from-blue-500 to-blue-600", bg: "bg-blue-50", border: "border-blue-200", textColor: "text-blue-700", emoji: "🏥" },
-  { id: "np4", label: "Physiologic Alterations B", sub: "NP IV · Neuro, Endocrine, Renal, Oncology", color: "from-green-500 to-emerald-500", bg: "bg-green-50", border: "border-green-200", textColor: "text-green-700", emoji: "🩺" },
-  { id: "np5", label: "Psychosocial Alterations", sub: "NP V · Psychiatric, Ethics, Legal, Management", color: "from-purple-500 to-violet-500", bg: "bg-purple-50", border: "border-purple-200", textColor: "text-purple-700", emoji: "🧠" },
+  { id: "community", label: "Community Health Nursing", sub: "NP I", color: "from-red-500 to-orange-500", bg: "bg-red-50", border: "border-red-200", textColor: "text-red-700", emoji: "🌍" },
+  { id: "maternal", label: "Care of Mother & Child", sub: "NP II · Healthy/At Risk", color: "from-pink-500 to-rose-500", bg: "bg-pink-50", border: "border-pink-200", textColor: "text-pink-700", emoji: "👶" },
+  { id: "medsurg", label: "Physiologic Alterations A", sub: "NP III · Fundamentals, Cardio, Respiratory, GI", color: "from-blue-500 to-blue-600", bg: "bg-blue-50", border: "border-blue-200", textColor: "text-blue-700", emoji: "🏥" },
+  { id: "medsurg", label: "Physiologic Alterations B", sub: "NP IV · Neuro, Endocrine, Renal, Oncology", color: "from-green-500 to-emerald-500", bg: "bg-green-50", border: "border-green-200", textColor: "text-green-700", emoji: "🩺" },
+  { id: "psychiatric", label: "Psychosocial Alterations", sub: "NP V · Psychiatric, Ethics, Legal, Management", color: "from-purple-500 to-violet-500", bg: "bg-purple-50", border: "border-purple-200", textColor: "text-purple-700", emoji: "🧠" },
 ];
 
 export default function Quizzes() {
@@ -41,7 +41,7 @@ export default function Quizzes() {
             <Badge className="bg-yellow-400 text-yellow-900 text-xs font-bold">+100 XP</Badge>
           </div>
           <p className="text-xs text-blue-100 mb-3">10 random PNLE questions — refreshes every 24 hours</p>
-          <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-bold text-sm h-9" onClick={() => navigate("/take-quiz/daily")}>
+          <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-bold text-sm h-9" onClick={() => navigate("/quiz/daily")}>
             <Zap className="w-4 h-4 mr-1" /> Start Daily Challenge
           </Button>
         </Card>
@@ -75,7 +75,7 @@ export default function Quizzes() {
                         <p className="text-xs text-gray-500 mt-0.5">{cat.sub}</p>
                         <p className={"text-xs font-semibold mt-0.5 " + (hasQuestions ? cat.textColor : "text-gray-400")}>{count} questions</p>
                       </div>
-                      <Button size="sm" disabled={!hasQuestions} onClick={() => navigate("/take-quiz/" + cat.id)}
+                      <Button size="sm" disabled={!hasQuestions} onClick={() => navigate("/quiz/" + cat.id)}
                         className={"flex-shrink-0 h-9 px-4 text-xs font-bold bg-gradient-to-r " + cat.color + " text-white border-0 hover:opacity-90 disabled:opacity-40"}>
                         Start <ChevronRight className="w-3 h-3 ml-0.5" />
                       </Button>
