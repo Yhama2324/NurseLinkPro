@@ -9,6 +9,19 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Post, User } from "@shared/schema";
 
+const RANK_COLORS = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"];
+const SAMPLE_TOPSCORERS = [
+  { id: "1", firstName: "Ana", lastName: "Reyes", xp: 4500, rank: "Expert", profileImageUrl: null },
+  { id: "2", firstName: "Juan", lastName: "Cruz", xp: 4200, rank: "Expert", profileImageUrl: null },
+  { id: "3", firstName: "Maria", lastName: "Santos", xp: 3900, rank: "Advanced", profileImageUrl: null },
+  { id: "4", firstName: "Pedro", lastName: "Dela Cruz", xp: 3600, rank: "Advanced", profileImageUrl: null },
+  { id: "5", firstName: "Rosa", lastName: "Gomez", xp: 3200, rank: "Learner", profileImageUrl: null },
+  { id: "6", firstName: "Carlo", lastName: "Bautista", xp: 2900, rank: "Learner", profileImageUrl: null },
+  { id: "7", firstName: "Lena", lastName: "Flores", xp: 2600, rank: "Learner", profileImageUrl: null },
+  { id: "8", firstName: "Mark", lastName: "Torres", xp: 2300, rank: "Student", profileImageUrl: null },
+  { id: "9", firstName: "Nina", lastName: "Ramos", xp: 2100, rank: "Student", profileImageUrl: null },
+  { id: "10", firstName: "Ben", lastName: "Villanueva", xp: 1900, rank: "Student", profileImageUrl: null },
+];
 const SAMPLE_POSTS: (Post & { user?: User })[] = [
   {
     id: 1,
@@ -200,6 +213,27 @@ export default function Home() {
           }
         />
 
+        {/* Top Scorers */}
+        <div className="px-4 py-3 bg-white border-b">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-bold text-gray-800">🏆 Top Scorers</span>
+            <span className="text-xs text-blue-500 font-medium">Leaderboard</span>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+            {SAMPLE_TOPSCORERS.map((user, idx) => (
+              <div key={user.id} className="flex flex-col items-center gap-1 flex-shrink-0">
+                <div className="relative">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-sm border-2 border-white shadow">
+                    {user.firstName[0]}{user.lastName[0]}
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 text-xs">{RANK_COLORS[idx]}</div>
+                </div>
+                <span className="text-xs font-medium text-gray-700 text-center w-14 truncate">{user.firstName}</span>
+                <span className="text-xs text-blue-500 font-bold">{(user.xp / 1000).toFixed(1)}k</span>
+              </div>
+            ))}
+          </div>
+        </div>
         {/* Trending Topics */}
         <Card className="p-4 card-reveal">
           <h3 className="font-semibold text-sm mb-3">Trending Topics</h3>
