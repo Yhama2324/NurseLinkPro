@@ -966,6 +966,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (e: any) { res.status(500).json({ message: e.message }); }
   });
 
+
+  // Onboarding complete
+  app.post('/api/enrollee/onboarding/complete', async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      await storage.updateUserOnboarding(userId, { onboardingCompleted: true });
+      res.json({ ok: true });
+    } catch (e: any) { res.status(500).json({ message: e.message }); }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -83,7 +83,15 @@ export default function Onboarding() {
     },
   });
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    try {
+      await fetch("/api/enrollee/onboarding/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ skip: true }),
+        credentials: "include",
+      });
+    } catch {}
     window.location.href = "/";
   };
 
