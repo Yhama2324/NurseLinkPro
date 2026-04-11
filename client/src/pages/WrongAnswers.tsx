@@ -26,7 +26,8 @@ interface WrongItem {
   id: number;
   question: string;
   choices: string[] | string;
-  correctIndex: number;
+  correctIndex?: number;
+  correct_index?: number;
   rationale: string;
   difficulty: string;
   topicName: string;
@@ -96,7 +97,7 @@ export default function WrongAnswers() {
       if (selected !== null) return;
       setSelected(idx);
       setShowRationale(true);
-      const isCorrect = idx === q.correctIndex;
+      const isCorrect = idx === (q.correctIndex ?? q.correct_index ?? 0);
       if (isCorrect) {
         setPracticeScore((s) => s + 1);
         markCorrectMutation.mutate(q.id);
@@ -213,7 +214,7 @@ export default function WrongAnswers() {
           <div className="space-y-3">
             {choices.slice(0, 4).map((choice, idx) => {
               const isSelected = selected === idx;
-              const isCorrect = idx === q.correctIndex;
+              const isCorrect = idx === (q.correctIndex ?? q.correct_index ?? 0);
               let cls =
                 "w-full p-3.5 rounded-xl border-2 text-left transition-all ";
               if (selected === null) {
@@ -378,9 +379,9 @@ export default function WrongAnswers() {
                           <p className="text-xs text-green-600 mt-1">
                             ✓{" "}
                             {Array.isArray(item.choices)
-                              ? item.choices[item.correctIndex]
+                              ? item.choices[item.correctIndex ?? item.correct_index ?? 0]
                               : JSON.parse(item.choices as string)[
-                                  item.correctIndex
+                                  item.correctIndex ?? item.correct_index ?? 0
                                 ]}
                           </p>
                         </div>
