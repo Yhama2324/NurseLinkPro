@@ -15,10 +15,15 @@ import BottomNav from "@/components/BottomNav";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CATEGORY_LABELS: Record<string, string> = {
-  fundamentals: "NP I — Fundamentals",
-  maternal: "NP II — Maternal & Child",
-  medsurg: "NP III/IV — Med-Surg",
-  psychiatric: "NP V — Psychiatric",
+  np1: "NP I — Community Health",
+  np2: "NP II — Care of Mother & Child",
+  np3: "NP III — Physiologic Alterations A",
+  np4: "NP IV — Physiologic Alterations B",
+  np5: "NP V — Psychosocial Alterations",
+  fundamentals: "Fundamentals",
+  maternal: "Maternal & Child",
+  medsurg: "Med-Surg",
+  psychiatric: "Psychiatric",
   pharmacology: "Pharmacology",
   community: "Community Health",
 };

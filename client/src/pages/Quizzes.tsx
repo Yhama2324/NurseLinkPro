@@ -8,11 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const CATEGORIES = [
-  { id: "community", label: "Community Health Nursing", sub: "NP I", color: "from-red-500 to-orange-500", bg: "bg-red-50", border: "border-red-200", textColor: "text-red-700", emoji: "🌍" },
-  { id: "maternal", label: "Care of Mother & Child", sub: "NP II · Healthy/At Risk", color: "from-pink-500 to-rose-500", bg: "bg-pink-50", border: "border-pink-200", textColor: "text-pink-700", emoji: "👶" },
-  { id: "medsurg", label: "Physiologic Alterations A", sub: "NP III · Fundamentals, Cardio, Respiratory, GI", color: "from-blue-500 to-blue-600", bg: "bg-blue-50", border: "border-blue-200", textColor: "text-blue-700", emoji: "🏥" },
-  { id: "medsurg", label: "Physiologic Alterations B", sub: "NP IV · Neuro, Endocrine, Renal, Oncology", color: "from-green-500 to-emerald-500", bg: "bg-green-50", border: "border-green-200", textColor: "text-green-700", emoji: "🩺" },
-  { id: "psychiatric", label: "Psychosocial Alterations", sub: "NP V · Psychiatric, Ethics, Legal, Management", color: "from-purple-500 to-violet-500", bg: "bg-purple-50", border: "border-purple-200", textColor: "text-purple-700", emoji: "🧠" },
+  { id: "np1", label: "Community Health Nursing", sub: "NP I", color: "from-red-500 to-orange-500", bg: "bg-red-50", border: "border-red-200", textColor: "text-red-700", emoji: "🌍" },
+  { id: "np2", label: "Care of Mother & Child", sub: "NP II · Healthy/At Risk", color: "from-pink-500 to-rose-500", bg: "bg-pink-50", border: "border-pink-200", textColor: "text-pink-700", emoji: "👶" },
+  { id: "np3", label: "Physiologic Alterations A", sub: "NP III · Fundamentals, Cardio, Respiratory, GI", color: "from-blue-500 to-blue-600", bg: "bg-blue-50", border: "border-blue-200", textColor: "text-blue-700", emoji: "🏥" },
+  { id: "np4", label: "Physiologic Alterations B", sub: "NP IV · Neuro, Endocrine, Renal, Oncology", color: "from-green-500 to-emerald-500", bg: "bg-green-50", border: "border-green-200", textColor: "text-green-700", emoji: "🩺" },
+  { id: "np5", label: "Psychosocial Alterations", sub: "NP V · Psychiatric, Ethics, Legal, Management", color: "from-purple-500 to-violet-500", bg: "bg-purple-50", border: "border-purple-200", textColor: "text-purple-700", emoji: "🧠" },
 ];
 
 export default function Quizzes() {
