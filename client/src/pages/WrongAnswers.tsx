@@ -291,12 +291,6 @@ export default function WrongAnswers() {
           <ArrowLeft className="w-5 h-5 text-gray-600" />
         </button>
         <span className="font-semibold flex-1">Wrong Answers</span>
-        {wrongItems.length > 0 && (
-          <button
-            onClick={() => clearMutation.mutate(undefined)}
-            className="text-xs text-red-400 hover:text-red-600"
-          >
-        )}
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 pb-24">
