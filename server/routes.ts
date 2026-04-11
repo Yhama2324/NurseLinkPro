@@ -926,6 +926,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // Quiz progress - get
+
+  app.get('/api/quiz-progress/all', async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.json({});
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      const result = await db.execute(sql`SELECT subject_code, current_level, total_correct, total_answered FROM quiz_progress WHERE user_id = ${userId}`);
+      const progress: Record<string, any> = {};
+      (result.rows as any[]).forEach(r => { progress[r.subject_code] = { currentLevel: r.current_level, totalCorrect: r.total_correct, totalAnswered: r.total_answered }; });
+      res.json(progress);
+    } catch (e: any) { res.status(500).json({ message: e.message }); }
+  });
+
   app.get('/api/quiz-progress/:subjectCode', async (req: any, res) => {
     try {
       const userId = req.user?.id;

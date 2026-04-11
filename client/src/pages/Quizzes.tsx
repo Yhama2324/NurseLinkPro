@@ -25,6 +25,15 @@ export default function Quizzes() {
       return res.json();
     },
   });
+
+  const { data: allProgress = {} } = useQuery<Record<string, any>>({
+    queryKey: ["/api/quiz-progress/all"],
+    queryFn: async () => {
+      const res = await fetch("/api/quiz-progress/all", { credentials: "include" });
+      if (!res.ok) return {};
+      return res.json();
+    },
+  });
   const totalQuestions = Object.values(counts).reduce((a, b) => a + b, 0);
 
   return (
@@ -74,6 +83,9 @@ export default function Quizzes() {
                         <p className="font-semibold text-sm text-gray-900 leading-tight">{cat.label}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{cat.sub}</p>
                         <p className={"text-xs font-semibold mt-0.5 " + (hasQuestions ? cat.textColor : "text-gray-400")}>{count} questions</p>
+                        {level > 0 && (
+                          <p className="text-xs text-gray-400 mt-0.5">Level {level} • {answeredPct}% done</p>
+                        )}
                       </div>
                       <Button size="sm" disabled={!hasQuestions} onClick={() => navigate("/quiz/" + cat.id)}
                         className={"flex-shrink-0 h-9 px-4 text-xs font-bold bg-gradient-to-r " + cat.color + " text-white border-0 hover:opacity-90 disabled:opacity-40"}>
@@ -81,6 +93,17 @@ export default function Quizzes() {
                       </Button>
                     </div>
                   </div>
+                  {hasQuestions && (
+                    <div className="px-4 pb-3">
+                      <div className="w-full bg-gray-100 rounded-full h-1.5">
+                        <div className={"h-1.5 rounded-full bg-gradient-to-r " + cat.color + " transition-all duration-500"} style={{ width: answeredPct + "%" }} />
+                      </div>
+                      <div className="flex justify-between mt-1">
+                        <span className="text-xs text-gray-400">{level === 0 ? "Not started" : "Level " + level}</span>
+                        <span className="text-xs text-gray-400">{answeredPct}%</span>
+                      </div>
+                    </div>
+                  )}
                 </Card>
               );
             })}
