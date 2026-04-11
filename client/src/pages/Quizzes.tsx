@@ -83,8 +83,8 @@ export default function Quizzes() {
                         <p className="font-semibold text-sm text-gray-900 leading-tight">{cat.label}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{cat.sub}</p>
                         <p className={"text-xs font-semibold mt-0.5 " + (hasQuestions ? cat.textColor : "text-gray-400")}>{count} questions</p>
-                        {level > 0 && (
-                          <p className="text-xs text-gray-400 mt-0.5">Level {level} • {answeredPct}% done</p>
+                        {catLevel > 0 && (
+                          <p className="text-xs text-gray-400 mt-0.5">Level {catLevel} • {catPct}% done</p>
                         )}
                       </div>
                       <Button size="sm" disabled={!hasQuestions} onClick={() => navigate("/quiz/" + cat.id)}
@@ -96,11 +96,11 @@ export default function Quizzes() {
                   {hasQuestions && (
                     <div className="px-4 pb-3">
                       <div className="w-full bg-gray-100 rounded-full h-1.5">
-                        <div className={"h-1.5 rounded-full bg-gradient-to-r " + cat.color + " transition-all duration-500"} style={{ width: answeredPct + "%" }} />
+                        <div className={"h-1.5 rounded-full bg-gradient-to-r " + cat.color + " transition-all duration-500"} style={{ width: catPct + "%" }} />
                       </div>
                       <div className="flex justify-between mt-1">
-                        <span className="text-xs text-gray-400">{level === 0 ? "Not started" : "Level " + level}</span>
-                        <span className="text-xs text-gray-400">{answeredPct}%</span>
+                        <span className="text-xs text-gray-400">{level === 0 ? "Not started" : "Level " + catLevel}</span>
+                        <span className="text-xs text-gray-400">{catPct}%</span>
                       </div>
                     </div>
                   )}
