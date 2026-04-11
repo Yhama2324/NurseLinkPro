@@ -346,8 +346,9 @@ export default function WrongAnswers() {
             {Object.entries(
               wrongItems.reduce(
                 (acc, item) => {
-                  if (!acc[item.subjectCode]) acc[item.subjectCode] = [];
-                  acc[item.subjectCode].push(item);
+                  const key = item.subject_code || item.subjectCode || 'unknown';
+                  if (!acc[key]) acc[key] = [];
+                  acc[key].push(item);
                   return acc;
                 },
                 {} as Record<string, WrongItem[]>,
