@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ObjectUploader } from "./ObjectUploader";
 import { apiRequest } from "@/lib/queryClient";
 
 interface CreatePostDialogProps {
@@ -53,7 +52,6 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
     if (content.trim()) {
       setContent("");
       setHashtags([]);
-      setImageUrl("");
       setOpen(false);
     }
   };
@@ -65,7 +63,6 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
           <Button className="w-full" data-testid="button-create-post">
             Create Post
           </Button>
-        )}
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
@@ -89,10 +86,7 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
                     onClick={() => handleRemoveHashtag(tag)}
                     className="hover:bg-background/50 rounded-sm p-0.5"
                   >
-                    <X className="w-3 h-3" />
                   </button>
-                </Badge>
-              ))}
             </div>
           )}
 
@@ -115,22 +109,13 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
           </div>
 
           <div className="flex items-center gap-2">
-            <ObjectUploader
               maxNumberOfFiles={1}
               maxFileSize={10485760}
               onGetUploadParameters={handleGetUploadParams}
               onComplete={handleUploadComplete}
               buttonClassName="gap-2"
             >
-              <Image className="w-4 h-4" />
-            </ObjectUploader>
-              <Badge variant="secondary" className="gap-1">
-                Image uploaded
-                <button onClick={() => setImageUrl("")}>
-                  <X className="w-3 h-3" />
                 </button>
-              </Badge>
-            )}
           </div>
 
           <Button
