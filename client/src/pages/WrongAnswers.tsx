@@ -5,7 +5,6 @@ import {
   CheckCircle,
   XCircle,
   BookOpen,
-  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -297,8 +296,6 @@ export default function WrongAnswers() {
             onClick={() => clearMutation.mutate(undefined)}
             className="text-xs text-red-400 hover:text-red-600"
           >
-            Clear All
-          </button>
         )}
       </div>
 
@@ -397,7 +394,6 @@ export default function WrongAnswers() {
                           onClick={() => clearMutation.mutate(item.id)}
                           className="text-gray-300 hover:text-red-400 flex-shrink-0"
                         >
-                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </Card>
