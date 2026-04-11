@@ -928,6 +928,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+  // Quiz progress - get
+  app.get('/api/quiz-progress/:subjectCode', async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.json({ currentLevel: 0, totalCorrect: 0, totalAnswered: 0 });
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      const result = await db.execute(sql\`
+        SELECT * FROM quiz_progress 
+        WHERE user_id = \${userId} AND subject_code = \${req.params.subjectCode}
+      \`);
+      if (result.rows.length === 0) return res.json({ currentLevel: 0, totalCorrect: 0, totalAnswered: 0 });
+      const row = result.rows[0] as any;
+      res.json({ currentLevel: row.current_level, totalCorrect: row.total_correct, totalAnswered: row.total_answered });
+    } catch (e: any) { res.status(500).json({ message: e.message }); }
+  });
+
+  // Quiz progress - save
+  app.post('/api/quiz-progress', async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const { subjectCode, currentLevel, totalCorrect, totalAnswered } = req.body;
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      await db.execute(sql\`
+        INSERT INTO quiz_progress (user_id, subject_code, current_level, total_correct, total_answered, updated_at)
+        VALUES (\${userId}, \${subjectCode}, \${currentLevel}, \${totalCorrect}, \${totalAnswered}, NOW())
+        ON CONFLICT (user_id, subject_code) DO UPDATE SET
+          current_level = \${currentLevel},
+          total_correct = total_correct + \${totalCorrect},
+          total_answered = total_answered + \${totalAnswered},
+          updated_at = NOW()
+      \`);
+      res.json({ ok: true });
+    } catch (e: any) { res.status(500).json({ message: e.message }); }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -1,16 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import {
-  ArrowLeft,
-  CheckCircle,
-  XCircle,
-  Trophy,
-  BookOpen,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle, XCircle, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import TopHeader from "@/components/TopHeader";
 import BottomNav from "@/components/BottomNav";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -29,6 +22,11 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
+  np1: "bg-red-500",
+  np2: "bg-pink-500",
+  np3: "bg-blue-500",
+  np4: "bg-green-500",
+  np5: "bg-purple-500",
   fundamentals: "bg-blue-500",
   maternal: "bg-pink-500",
   medsurg: "bg-green-500",
@@ -42,15 +40,19 @@ interface QuizItem {
   question: string;
   choices: string[] | string;
   correctIndex: number;
+  correct_index: number;
   rationale: string;
   difficulty: string;
   topicName: string;
+  topic_name: string;
+  subjectCode: string;
+  subject_code: string;
 }
 
 export default function QuizPage({ category }: { category: string }) {
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
-  const [page, setPage] = useState(0); // 0 = questions 1-10, 1 = 11-20, etc.
+  const [page, setPage] = useState<number | null>(null);
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [showRationale, setShowRationale] = useState(false);
@@ -58,21 +60,47 @@ export default function QuizPage({ category }: { category: string }) {
   const [finished, setFinished] = useState(false);
   const [answers, setAnswers] = useState<boolean[]>([]);
   const [wrongItems, setWrongItems] = useState<QuizItem[]>([]);
-  const [totalCorrect, setTotalCorrect] = useState(0);
 
-  const { data: questions = [], isLoading } = useQuery<QuizItem[]>({
-    queryKey: ["/api/quiz-items", category, page],
+  // Load saved progress
+  const { data: savedProgress } = useQuery({
+    queryKey: ["/api/quiz-progress", category],
     queryFn: async () => {
-      const offset = page * 10;
-      const res = await fetch(
-        `/api/quiz-items?subject_code=${category}&limit=10&offset=${offset}`,
-        { credentials: "include" },
-      );
+      const res = await fetch(`/api/quiz-progress/${category}`, {
+        credentials: "include",
+      });
       return res.json();
     },
   });
 
-  // Save wrong answers mutation
+  // Set page from saved progress
+  useEffect(() => {
+    if (savedProgress !== undefined && page === null) {
+      setPage(savedProgress.currentLevel || 0);
+    }
+  }, [savedProgress]);
+
+  // Save progress mutation
+  const saveProgressMutation = useMutation({
+    mutationFn: async (data: {
+      currentLevel: number;
+      totalCorrect: number;
+      totalAnswered: number;
+    }) => {
+      await fetch("/api/quiz-progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subjectCode: category, ...data }),
+        credentials: "include",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["/api/quiz-progress", category],
+      });
+    },
+  });
+
+  // Save wrong answers
   const saveWrongMutation = useMutation({
     mutationFn: async (items: QuizItem[]) => {
       await fetch("/api/wrong-answers", {
@@ -84,12 +112,25 @@ export default function QuizPage({ category }: { category: string }) {
     },
   });
 
-  if (isLoading) {
+  const { data: questions = [], isLoading } = useQuery<QuizItem[]>({
+    queryKey: ["/api/quiz-items", category, page],
+    queryFn: async () => {
+      const offset = (page || 0) * 10;
+      const res = await fetch(
+        `/api/quiz-items?subject_code=${category}&limit=10&offset=${offset}`,
+        { credentials: "include" },
+      );
+      return res.json();
+    },
+    enabled: page !== null,
+  });
+
+  if (page === null || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-gray-500 text-sm">Loading questions...</p>
+          <p className="text-gray-500 text-sm">Loading your progress...</p>
         </div>
       </div>
     );
@@ -98,21 +139,39 @@ export default function QuizPage({ category }: { category: string }) {
   if (!questions.length) {
     return (
       <div className="min-h-screen flex flex-col">
-        <TopHeader title={CATEGORY_LABELS[category] || category} />
+        <div className="bg-white border-b px-4 py-3 flex items-center gap-3">
+          <button onClick={() => navigate("/quizzes")}>
+            <ArrowLeft className="w-5 h-5 text-gray-600" />
+          </button>
+          <span className="font-semibold">
+            {CATEGORY_LABELS[category] || category}
+          </span>
+        </div>
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-          <BookOpen className="w-12 h-12 text-gray-300 mb-3" />
-          <p className="text-gray-500 mb-2">
-            {page === 0
-              ? "No questions available yet."
-              : "No more questions for this level!"}
+          <div className="text-5xl mb-3">🏆</div>
+          <h3 className="font-bold text-xl mb-2">All questions completed!</h3>
+          <p className="text-gray-500 text-sm mb-4">
+            You've gone through all available questions. More coming soon!
           </p>
-          {page > 0 && (
-            <p className="text-sm text-gray-400 mb-4">
-              You've completed all available questions in this category. More
-              coming soon!
-            </p>
-          )}
-          <Button onClick={() => navigate("/quizzes")}>Back to Quizzes</Button>
+          <Button
+            onClick={() => {
+              setPage(0);
+              saveProgressMutation.mutate({
+                currentLevel: 0,
+                totalCorrect: 0,
+                totalAnswered: 0,
+              });
+            }}
+          >
+            Start Over
+          </Button>
+          <Button
+            variant="ghost"
+            className="mt-2"
+            onClick={() => navigate("/quizzes")}
+          >
+            Back to Quizzes
+          </Button>
         </div>
         <BottomNav />
       </div>
@@ -120,33 +179,29 @@ export default function QuizPage({ category }: { category: string }) {
   }
 
   const q = questions[current];
+  const correctIdx = q.correctIndex ?? q.correct_index ?? 0;
+  const topicName = q.topicName || q.topic_name || "";
   const choices: string[] = Array.isArray(q.choices)
     ? q.choices
     : JSON.parse(q.choices as string);
   const total = questions.length;
-  const level = page + 1;
-  const globalQuestion = page * 10 + current + 1;
+  const level = (page || 0) + 1;
+  const globalQuestion = (page || 0) * 10 + current + 1;
 
   const handleSelect = (idx: number) => {
     if (selected !== null) return;
     setSelected(idx);
     setShowRationale(true);
-    const isCorrect = idx === q.correctIndex;
-    if (isCorrect) {
-      setScore((s) => s + 1);
-      setTotalCorrect((t) => t + 1);
-    } else {
-      setWrongItems((w) => [...w, q]);
-    }
+    const isCorrect = idx === correctIdx;
+    if (isCorrect) setScore((s) => s + 1);
+    else setWrongItems((w) => [...w, q]);
     setAnswers((a) => [...a, isCorrect]);
   };
 
   const handleNext = () => {
     if (current + 1 >= total) {
       // Save wrong answers
-      if (wrongItems.length > 0) {
-        saveWrongMutation.mutate(wrongItems);
-      }
+      if (wrongItems.length > 0) saveWrongMutation.mutate(wrongItems);
       setFinished(true);
     } else {
       setCurrent((c) => c + 1);
@@ -156,7 +211,14 @@ export default function QuizPage({ category }: { category: string }) {
   };
 
   const handleNextLevel = () => {
-    setPage((p) => p + 1);
+    const nextPage = (page || 0) + 1;
+    // Save progress
+    saveProgressMutation.mutate({
+      currentLevel: nextPage,
+      totalCorrect: score,
+      totalAnswered: total,
+    });
+    setPage(nextPage);
     setCurrent(0);
     setSelected(null);
     setShowRationale(false);
@@ -164,9 +226,6 @@ export default function QuizPage({ category }: { category: string }) {
     setFinished(false);
     setAnswers([]);
     setWrongItems([]);
-    queryClient.invalidateQueries({
-      queryKey: ["/api/quiz-items", category, page + 1],
-    });
   };
 
   const handleTryAgain = () => {
@@ -179,30 +238,28 @@ export default function QuizPage({ category }: { category: string }) {
     setWrongItems([]);
   };
 
+  // Results screen
   if (finished) {
     const pct = Math.round((score / total) * 100);
     const passed = pct >= 75;
-
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <div className="bg-white border-b px-4 py-3 flex items-center gap-3">
           <button onClick={() => navigate("/quizzes")}>
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
-          <span className="font-semibold">{CATEGORY_LABELS[category]}</span>
+          <span className="font-semibold">
+            {CATEGORY_LABELS[category] || category}
+          </span>
         </div>
-
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <div className="text-5xl mb-3">
             {pct >= 90 ? "🎉" : pct >= 75 ? "👏" : pct >= 50 ? "💪" : "📚"}
           </div>
-
           <h2 className="text-2xl font-bold mb-1">Level {level} Complete!</h2>
           <p className="text-gray-500 text-sm mb-4">
-            Questions {page * 10 + 1}–{page * 10 + total}
+            Questions {(page || 0) * 10 + 1}–{(page || 0) * 10 + total}
           </p>
-
-          {/* Score */}
           <div className="flex gap-6 mb-4">
             <div className="text-center">
               <p className="text-3xl font-bold text-blue-600">{pct}%</p>
@@ -217,37 +274,32 @@ export default function QuizPage({ category }: { category: string }) {
               <p className="text-xs text-gray-500">Wrong</p>
             </div>
           </div>
-
-          {/* Answer dots */}
           <div className="flex flex-wrap justify-center gap-2 mb-5 max-w-xs">
             {answers.map((correct, i) => (
               <div
                 key={i}
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold ${correct ? "bg-green-500" : "bg-red-400"}`}
               >
-                {page * 10 + i + 1}
+                {(page || 0) * 10 + i + 1}
               </div>
             ))}
           </div>
-
           {passed ? (
             <p className="text-green-600 font-semibold text-sm mb-4">
-              ✅ Passed! You can proceed to the next level.
+              ✅ Passed! Proceeding to next level.
             </p>
           ) : (
             <p className="text-orange-500 font-semibold text-sm mb-4">
-              ⚠️ Score below 75%. Review wrong answers before proceeding.
+              ⚠️ Score below 75%. Review wrong answers!
             </p>
           )}
-
           <div className="flex flex-col gap-3 w-full max-w-xs">
             <Button
               onClick={handleNextLevel}
               className="w-full bg-blue-500 hover:bg-blue-600 font-semibold"
             >
-              🚀 Next Level (Q{page * 10 + 11}–{page * 10 + 20})
+              🚀 Next Level (Q{(page || 0) * 10 + 11}–{(page || 0) * 10 + 20})
             </Button>
-
             {wrongItems.length > 0 && (
               <Button
                 variant="outline"
@@ -257,7 +309,6 @@ export default function QuizPage({ category }: { category: string }) {
                 📝 Review {wrongItems.length} Wrong Answers
               </Button>
             )}
-
             <Button
               variant="outline"
               onClick={handleTryAgain}
@@ -265,7 +316,6 @@ export default function QuizPage({ category }: { category: string }) {
             >
               🔄 Try Again (Level {level})
             </Button>
-
             <Button
               variant="ghost"
               onClick={() => navigate("/quizzes")}
@@ -280,9 +330,9 @@ export default function QuizPage({ category }: { category: string }) {
     );
   }
 
+  // Quiz screen
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header with progress */}
       <div className="bg-white border-b px-4 py-3">
         <div className="flex items-center gap-3 mb-2">
           <button onClick={() => navigate("/quizzes")}>
@@ -291,7 +341,7 @@ export default function QuizPage({ category }: { category: string }) {
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold truncate">
-                {CATEGORY_LABELS[category]}
+                {CATEGORY_LABELS[category] || category}
               </p>
               <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
                 Q{globalQuestion} • Lvl {level}
@@ -299,7 +349,6 @@ export default function QuizPage({ category }: { category: string }) {
             </div>
           </div>
         </div>
-        {/* Progress bar */}
         <div className="w-full bg-gray-100 rounded-full h-2">
           <div
             className={`h-2 rounded-full transition-all ${CATEGORY_COLORS[category] || "bg-blue-500"}`}
@@ -310,18 +359,17 @@ export default function QuizPage({ category }: { category: string }) {
           <span className="text-xs text-gray-400">
             {current}/{total} this level
           </span>
-          <Badge variant="outline" className="text-xs">
+          <Badge variant="outline" className="text-xs capitalize">
             {q.difficulty || "medium"}
           </Badge>
         </div>
       </div>
 
-      {/* Question */}
       <div className="flex-1 p-4 overflow-y-auto pb-24">
         <Card className="p-4 mb-4 shadow-sm">
-          {q.topicName && (
+          {topicName && (
             <p className="text-xs text-blue-500 font-medium mb-2 uppercase tracking-wide">
-              {q.topicName}
+              {topicName}
             </p>
           )}
           <p className="text-base font-medium leading-relaxed text-gray-800">
@@ -329,23 +377,16 @@ export default function QuizPage({ category }: { category: string }) {
           </p>
         </Card>
 
-        {/* Choices A-D */}
         <div className="space-y-3">
           {choices.slice(0, 4).map((choice, idx) => {
             const isSelected = selected === idx;
-            const isCorrect = idx === q.correctIndex;
-
+            const isCorrect = idx === correctIdx;
             let cls =
               "w-full p-3.5 rounded-xl border-2 text-left transition-all ";
-            if (selected === null) {
-              cls += "border-gray-200 bg-white active:scale-98";
-            } else if (isCorrect) {
-              cls += "border-green-400 bg-green-50";
-            } else if (isSelected && !isCorrect) {
-              cls += "border-red-400 bg-red-50";
-            } else {
-              cls += "border-gray-100 bg-gray-50 opacity-60";
-            }
+            if (selected === null) cls += "border-gray-200 bg-white";
+            else if (isCorrect) cls += "border-green-400 bg-green-50";
+            else if (isSelected) cls += "border-red-400 bg-red-50";
+            else cls += "border-gray-100 bg-gray-50 opacity-60";
 
             return (
               <button
@@ -355,24 +396,12 @@ export default function QuizPage({ category }: { category: string }) {
               >
                 <div className="flex items-start gap-3">
                   <span
-                    className={`font-bold text-sm min-w-[22px] mt-0.5 ${
-                      selected !== null && isCorrect
-                        ? "text-green-600"
-                        : selected !== null && isSelected
-                          ? "text-red-500"
-                          : "text-gray-400"
-                    }`}
+                    className={`font-bold text-sm min-w-[22px] mt-0.5 ${selected !== null && isCorrect ? "text-green-600" : selected !== null && isSelected ? "text-red-500" : "text-gray-400"}`}
                   >
                     {String.fromCharCode(65 + idx)}.
                   </span>
                   <span
-                    className={`flex-1 text-sm leading-relaxed ${
-                      selected !== null && isCorrect
-                        ? "text-green-800 font-medium"
-                        : selected !== null && isSelected
-                          ? "text-red-700"
-                          : "text-gray-700"
-                    }`}
+                    className={`flex-1 text-sm leading-relaxed ${selected !== null && isCorrect ? "text-green-800 font-medium" : selected !== null && isSelected ? "text-red-700" : "text-gray-700"}`}
                   >
                     {choice}
                   </span>
@@ -388,12 +417,11 @@ export default function QuizPage({ category }: { category: string }) {
           })}
         </div>
 
-        {/* Rationale */}
         {showRationale && q.rationale && (
-          <Card className="mt-4 p-4 bg-blue-50 border-blue-200 shadow-sm">
+          <Card className="mt-4 p-4 bg-blue-50 border-blue-200">
             <div className="flex items-center gap-2 mb-2">
               <BookOpen className="w-4 h-4 text-blue-500" />
-              <p className="text-xs font-bold text-blue-700 uppercase tracking-wide">
+              <p className="text-xs font-bold text-blue-700 uppercase">
                 Rationale
               </p>
             </div>
@@ -403,13 +431,12 @@ export default function QuizPage({ category }: { category: string }) {
           </Card>
         )}
 
-        {/* Next button */}
         {selected !== null && (
           <Button
             className="w-full mt-4 bg-blue-500 hover:bg-blue-600 font-semibold py-3"
             onClick={handleNext}
           >
-            {current + 1 >= total ? "See Results 📊" : `Next Question →`}
+            {current + 1 >= total ? "See Results 📊" : "Next Question →"}
           </Button>
         )}
       </div>
