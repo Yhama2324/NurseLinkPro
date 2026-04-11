@@ -257,7 +257,8 @@ export default function QuizPage({ category }: { category: string }) {
   // Results screen
   if (finished) {
     const pct = Math.round((score / total) * 100);
-    const passed = score >= 9;
+    const correctCount = answers.filter(a => a).length;
+  const passed = correctCount >= 9;
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <div className="bg-white border-b px-4 py-3 flex items-center gap-3">
@@ -282,11 +283,11 @@ export default function QuizPage({ category }: { category: string }) {
               <p className="text-xs text-gray-500">Score</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-green-500">{score}</p>
+              <p className="text-3xl font-bold text-green-500">{correctCount}</p>
               <p className="text-xs text-gray-500">Correct</p>
             </div>
             <div className="text-center">
-              <p className="text-3xl font-bold text-red-400">{total - score}</p>
+              <p className="text-3xl font-bold text-red-400">{total - correctCount}</p>
               <p className="text-xs text-gray-500">Wrong</p>
             </div>
           </div>
