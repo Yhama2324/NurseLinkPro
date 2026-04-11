@@ -931,11 +931,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id;
       if (!userId) return res.json({});
-      const { db } = await import('./db');
-      const { sql } = await import('drizzle-orm');
-      const result = await db.execute(sql`SELECT subject_code, current_level, total_correct, total_answered FROM quiz_progress WHERE user_id = ${userId}`);
+      const { pool } = await import('./db');
+      const result = await pool.query('SELECT subject_code, current_level, total_correct, total_answered FROM quiz_progress WHERE user_id = $1', [userId]);
       const progress: Record<string, any> = {};
-      (result.rows as any[]).forEach(r => { progress[r.subject_code] = { currentLevel: r.current_level, totalCorrect: r.total_correct, totalAnswered: r.total_answered }; });
+      result.rows.forEach((r: any) => { progress[r.subject_code] = { currentLevel: r.current_level, totalCorrect: r.total_correct, totalAnswered: r.total_answered }; });
       res.json(progress);
     } catch (e: any) { res.status(500).json({ message: e.message }); }
   });
@@ -944,9 +943,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user?.id;
       if (!userId) return res.json({ currentLevel: 0, totalCorrect: 0, totalAnswered: 0 });
-      const { db } = await import('./db');
-      const { sql } = await import('drizzle-orm');
-      const result = await db.execute(sql`SELECT * FROM quiz_progress WHERE user_id = ${userId} AND subject_code = ${req.params.subjectCode}`);
+      const { pool } = await import('./db');
+      const result = await pool.query('SELECT * FROM quiz_progress WHERE user_id = $1 AND subject_code = $2', [userId, req.params.subjectCode]);
       if (result.rows.length === 0) return res.json({ currentLevel: 0, totalCorrect: 0, totalAnswered: 0 });
       const row = result.rows[0] as any;
       res.json({ currentLevel: row.current_level, totalCorrect: row.total_correct, totalAnswered: row.total_answered });
@@ -960,9 +958,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('[quiz-progress POST] user:', JSON.stringify(req.user), 'userId:', userId);
       if (!userId) return res.status(401).json({ message: 'Unauthorized', user: req.user });
       const { subjectCode, currentLevel, totalCorrect, totalAnswered } = req.body;
-      const { db } = await import('./db');
-      const { sql } = await import('drizzle-orm');
-      await db.execute(sql`INSERT INTO quiz_progress (user_id, subject_code, current_level, total_correct, total_answered, updated_at) VALUES (${userId}, ${subjectCode}, ${currentLevel}, ${totalCorrect}, ${totalAnswered}, NOW()) ON CONFLICT (user_id, subject_code) DO UPDATE SET current_level = ${currentLevel}, total_correct = total_correct + ${totalCorrect}, total_answered = total_answered + ${totalAnswered}, updated_at = NOW()`);
+      const { pool } = await import('./db');
+      await pool.query(
+        'INSERT INTO quiz_progress (user_id, subject_code, current_level, total_correct, total_answered, updated_at) VALUES ($1, $2, $3, $4, $5, NOW()) ON CONFLICT (user_id, subject_code) DO UPDATE SET current_level = $3, total_correct = quiz_progress.total_correct + $4, total_answered = quiz_progress.total_answered + $5, updated_at = NOW()',
+        [userId, subjectCode, currentLevel, totalCorrect, totalAnswered]
+      );
     } catch (e: any) { res.status(500).json({ message: e.message }); }
   });
 
