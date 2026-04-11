@@ -165,7 +165,7 @@ export default function WrongAnswers() {
               </Button>
             </div>
           </div>
-          <BottomNav />
+
         </div>
       );
     }
@@ -279,7 +279,7 @@ export default function WrongAnswers() {
             </Button>
           )}
         </div>
-        <BottomNav />
+
       </div>
     );
   }
@@ -388,7 +388,7 @@ export default function WrongAnswers() {
           </>
         )}
       </div>
-      <BottomNav />
+
     </div>
   );
 }
