@@ -240,8 +240,8 @@ export default function QuizPage({ category }: { category: string }) {
     // Remove cached questions for next page so it fetches fresh
     queryClient.removeQueries({ queryKey: ["/api/quiz-items", category, nextPage] });
     queryClient.invalidateQueries({ queryKey: ["/api/quiz-progress", category] });
-    // Set page last to trigger fresh fetch
-    setPage(nextPage);
+    // Set page last to trigger fresh fetch - delay ensures state reset first
+    setTimeout(() => setPage(nextPage), 50);
   };
 
   const handleTryAgain = () => {
