@@ -371,19 +371,13 @@ export default function WrongAnswers() {
                       key={item.id}
                       className="p-3 border-l-4 border-l-red-400"
                     >
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-800 line-clamp-2">
                             {item.question}
                           </p>
-                                ]}
-                          </p>
                         </div>
-                        <button
-                          onClick={() => clearMutation.mutate(item.id)}
-                          className="text-gray-300 hover:text-red-400 flex-shrink-0"
-                        >
-                        </button>
+
                       </div>
                     </Card>
                   ))}
