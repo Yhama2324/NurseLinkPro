@@ -210,14 +210,25 @@ export default function QuizPage({ category }: { category: string }) {
     }
   };
 
-  const handleNextLevel = () => {
+  const handleNextLevel = async () => {
     const nextPage = (page || 0) + 1;
-    // Save progress
-    saveProgressMutation.mutate({
-      currentLevel: nextPage,
-      totalCorrect: score,
-      totalAnswered: total,
-    });
+    // Save progress first - wait for it
+    try {
+      await fetch("/api/quiz-progress", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          subjectCode: category, 
+          currentLevel: nextPage, 
+          totalCorrect: score, 
+          totalAnswered: total 
+        }),
+        credentials: "include",
+      });
+      console.log('[QuizPage] Progress saved! Level:', nextPage);
+    } catch(e) {
+      console.error('[QuizPage] Save failed:', e);
+    }
     setPage(nextPage);
     setCurrent(0);
     setSelected(null);
@@ -226,6 +237,7 @@ export default function QuizPage({ category }: { category: string }) {
     setFinished(false);
     setAnswers([]);
     setWrongItems([]);
+    queryClient.invalidateQueries({ queryKey: ["/api/quiz-progress", category] });
   };
 
   const handleTryAgain = () => {
