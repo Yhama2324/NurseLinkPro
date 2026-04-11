@@ -376,12 +376,6 @@ export default function WrongAnswers() {
                           <p className="text-sm font-medium text-gray-800 line-clamp-2">
                             {item.question}
                           </p>
-                          <p className="text-xs text-green-600 mt-1">
-                            ✓{" "}
-                            {Array.isArray(item.choices)
-                              ? item.choices[item.correctIndex ?? item.correct_index ?? 0]
-                              : JSON.parse(item.choices as string)[
-                                  item.correctIndex ?? item.correct_index ?? 0
                                 ]}
                           </p>
                         </div>
