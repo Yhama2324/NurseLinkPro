@@ -63,6 +63,7 @@ export default function CreatePostDialog({ onSubmit, trigger }: CreatePostDialog
           <Button className="w-full" data-testid="button-create-post">
             Create Post
           </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <DialogHeader>
