@@ -134,6 +134,11 @@ export default function LoginRegister() {
           </CardContent>
         </Card>
         <p className="text-center text-gray-400 text-xs mt-4">For PNLE and NCLEX Board Exam Review</p>
+        <div className="flex justify-center gap-4 mt-2">
+          <a href="/legal" className="text-xs text-blue-400 hover:underline">Terms of Use</a>
+          <a href="/legal" className="text-xs text-blue-400 hover:underline">Privacy Policy</a>
+          <a href="/legal" className="text-xs text-blue-400 hover:underline">User Policy</a>
+        </div>
       </div>
     </div>
   );

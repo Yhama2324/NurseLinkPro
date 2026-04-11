@@ -20,6 +20,7 @@ import NurseMind from "@/pages/NurseMind";
 import Onboarding from "@/pages/Onboarding";
 import MySemester from "@/pages/MySemester";
 import NotFound from "@/pages/not-found";
+import TermsAndPolicies from "@/pages/TermsAndPolicies";
 import WrongAnswers from "@/pages/WrongAnswers";
 import QuizPage from "@/pages/QuizPage";
 
@@ -52,6 +53,7 @@ function Router() {
           <Route path="/quizzes" component={Quizzes} />
           <Route path="/take-quiz/:category" component={({ params }: any) => <TakeQuiz />} />
           <Route path="/wrong-answers" component={WrongAnswers} />
+          <Route path="/legal" component={TermsAndPolicies} />
           <Route path="/quiz/:category" component={({ params }: any) => <QuizPage category={params.category} />} />
           <Route path="/clans" component={Clans} />
           <Route path="/profile" component={Profile} />
