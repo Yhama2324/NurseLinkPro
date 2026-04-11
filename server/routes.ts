@@ -971,11 +971,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Onboarding complete
   app.post('/api/enrollee/onboarding/complete', async (req: any, res) => {
     try {
-      const userId = req.user?.id;
-      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const userId = req.user?.id || req.user?.claims?.sub;
+      console.log('[onboarding/complete] user:', JSON.stringify(req.user), 'userId:', userId);
+      if (!userId) return res.status(401).json({ message: 'Unauthorized', user: req.user });
       await storage.updateUserOnboarding(userId, { onboardingCompleted: true });
+      console.log('[onboarding/complete] Updated user:', userId);
       res.json({ ok: true });
-    } catch (e: any) { res.status(500).json({ message: e.message }); }
+    } catch (e: any) { 
+      console.error('[onboarding/complete] Error:', e.message);
+      res.status(500).json({ message: e.message }); 
+    }
   });
 
   const httpServer = createServer(app);
