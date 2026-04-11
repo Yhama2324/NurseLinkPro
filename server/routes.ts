@@ -956,8 +956,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Quiz progress - save
   app.post('/api/quiz-progress', async (req: any, res) => {
     try {
-      const userId = req.user?.id;
-      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const userId = req.user?.id || (req.user as any)?.claims?.sub;
+      console.log('[quiz-progress POST] user:', JSON.stringify(req.user), 'userId:', userId);
+      if (!userId) return res.status(401).json({ message: 'Unauthorized', user: req.user });
       const { subjectCode, currentLevel, totalCorrect, totalAnswered } = req.body;
       const { db } = await import('./db');
       const { sql } = await import('drizzle-orm');
