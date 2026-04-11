@@ -258,7 +258,7 @@ export default function QuizPage({ category }: { category: string }) {
   if (finished) {
     const pct = Math.round((score / total) * 100);
     const correctCount = answers.filter(a => a).length;
-  const passed = correctCount >= 9;
+  const passed = correctCount >= 9 || score >= 9;
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <div className="bg-white border-b px-4 py-3 flex items-center gap-3">
