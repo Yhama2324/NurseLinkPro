@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { Heart, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
+import { MessageCircle, Share2, MoreHorizontal } from "lucide-react";
+import Lottie from "lottie-react";
+import syringeAnimation from "@/assets/syringe.json";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,10 +18,13 @@ interface PostCardProps {
 
 export default function PostCard({ post, onLike, onComment }: PostCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleLike = () => {
     setIsLiked(!isLiked);
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 1000);
     onLike?.(post.id);
   };
 
@@ -108,8 +113,8 @@ export default function PostCard({ post, onLike, onComment }: PostCardProps) {
           onClick={handleLike}
           data-testid="button-like"
         >
-          <Heart className={cn("w-5 h-5", isLiked && "fill-current")} />
-          <span className="text-sm font-medium">{post.likesCount + (isLiked ? 1 : 0)}</span>
+          <span className={cn("text-xl transition-transform", isAnimating && "scale-150")} style={{display:'inline-block'}}>💉</span>
+          <span className={cn("text-sm font-medium", isLiked && "text-blue-500")}>{post.likesCount + (isLiked ? 1 : 0)}</span>
         </Button>
         
         <Button
