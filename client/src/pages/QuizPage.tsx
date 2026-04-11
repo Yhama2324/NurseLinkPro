@@ -229,7 +229,7 @@ export default function QuizPage({ category }: { category: string }) {
     } catch(e) {
       console.error('[QuizPage] Save failed:', e);
     }
-    setPage(nextPage);
+    // Reset state
     setCurrent(0);
     setSelected(null);
     setShowRationale(false);
@@ -237,7 +237,11 @@ export default function QuizPage({ category }: { category: string }) {
     setFinished(false);
     setAnswers([]);
     setWrongItems([]);
+    // Remove cached questions for next page so it fetches fresh
+    queryClient.removeQueries({ queryKey: ["/api/quiz-items", category, nextPage] });
     queryClient.invalidateQueries({ queryKey: ["/api/quiz-progress", category] });
+    // Set page last to trigger fresh fetch
+    setPage(nextPage);
   };
 
   const handleTryAgain = () => {
