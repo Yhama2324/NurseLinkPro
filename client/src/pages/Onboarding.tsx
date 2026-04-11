@@ -1,328 +1,352 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Search, ChevronRight, ChevronLeft, Check } from "lucide-react";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { useLocation } from "wouter";
+import { Card } from "@/components/ui/card";
+import { CheckCircle } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 
-interface Subject {
-  id: number;
-  canonicalCode: string;
-  name: string;
-  units: number;
-}
+const SUBJECTS = [
+  {
+    id: "np1",
+    label: "NP I — Community Health Nursing",
+    emoji: "🌍",
+    color: "border-red-400 bg-red-50",
+  },
+  {
+    id: "np2",
+    label: "NP II — Care of Mother & Child",
+    emoji: "👶",
+    color: "border-pink-400 bg-pink-50",
+  },
+  {
+    id: "np3",
+    label: "NP III — Physiologic Alterations A",
+    emoji: "🏥",
+    color: "border-blue-400 bg-blue-50",
+  },
+  {
+    id: "np4",
+    label: "NP IV — Physiologic Alterations B",
+    emoji: "🩺",
+    color: "border-green-400 bg-green-50",
+  },
+  {
+    id: "np5",
+    label: "NP V — Psychosocial Alterations",
+    emoji: "🧠",
+    color: "border-purple-400 bg-purple-50",
+  },
+];
+
+const YEAR_LEVELS = [
+  { value: "1", label: "1st Year" },
+  { value: "2", label: "2nd Year" },
+  { value: "3", label: "3rd Year" },
+  { value: "4", label: "4th Year" },
+  { value: "5", label: "Graduate / Board Taker" },
+];
 
 export default function Onboarding() {
-  const handleSkip = async () => {
-    try {
-      await apiRequest("POST", "/api/enrollee/onboarding/complete", { skip: true });
-    } catch {}
-    window.location.href = "/";
-  };
-  const [, setLocation] = useLocation();
+  const [, navigate] = useLocation();
   const [step, setStep] = useState(1);
-  const [schoolName, setSchoolName] = useState("");
-  const [academicYear, setAcademicYear] = useState("2025-2026");
-  const [term, setTerm] = useState(1);
-  const [yearLevel, setYearLevel] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([]);
 
-  const { data: subjects = [] } = useQuery<Subject[]>({
-    queryKey: ["/api/enrollee/subjects"],
-    enabled: step === 2,
-  });
+  // Step 1 - Profile
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [slogan, setSlogan] = useState("");
+
+  // Step 2 - School
+  const [school, setSchool] = useState("");
+  const [yearLevel, setYearLevel] = useState("");
+
+  // Step 3 - Subjects
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
 
   const completeMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest("POST", "/api/enrollee/onboarding/complete", data);
+      const res = await fetch("/api/enrollee/onboarding/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      setLocation("/home");
+      window.location.href = "/";
+    },
+    onError: () => {
+      window.location.href = "/";
     },
   });
 
-  const filteredSubjects = subjects.filter((s) =>
-    s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    s.canonicalCode.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleToggleSubject = (subject: Subject) => {
-    if (selectedSubjects.find((s) => s.id === subject.id)) {
-      setSelectedSubjects(selectedSubjects.filter((s) => s.id !== subject.id));
-    } else {
-      setSelectedSubjects([...selectedSubjects, subject]);
-    }
+  const handleSkip = () => {
+    window.location.href = "/";
   };
 
   const handleComplete = () => {
     completeMutation.mutate({
-      schoolName: schoolName || null,
-      academicYear,
-      term,
-      yearLevel,
-      selectedSubjects: selectedSubjects.map(s => ({
-        id: s.id,
-        schoolCode: s.canonicalCode,
-        units: s.units,
-      })),
+      firstName,
+      lastName,
+      gender,
+      birthday,
+      slogan,
+      schoolName: school,
+      yearLevel: yearLevel ? parseInt(yearLevel) : null,
+      selectedSubjects,
     });
   };
 
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-3xl">
-        <CardHeader>
-          <CardTitle>Welcome to CKalingaLink</CardTitle>
-          <CardDescription>
-            Let's personalize your learning experience
-            <button onClick={handleSkip} className="absolute top-4 right-4 text-xs text-gray-400 hover:text-gray-600 underline">Skip</button>
-          </CardDescription>
-          <div className="flex gap-2 mt-4">
-            {[1, 2, 3].map((s) => (
-              <div
-                key={s}
-                className={`h-2 flex-1 rounded-full ${
-                  s <= step ? "bg-primary" : "bg-muted"
-                }`}
-              />
-            ))}
-          </div>
-        </CardHeader>
+  const toggleSubject = (id: string) => {
+    setSelectedSubjects((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id],
+    );
+  };
 
-        <CardContent className="space-y-6">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Welcome to CKalingaLink
+            </h1>
+            <p className="text-sm text-gray-500">Let's set up your profile</p>
+          </div>
+          <button
+            onClick={handleSkip}
+            className="text-xs text-gray-400 hover:text-gray-600 underline"
+          >
+            Skip
+          </button>
+        </div>
+
+        {/* Progress */}
+        <div className="flex gap-2 mb-6">
+          {[1, 2, 3].map((s) => (
+            <div
+              key={s}
+              className={`h-2 flex-1 rounded-full transition-all ${s <= step ? "bg-blue-500" : "bg-gray-200"}`}
+            />
+          ))}
+        </div>
+
+        <Card className="p-6 shadow-lg rounded-2xl border-0">
+          {/* Step 1 - Profile Info */}
           {step === 1 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">School & Semester Information</h3>
-              
-              <div className="space-y-2">
-                <Label htmlFor="school" data-testid="label-school">School Name (Optional)</Label>
-                <Input
-                  id="school"
-                  data-testid="input-school"
-                  placeholder="e.g., University of the Philippines Manila"
-                  value={schoolName}
-                  onChange={(e) => setSchoolName(e.target.value)}
-                />
-              </div>
+              <h2 className="text-lg font-bold text-gray-800">
+                👤 Your Profile
+              </h2>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="ay" data-testid="label-academic-year">Academic Year</Label>
-                  <Select value={academicYear} onValueChange={setAcademicYear}>
-                    <SelectTrigger id="ay" data-testid="select-academic-year">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="2024-2025">2024-2025</SelectItem>
-                      <SelectItem value="2025-2026">2025-2026</SelectItem>
-                      <SelectItem value="2026-2027">2026-2027</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">
+                    First Name
+                  </label>
+                  <Input
+                    placeholder="Juan"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="rounded-xl h-11"
+                  />
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="term" data-testid="label-term">Semester</Label>
-                  <Select value={String(term)} onValueChange={(v) => setTerm(Number(v))}>
-                    <SelectTrigger id="term" data-testid="select-term">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">Semester 1</SelectItem>
-                      <SelectItem value="2">Semester 2</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div>
+                  <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">
+                    Last Name
+                  </label>
+                  <Input
+                    placeholder="dela Cruz"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="rounded-xl h-11"
+                  />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="year" data-testid="label-year-level">Year Level</Label>
-                <Select value={String(yearLevel)} onValueChange={(v) => setYearLevel(Number(v))}>
-                  <SelectTrigger id="year" data-testid="select-year-level">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">Pre-nursing</SelectItem>
-                    <SelectItem value="1">1st Year</SelectItem>
-                    <SelectItem value="2">2nd Year</SelectItem>
-                    <SelectItem value="3">3rd Year</SelectItem>
-                    <SelectItem value="4">4th Year</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <Button
-                onClick={() => setStep(2)}
-                className="w-full"
-                data-testid="button-next-step1"
-              >
-                Continue <ChevronRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Select Your Subjects</h3>
-              <p className="text-sm text-muted-foreground">
-                Choose the subjects you're currently enrolled in
-              </p>
-
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search subjects..."
-                  className="pl-9"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  data-testid="input-search-subjects"
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {selectedSubjects.map((s) => (
-                  <Badge
-                    key={s.id}
-                    variant="default"
-                    className="cursor-pointer"
-                    onClick={() => handleToggleSubject(s)}
-                    data-testid={`badge-selected-${s.id}`}
-                  >
-                    {s.name} ({s.canonicalCode})
-                  </Badge>
-                ))}
-              </div>
-
-              <div className="border rounded-lg max-h-96 overflow-y-auto">
-                {filteredSubjects.map((subject) => {
-                  const isSelected = !!selectedSubjects.find((s) => s.id === subject.id);
-                  return (
-                    <div
-                      key={subject.id}
-                      className={`p-3 border-b last:border-b-0 cursor-pointer hover-elevate ${
-                        isSelected ? "bg-primary/10" : ""
-                      }`}
-                      onClick={() => handleToggleSubject(subject)}
-                      data-testid={`subject-item-${subject.id}`}
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">
+                  Gender
+                </label>
+                <div className="flex gap-2">
+                  {["Male", "Female", "Prefer not to say"].map((g) => (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => setGender(g)}
+                      className={`flex-1 py-2 rounded-xl border-2 text-xs font-medium transition-all ${gender === g ? "border-blue-500 bg-blue-50 text-blue-600" : "border-gray-200 text-gray-500"}`}
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium">{subject.name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {subject.canonicalCode} • {subject.units} units
-                          </div>
-                        </div>
-                        {isSelected && <Check className="h-5 w-5 text-primary" />}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => setStep(1)}
-                  variant="outline"
-                  data-testid="button-back-step2"
-                >
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Back
-                </Button>
-                <Button
-                  onClick={() => setStep(3)}
-                  className="flex-1"
-                  disabled={selectedSubjects.length === 0}
-                  data-testid="button-next-step2"
-                >
-                  Continue <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Your Study Plan</h3>
-              <p className="text-sm text-muted-foreground">
-                We've created a personalized study plan based on your enrolled subjects
-              </p>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Daily Drill</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">
-                    10 questions daily from your active subjects to keep your skills sharp
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Weekly Quizzes</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">
-                    25 questions per subject every week for focused practice
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Monthly Mock Exams</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">
-                    50-75 questions covering all your subjects, weighted by units
-                  </p>
-                </CardContent>
-              </Card>
-
-              <div className="bg-muted p-4 rounded-lg">
-                <h4 className="font-medium mb-2">Selected Subjects ({selectedSubjects.length})</h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedSubjects.map((s) => (
-                    <Badge key={s.id} variant="secondary">
-                      {s.name}
-                    </Badge>
+                      {g === "Male"
+                        ? "👨 Male"
+                        : g === "Female"
+                          ? "👩 Female"
+                          : "🤝 Other"}
+                    </button>
                   ))}
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">
+                  Birthday
+                </label>
+                <Input
+                  type="date"
+                  value={birthday}
+                  onChange={(e) => setBirthday(e.target.value)}
+                  className="rounded-xl h-11"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">
+                  Your Slogan / Motto{" "}
+                  <span className="text-gray-400 normal-case">(optional)</span>
+                </label>
+                <Input
+                  placeholder="e.g. I will pass the boards! 💪"
+                  value={slogan}
+                  onChange={(e) => setSlogan(e.target.value)}
+                  className="rounded-xl h-11"
+                  maxLength={60}
+                />
+              </div>
+
+              <Button
+                onClick={() => setStep(2)}
+                className="w-full bg-blue-500 hover:bg-blue-600 rounded-xl h-11 font-semibold"
+              >
+                Continue →
+              </Button>
+            </div>
+          )}
+
+          {/* Step 2 - School Info */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-gray-800">
+                🏫 School Information
+              </h2>
+
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">
+                  School / University{" "}
+                  <span className="text-gray-400 normal-case">(optional)</span>
+                </label>
+                <Input
+                  placeholder="e.g. UP Manila College of Nursing"
+                  value={school}
+                  onChange={(e) => setSchool(e.target.value)}
+                  className="rounded-xl h-11"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-gray-500 uppercase mb-1 block">
+                  Year Level
+                </label>
+                <div className="space-y-2">
+                  {YEAR_LEVELS.map((y) => (
+                    <button
+                      key={y.value}
+                      type="button"
+                      onClick={() => setYearLevel(y.value)}
+                      className={`w-full py-3 px-4 rounded-xl border-2 text-left text-sm font-medium transition-all ${yearLevel === y.value ? "border-blue-500 bg-blue-50 text-blue-600" : "border-gray-200 text-gray-600 hover:border-gray-300"}`}
+                    >
+                      {yearLevel === y.value ? "✅" : "○"} {y.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-3">
                 <Button
-                  onClick={() => setStep(2)}
                   variant="outline"
-                  data-testid="button-back-step3"
+                  onClick={() => setStep(1)}
+                  className="flex-1 rounded-xl h-11"
                 >
-                  <ChevronLeft className="mr-2 h-4 w-4" /> Back
+                  ← Back
                 </Button>
                 <Button
-                  onClick={handleComplete}
-                  className="flex-1"
-                  disabled={completeMutation.isPending}
-                  data-testid="button-complete-onboarding"
+                  onClick={() => setStep(3)}
+                  className="flex-1 bg-blue-500 hover:bg-blue-600 rounded-xl h-11 font-semibold"
                 >
-                  {completeMutation.isPending ? "Setting up..." : "Start Learning"}
+                  Continue →
                 </Button>
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+
+          {/* Step 3 - Subjects */}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-lg font-bold text-gray-800">
+                  📚 Select Your Subjects
+                </h2>
+                <p className="text-xs text-gray-500 mt-1">
+                  Choose the NP subjects you want to focus on. You can change
+                  this later.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                {SUBJECTS.map((subj) => {
+                  const selected = selectedSubjects.includes(subj.id);
+                  return (
+                    <button
+                      key={subj.id}
+                      type="button"
+                      onClick={() => toggleSubject(subj.id)}
+                      className={`w-full p-3 rounded-xl border-2 text-left transition-all ${selected ? subj.color + " border-opacity-100" : "border-gray-200 bg-white hover:border-gray-300"}`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">{subj.emoji}</span>
+                        <span
+                          className={`text-sm font-medium flex-1 ${selected ? "text-gray-800" : "text-gray-600"}`}
+                        >
+                          {subj.label}
+                        </span>
+                        {selected && (
+                          <CheckCircle className="w-5 h-5 text-blue-500 flex-shrink-0" />
+                        )}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setStep(2)}
+                  className="flex-1 rounded-xl h-11"
+                >
+                  ← Back
+                </Button>
+                <Button
+                  onClick={handleComplete}
+                  disabled={completeMutation.isPending}
+                  className="flex-1 bg-blue-500 hover:bg-blue-600 rounded-xl h-11 font-semibold"
+                >
+                  {completeMutation.isPending ? "Saving..." : "🚀 Get Started!"}
+                </Button>
+              </div>
+
+              <button
+                onClick={handleSkip}
+                className="w-full text-xs text-gray-400 hover:text-gray-600 underline text-center"
+              >
+                Skip for now
+              </button>
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }
