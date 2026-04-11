@@ -24,6 +24,12 @@ interface Subject {
 }
 
 export default function Onboarding() {
+  const handleSkip = async () => {
+    try {
+      await apiRequest("POST", "/api/enrollee/onboarding/complete", { skip: true });
+    } catch {}
+    window.location.href = "/";
+  };
   const [, setLocation] = useLocation();
   const [step, setStep] = useState(1);
   const [schoolName, setSchoolName] = useState("");
@@ -82,6 +88,7 @@ export default function Onboarding() {
           <CardTitle>Welcome to CKalingaLink</CardTitle>
           <CardDescription>
             Let's personalize your learning experience
+            <button onClick={handleSkip} className="absolute top-4 right-4 text-xs text-gray-400 hover:text-gray-600 underline">Skip</button>
           </CardDescription>
           <div className="flex gap-2 mt-4">
             {[1, 2, 3].map((s) => (
