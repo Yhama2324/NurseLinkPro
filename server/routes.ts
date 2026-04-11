@@ -873,6 +873,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+
+  // Wrong answers - save
+  app.post('/api/wrong-answers', async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const { items } = req.body;
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      for (const item of items) {
+        await db.execute(sql`
+          INSERT INTO wrong_answers (user_id, quiz_item_id, question, choices, correct_index, rationale, subject_code, topic_name)
+          VALUES (${userId}, ${item.id}, ${item.question}, ${JSON.stringify(item.choices || [])}, ${item.correctIndex}, ${item.rationale || ''}, ${item.subjectCode || ''}, ${item.topicName || ''})
+          ON CONFLICT (user_id, quiz_item_id) DO NOTHING
+        `);
+      }
+      res.json({ ok: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Wrong answers - get
+  app.get('/api/wrong-answers', async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.json([]);
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      const result = await db.execute(sql`SELECT * FROM wrong_answers WHERE user_id = ${userId} ORDER BY created_at DESC`);
+      res.json(result.rows);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Wrong answers - delete one or all
+  app.delete('/api/wrong-answers/:id?', async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) return res.status(401).json({ message: 'Unauthorized' });
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      const id = req.params.id;
+      if (id && id !== 'undefined') {
+        await db.execute(sql`DELETE FROM wrong_answers WHERE user_id = ${userId} AND id = ${parseInt(id)}`);
+      } else {
+        await db.execute(sql`DELETE FROM wrong_answers WHERE user_id = ${userId}`);
+      }
+      res.json({ ok: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
