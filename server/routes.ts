@@ -883,11 +883,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { db } = await import('./db');
       const { sql } = await import('drizzle-orm');
       for (const item of items) {
-        await db.execute(sql`
-          INSERT INTO wrong_answers (user_id, quiz_item_id, question, choices, correct_index, rationale, subject_code, topic_name)
-          VALUES (${userId}, ${item.id}, ${item.question}, ${JSON.stringify(item.choices || [])}, ${item.correctIndex}, ${item.rationale || ''}, ${item.subjectCode || ''}, ${item.topicName || ''})
-          ON CONFLICT (user_id, quiz_item_id) DO NOTHING
-        `);
+        await db.execute(sql`INSERT INTO wrong_answers (user_id, quiz_item_id, question, choices, correct_index, rationale, subject_code, topic_name) VALUES (${userId}, ${item.id}, ${item.question}, ${JSON.stringify(item.choices||[])}, ${item.correctIndex}, ${item.rationale||''}, ${item.subjectCode||''}, ${item.topicName||''}) ON CONFLICT (user_id, quiz_item_id) DO NOTHING`);
       }
       res.json({ ok: true });
     } catch (error: any) {
@@ -936,10 +932,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!userId) return res.json({ currentLevel: 0, totalCorrect: 0, totalAnswered: 0 });
       const { db } = await import('./db');
       const { sql } = await import('drizzle-orm');
-      const result = await db.execute(sql`
-        SELECT * FROM quiz_progress 
-        WHERE user_id = \${userId} AND subject_code = \${req.params.subjectCode}
-      \`);
+      const result = await db.execute(sql`SELECT * FROM quiz_progress WHERE user_id = ${userId} AND subject_code = ${req.params.subjectCode}`);
       if (result.rows.length === 0) return res.json({ currentLevel: 0, totalCorrect: 0, totalAnswered: 0 });
       const row = result.rows[0] as any;
       res.json({ currentLevel: row.current_level, totalCorrect: row.total_correct, totalAnswered: row.total_answered });
